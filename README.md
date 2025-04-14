@@ -1,47 +1,41 @@
 ### 📁 Project Structure
 
 ```
-controllers/           # Business logic (request handlers)
-├── userController.js
-├── authController.js
-├── transactionController.js
-└── summaryController.js
+config/                 
+├── mongoCollections.js
+├── mongoConnections.js
+└── setting.js
 
-services/              # Reusable logic (DB queries, calculations)
-├── userService.js
-├── authService.js
-├── transactionService.js
-└── summaryService.js
+data/           
+├── users.js
+├── income.js
+├── transactions.js
+├── monthlySummary.js
+└── yearlySummary.js
 
-models/                # Mongoose schemas
-├── User.js
-├── Transaction.js
-├── MonthlySummary.js
-└── YearlySummary.js
+public/                 
+├── css
+    └── styles.js
+└── js
+    └── form_process.js
 
-routes/                # Express routes
-├── userRoutes.js
-├── authRoutes.js
-├── transactionRoutes.js
-└── summaryRoutes.js
+routes/                 
+├── index.js
+└── main.js
 
-middlewares/           # Authentication and validation middleware
-├── authMiddleware.js
-└── errorHandler.js
+static/                 
+└── ???
 
-utils/                 # Helper functions
-├── hashPassword.js
-├── generateToken.js
-└── emailSender.js
+views/               
+├── layouts
+    └── main.handlebars
+├── accounts.handlebars
+├── expense.handlebars
+├── home.handlebars
+├── income.handlebars
+└── settings.handlebars
 
-config/                # App and DB config
-└── db.js
-
-validations/           # Request input validation
-├── userValidation.js
-└── transactionValidation.js
-
-.env                   # Environment variables
-app.js                 # Express app entry point
-package.json           # NPM metadata
+app.js
+helper.js           
+package.json           
 ```
