@@ -33,6 +33,8 @@ views/
 ├── expense.handlebars
 ├── home.handlebars
 ├── income.handlebars
+├── monthlySummary.handlebars
+├── yearlySummary.handlebars
 └── settings.handlebars
 
 app.js
