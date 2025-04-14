@@ -11,17 +11,16 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     req.method = req.body._method;
     delete req.body._method;
   }
-
   // let the next middleware run:
   next();
 };
 
-app.use('/public', express.static('public')); // all static are in public directory, use public directory as our static
+app.use('/public', express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true})); // we will get the form data through this
+app.use(express.urlencoded({extended: true}));
 app.use(rewriteUnsupportedBrowserMethods);
 
-app.engine('handlebars', exphbs.engine({defaultLayout: 'main'})); // in main layout is the master page
+app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 configRoutes(app);
