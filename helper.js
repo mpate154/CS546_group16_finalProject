@@ -121,7 +121,7 @@ const exportedMethods = {
     if (typeof input !== "string") throw `Error: Input should be a string.`;
     input = input.trim();
     if (input.length === 0) {
-      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+      throw `Error: Given number cannot be an empty string or string with just spaces.`;
     }
     let inputArr = input.split("");
     if (
