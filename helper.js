@@ -1,7 +1,6 @@
-import { ObjectId } from "mongodb";
+import {ObjectId} from 'mongodb';
 
 const exportedMethods = {
-  //trims
   checkId(id) {
     if (!id) throw `Error: You must provide a input`;
     if (typeof id !== "string") throw `Error: input must be a string`;
@@ -11,11 +10,31 @@ const exportedMethods = {
     if (!ObjectId.isValid(id)) throw `Error: input invalid object ID`;
     return id;
   },
-
+  checkFirstName(firstName){
+    if (!firstName || typeof firstName !== 'string' || firstName.trim().length === 0) {
+      throw 'You must provide a valid firstName to search.';
+    }
+  
+    if(!(firstName.match(/^[a-zA-Z]+$/))) throw `Your firstName must only contain letters.`;
+  
+    if(firstName.trim().length<2 || firstName.trim().length>20 ) throw `Your firstName should be more than 2 and less than 20 characters`  
+    
+    return firstName.trim();
+  },
+  checkLastName(lastName){
+    if (!lastName || typeof lastName !== 'string' || lastName.trim().length === 0) {
+      throw 'You must provide a valid lastName to search.';
+    }
+    if(!(lastName.match(/^[a-zA-Z]+$/))) throw `Your lastName must only contain letters.`;
+  
+    if(lastName.trim().length<2 || lastName.trim().length>20 ) throw `Your lastName should be more than 2 and less than 20 characters`  
+    
+    return lastName.trim();
+  },
   checkString(strVal) {
     //trims
     if (!strVal) throw `Error: You must supply an input!`;
-    if (typeof strVal !== "string") throw `Error: unput must be a string!`;
+    if (typeof strVal !== "string") throw `Error: input must be a string!`;
     strVal = strVal.trim();
     if (strVal.length === 0)
       throw `Error: input cannot be an empty string or string with just spaces`;
@@ -23,7 +42,6 @@ const exportedMethods = {
       throw `Error: ${strVal} is not a valid value for input as it only contains digits.`;
     return strVal;
   },
-
   checkAmount(amount) {
     let stringamount = amount;
     if (!amount) throw `Error: You must supply an amount`;
@@ -61,7 +79,6 @@ const exportedMethods = {
 
     return amount;
   },
-
   checkDate(date) {
     if (!date) throw `Error: You must supply a date`;
     if (typeof date !== "string")
@@ -115,13 +132,12 @@ const exportedMethods = {
 
     return date;
   },
-
   checkNumber(input) {
     if (!input) throw `Error: You must supply an input`;
     if (typeof input !== "string") throw `Error: Input should be a string.`;
     input = input.trim();
     if (input.length === 0) {
-      throw `Error: Given number cannot be an empty string or string with just spaces.`;
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
     }
     let inputArr = input.split("");
     if (
@@ -131,8 +147,41 @@ const exportedMethods = {
     ) {
       throw "Error: Invalid characters in input. There should only be numbers.";
     }
-    return input;
+    return parseInt(input);
   },
+  checkPassword(password){
+    if (!password || typeof password !== 'string' || password.trim().length === 0) {
+      throw 'You must provide a valid password to search.';
+    }
+    if(password.trim().length != password.length) throw ` Your password shouldn't contain spaces.`
+    if( password.trim().length < 8  ) throw `Your password must be at least 8 characters`
+    if (!/[A-Z]/.test(password)) {
+      throw `Your password must contain at least one uppercase letter.`;
+    }
+    if (!/[0-9]/.test(password)) {
+      throw `Your password must contain at least one number.`;
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>[\]\\;'/\-=_+`~]/.test(password)) {
+      throw `Your password must contain at least one special character.`;
+    }
+
+    return password.trim();
+  },
+  checkEmail(email) {
+    if (!email) throw `Error: You must provide an email.`;
+    if (typeof email !== 'string') throw `Error: Email must be a string.`;
+  
+    email = email.trim().toLowerCase();
+    if (email.length === 0) throw `Error: Email cannot be an empty string or just spaces.`;
+  
+    // This regex matches most real-world emails
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+    if (!emailRegex.test(email)) throw `Error: Invalid email format.`;
+  
+    return email;
+  }  
+  
 };
 
 export default exportedMethods;
