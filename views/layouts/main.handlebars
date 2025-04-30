@@ -4,12 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+
+    {{!-- for home/monthly summary pages --}}
+    {{#if home_or_summary}} 
+    <link rel="stylesheet" href="/public/summary.css" />
+    {{/if}}
+
+    {{!-- for landing, login, and signup, signout pages --}}
+    {{#if landing_signup_login}}
+    <link rel="stylesheet" href="/public/landingstyle.css">
+    {{/if}}
+
+    {{!-- for all other pages (income, expense, settings) --}}
+    {{#if general_page}}
+    <link rel="stylesheet" href="/public/general.css">
+    {{/if}}
 </head>
 <body>
-    
-    
-    <footer>
 
-    </footer>
+    {{!-- for home/monthly, yearly, income, expense, and settings --}}
+    {{#if include_navbar}}
+    <div class="container">
+      <div id="general_navbar_div">
+        <nav id="general_navbar">
+          <ul>
+            <li class="navbar_link"><a href="/home">Home</a></li>
+            <li class="navbar_link"><a href="/income">Income</a></li>
+            <li class="navbar_link"><a href="/expense">Expenses</a></li>
+            <li class="navbar_link"><a href="/settings">Settings</a></li>
+            <li class="navbar_link" id="signout_button">
+              <a href="/signout">Signout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    {{/if}}
+
+    {{!-- for home/monthly and yearly --}}
+    {{#if include_summary_navbar}}
+     <div id="summary_navbar">
+        <div><a class="summary_navbar_a" href="/home">Monthly</a></div>
+        <div><a class="summary_navbar_a" href="/yearly">Yearly</a></div>
+      </div>
+    {{/if}}
+
+    {{!-- page content --}}
+    <div id="page_content">
+        {{{body}}} 
+    </div>
+
+    {{!-- footer --}}
+    <div id="footer_div">
+        <footer>
+            <p id="footer_title">Creators:</p>
+            <p>Elina Rezaeian</p>
+            <p>Nastaran Jamalipour Soofi</p>
+            <p>Samantha York</p>
+            <p>Maya Patel</p>
+          
+        </footer>
 </body>
 </html>
