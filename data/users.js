@@ -171,7 +171,7 @@ let exportedMethods = {
     userID = validation.checkId(userID);
     title = validation.checkString(title);
     category = validation.checkString(category);
-    amount = validation.checkBalance(amount); 
+    amount = validation.checkAmount(amount); 
 
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(userID)});
@@ -218,7 +218,7 @@ let exportedMethods = {
     expenseID = validation.checkId(expenseID);
     title = validation.checkString(title);
     category = validation.checkString(category);
-    amount = validation.checkBalance(amount);
+    amount = validation.checkAmount(amount);
   
     const userCollection = await users();
   
