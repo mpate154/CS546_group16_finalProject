@@ -147,7 +147,7 @@ const exportedMethods = {
     ) {
       throw "Error: Invalid characters in input. There should only be numbers.";
     }
-    return parseInt(input);
+    return input;
   },
   checkPassword(password){
     if (!password || typeof password !== 'string' || password.trim().length === 0) {
