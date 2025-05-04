@@ -1,0 +1,74 @@
+<div id="page_content">
+  <h2>Expenses</h2>
+  <!-- dropdown -->
+  <div id="dropdowns">
+    <div id="expense_month_year_dropdown">
+      <form action="/expense" method="POST" name="expense_dropdown_form">
+        <label for="expense_month_and_year">Pick the month to display:</label>
+        <!-- use getMonthYearForFormMax() helper function for partial_date -->
+        <input
+          type="month"
+          min="2000-01"
+          max="{{partial_date}}"
+          id="income_month_and_year"
+          name="income_month_and_year"
+        />
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+  </div>
+
+  <div id="expense_table">
+    <table>
+      <tr>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Description</th>
+      </tr>
+      {{#each expense_objects}}
+        <tr>
+          <td>{{amount}}</td>
+          <td>{{date}}</td>
+          <td>{{category}}</td>
+          <td>{{description}}</td>
+        </tr>
+      {{/each}}
+    </table>
+  </div>
+
+  <!-- new expense form  -->
+  <div id="new_expense">
+    <h3>Insert a new expense:</h3>
+    <form
+      action="/expense"
+      method="POST"
+      name="new_expense_form"
+      id="new_expense_form"
+    >
+      <label for="new_expense_amount">Amount</label>
+      <input
+        type="number"
+        step=".01"
+        name="new_expense_amount"
+        id="new_expense_amount"
+      />
+      <label for="new_expense_date">Date</label>
+      <!-- use getFullDateForFormMax() helper function -->
+      <input type="date" min="2000-01-01" max="{{full_date}}" />
+      <label for="new_expense_category">Category</label>
+      <select name="new_expense_category" id="new_expense_category">
+        {{#each category}}
+          <option value="{{category}}">{{category}}</option>
+        {{/each}}
+      </select>
+      <label for="new_expense_description">Description</label>
+      <input
+        type="text"
+        name="new_expense_description"
+        id="new_expense_description"
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+</div>

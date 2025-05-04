@@ -1,4 +1,4 @@
-import {ObjectId} from 'mongodb';
+import { ObjectId } from "mongodb";
 
 const exportedMethods = {
   checkId(id) {
@@ -10,25 +10,37 @@ const exportedMethods = {
     if (!ObjectId.isValid(id)) throw `Error: input invalid object ID`;
     return id;
   },
-  checkFirstName(firstName){
-    if (!firstName || typeof firstName !== 'string' || firstName.trim().length === 0) {
-      throw 'You must provide a valid firstName to search.';
+  checkFirstName(firstName) {
+    if (
+      !firstName ||
+      typeof firstName !== "string" ||
+      firstName.trim().length === 0
+    ) {
+      throw "You must provide a valid firstName to search.";
     }
-  
-    if(!(firstName.match(/^[a-zA-Z]+$/))) throw `Your firstName must only contain letters.`;
-  
-    if(firstName.trim().length<2 || firstName.trim().length>20 ) throw `Your firstName should be more than 2 and less than 20 characters`  
-    
+
+    if (!firstName.match(/^[a-zA-Z]+$/))
+      throw `Your firstName must only contain letters.`;
+
+    if (firstName.trim().length < 2 || firstName.trim().length > 20)
+      throw `Your firstName should be more than 2 and less than 20 characters`;
+
     return firstName.trim();
   },
-  checkLastName(lastName){
-    if (!lastName || typeof lastName !== 'string' || lastName.trim().length === 0) {
-      throw 'You must provide a valid lastName to search.';
+  checkLastName(lastName) {
+    if (
+      !lastName ||
+      typeof lastName !== "string" ||
+      lastName.trim().length === 0
+    ) {
+      throw "You must provide a valid lastName to search.";
     }
-    if(!(lastName.match(/^[a-zA-Z]+$/))) throw `Your lastName must only contain letters.`;
-  
-    if(lastName.trim().length<2 || lastName.trim().length>20 ) throw `Your lastName should be more than 2 and less than 20 characters`  
-    
+    if (!lastName.match(/^[a-zA-Z]+$/))
+      throw `Your lastName must only contain letters.`;
+
+    if (lastName.trim().length < 2 || lastName.trim().length > 20)
+      throw `Your lastName should be more than 2 and less than 20 characters`;
+
     return lastName.trim();
   },
   checkString(strVal) {
@@ -149,12 +161,18 @@ const exportedMethods = {
     }
     return input;
   },
-  checkPassword(password){
-    if (!password || typeof password !== 'string' || password.trim().length === 0) {
-      throw 'You must provide a valid password to search.';
+  checkPassword(password) {
+    if (
+      !password ||
+      typeof password !== "string" ||
+      password.trim().length === 0
+    ) {
+      throw "You must provide a valid password to search.";
     }
-    if(password.trim().length != password.length) throw ` Your password shouldn't contain spaces.`
-    if( password.trim().length < 8  ) throw `Your password must be at least 8 characters`
+    if (password.trim().length != password.length)
+      throw ` Your password shouldn't contain spaces.`;
+    if (password.trim().length < 8)
+      throw `Your password must be at least 8 characters`;
     if (!/[A-Z]/.test(password)) {
       throw `Your password must contain at least one uppercase letter.`;
     }
@@ -169,19 +187,54 @@ const exportedMethods = {
   },
   checkEmail(email) {
     if (!email) throw `Error: You must provide an email.`;
-    if (typeof email !== 'string') throw `Error: Email must be a string.`;
-  
+    if (typeof email !== "string") throw `Error: Email must be a string.`;
+
     email = email.trim().toLowerCase();
-    if (email.length === 0) throw `Error: Email cannot be an empty string or just spaces.`;
-  
+    if (email.length === 0)
+      throw `Error: Email cannot be an empty string or just spaces.`;
+
     // This regex matches most real-world emails
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
+
     if (!emailRegex.test(email)) throw `Error: Invalid email format.`;
-  
+
     return email;
-  }  
-  
+  },
+
+  // getAllYears() {
+  //   let startingYear = 2000;
+  //   let currentYear = new Date().getFullYear();
+
+  //   let allYears = [];
+
+  //   while (startingYear <= currentYear) {
+  //     allYears.push(startingYear.toString());
+  //     startingYear = startingYear + 1;
+  //   }
+  //   return allYears;
+  // },
+
+  getMonthYearForFormMax() {
+    let date = new Date();
+    let year = date.getFullYear().toString();
+    let month =
+      date.getMonth().toString().length < 2
+        ? "0" + (date.getMonth() + 1).toString()
+        : (date.getMonth() + 1).toString();
+
+    return year + "-" + month;
+  },
+
+  getFullDateForFormMax() {
+    let date = new Date();
+    let partialDate = this.getMonthYearForFormMax();
+    let day =
+      date.getDate().toString().length < 2
+        ? "0" + (date.getDate() + 1).toString()
+        : (date.getDate() + 1).toString();
+
+    return partialDate + "-" + day;
+  },
 };
 
 export default exportedMethods;
