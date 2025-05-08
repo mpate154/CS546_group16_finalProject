@@ -1,16 +1,23 @@
-<h2>Incomes</h2>
+<h1>Incomes</h1>
 <!-- dropdown -->
 <div id="dropdowns">
   <div id="income_month_year_dropdown">
-    <form action="/income" method="POST" name="income_dropdown_form">
-      <label for="income_month_and_year">Pick the month to display:</label>
+    <input type="hidden" , name="form_type" value="date_dropdown" />
+    <form
+      action="/income"
+      method="POST"
+      name="dropdown_form"
+      id="dropdown_form"
+    >
+      <label for="dropdown_month_and_year">Pick the month to display:</label>
       <!-- use getMonthYearForFormMax() helper function for partial_date -->
       <input
         type="month"
         min="2000-01"
         max="{{partial_date}}"
-        id="income_month_and_year"
-        name="income_month_and_year"
+        id="dropdown_month_and_year"
+        name="dropdown_month_and_year"
+        value="{{current_income_date_to_show}}"
       />
       <input type="submit" value="Submit" />
     </form>
@@ -18,20 +25,53 @@
 </div>
 
 <div id="income_table">
-  <table>
-    <tr>
-      <th>Amount</th>
-      <th>Date</th>
-      <th>Description</th>
-    </tr>
-    {{#each income_objects}}
+  {{#unless no_incomes}}
+    <table>
       <tr>
-        <td>${{amount}}</td>
-        <td>{{date}}</td>
-        <td>{{description}}</td>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Edit</th>
+        <th>Delete</th>
       </tr>
-    {{/each}}
-  </table>
+      {{#each income_objects}}
+        <tr>
+          <td>${{amount}}</td>
+          <td>{{date}}</td>
+          <td>{{description}}</td>
+          <td>
+            <form action="/income" method="POST">
+              <input type="hidden" name="_method" value="PUT" />
+              <input type="hidden" name="uuid" value="{{uuid}}" />
+              <button type="submit">
+                <img
+                  src="public/images/pencil_edit.png"
+                  alt="edit button"
+                  id="pencil_image"
+                /></button>
+            </form>
+          </td>
+          <td>
+            <form action="/income" method="POST">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="uuid" value="{{uuid}}" />
+              <button type="submit">
+                <img
+                  src="public/images/delete_icon.jpg"
+                  alt="delete button"
+                  id="delete_image"
+                />
+              </button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+  {{/unless}}
+  {{#if no_incomes}}
+    <p>There are no incomes for this month!</p>
+  {{/if}}
+  <div id="dropdown_error_div" hidden></div>
 </div>
 
 <!-- new income form  -->
@@ -43,6 +83,7 @@
     name="new_income_form"
     id="new_income_form"
   >
+    <input type="hidden" , name="form_type" value="new_transaction" />
     <label for="new_income_amount">Amount</label>
     <input
       type="number"
@@ -61,4 +102,5 @@
     />
     <input type="submit" value="Submit" />
   </form>
+  <div id="new_income_error_div" hidden></div>
 </div>

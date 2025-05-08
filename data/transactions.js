@@ -2,6 +2,7 @@ import { transactions } from "../config/mongoCollections.js";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import exportedMethods from "../helper.js";
+const { v4: uuidv4 } = require("uuid");
 
 const transactionFunctions = {
   async getTransactionById(id) {
@@ -39,6 +40,7 @@ const transactionFunctions = {
     let newTransaction = {
       _id: new ObjectId(),
       userId: userId,
+      uuid: uuidv4(),
       amount: amount,
       category: category,
       date: date,
@@ -62,7 +64,8 @@ const transactionFunctions = {
     let transactionsFromUserId = await transactionCollection
       .find({ userId: userId })
       .toArray();
-    if (transactionsFromUserId.length === 0) throw "Could not fetch all transacitions.";
+    if (transactionsFromUserId.length === 0)
+      throw "Could not fetch all transacitions.";
 
     //sort
     transactionsFromUserId.sort((x, y) => {
@@ -138,6 +141,51 @@ const transactionFunctions = {
 
     if (!deletedtransaction) throw "Could not delete transaction.";
     return `${deletedtransaction._id.toString()} has been deleted.`;
+  },
+
+  async removeTransactionByUuid(uuid){
+    uuid = exportedMethods.checkString(uuid);
+    const transCollection = await transactions();
+    const deletedTrans = await transCollection.findOneAndDelete({
+      uuid: new ObjectId(uuid),
+    });
+
+    if (!deletedTrans) throw "Could not delete income.";
+    return `${deletedTrans.uuid.toString()} has been deleted.`;
+  },
+
+  async updateIncomeByUuid(uuid, amount, date, description) {
+    //make transaction one if not made alr
+    uuid = exportedMethods.checkString(uuid);
+    amount = exportedMethods.checkAmount(amount);
+    date = exportedMethods.checkDate(date);
+    if (description) {
+      description = exportedMethods.checkString(description);
+    } else description = "";
+
+    const transToUpdate = await transactionCollection.findOne({
+      uuid: uuid,
+    });
+
+    if (transToUpdate === null)
+      throw "Income UUID does not have corresponding income.";
+
+    let newTransaction = {
+      userId: incomeToUpdate.userId,
+      uuid: incomeToUpdate.uuid,
+      amount: amount,
+      date: date,
+      description: description,
+    };
+
+    const transactionCollection = await transactions();
+    const updatedTransaction = await transactionCollection.findOneAndReplace(
+      { uuid: uuid },
+      newTransaction,
+      { returnDocument: "after" }
+    );
+    if (!updatedTransaction)
+      throw `Error: Update failed! Could not update transaction with uuid ${uuid}`;
   },
 };
 

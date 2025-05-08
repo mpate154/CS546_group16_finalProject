@@ -1,6 +1,7 @@
 import { income } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import exportedMethods from "../helper.js";
+const { v4: uuidv4 } = require("uuid");
 
 const incomeFunctions = {
   //returns an income object
@@ -29,6 +30,7 @@ const incomeFunctions = {
     let newIncome = {
       _id: new ObjectId(),
       userId: userId,
+      uuid: uuidv4(),
       amount: amount,
       date: date,
       description: description,
@@ -64,7 +66,6 @@ const incomeFunctions = {
     return incomeFromUserId;
   },
 
-  
   //returns them sorted by most recent
   async getIncomeByUserIdByMonthAndYear(userId, month, year) {
     userId = exportedMethods.checkId(userId);
@@ -123,6 +124,51 @@ const incomeFunctions = {
     if (!deletedIncome) throw "Could not delete income.";
     return `${deletedIncome._id.toString()} has been deleted.`;
   },
+
+  async removeIncomeByUuid(uuid) {
+    uuid = exportedMethods.checkString(uuid);
+    const incomeCollection = await income();
+    const deletedIncome = await incomeCollection.findOneAndDelete({
+      uuid: new ObjectId(uuid),
+    });
+
+    if (!deletedIncome) throw "Could not delete income.";
+    return `${deletedIncome.userId.toString()} has been deleted.`;
+  },
+
+  async updateIncomeByUuid(uuid, amount, date, description) {
+    //make transaction one if not made alr
+    uuid = exportedMethods.checkString(uuid);
+    amount = exportedMethods.checkAmount(amount);
+    date = exportedMethods.checkDate(date);
+    if (description) {
+      description = exportedMethods.checkString(description);
+    } else description = "";
+
+    const incomeToUpdate = await incomeCollection.findOne({
+      uuid: uuid,
+    });
+
+    if (incomeToUpdate === null)
+      throw "Income UUID does not have corresponding income.";
+
+    let newIncome = {
+      userId: incomeToUpdate.userId,
+      uuid: incomeToUpdate.uuid,
+      amount: amount,
+      date: date,
+      description: description,
+    };
+
+    const incomeCollection = await income();
+    const updatedIncome = await incomeCollection.findOneAndReplace(
+      { uuid: uuid },
+      newIncome,
+      { returnDocument: "after" }
+    );
+    if (!updatedIncome)
+      throw `Error: Update failed! Could not update income with uuid ${uuid}`;
+  }
 };
 
 export default incomeFunctions;

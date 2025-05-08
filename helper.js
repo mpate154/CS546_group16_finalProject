@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 
+
 const exportedMethods = {
   checkId(id) {
     if (!id) throw `Error: You must provide a input`;
@@ -10,6 +11,8 @@ const exportedMethods = {
     if (!ObjectId.isValid(id)) throw `Error: input invalid object ID`;
     return id;
   },
+
+  
   checkFirstName(firstName) {
     if (
       !firstName ||
@@ -91,6 +94,30 @@ const exportedMethods = {
 
     return amount;
   },
+
+  //the input for the input="date" is YYYY/MM/DD so we need to flip it
+  flipDate(date) {
+    if (!date) throw `Error: You must supply a date`;
+    if (typeof date !== "string")
+      throw `Error: Inputted date should be a string.`;
+    date = date.trim();
+    if (date.length === 0) {
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    }
+
+    let dateSplit = date.split("-");
+    if (dateSplit.length < 3) throw "Error: Incorrect date format";
+    if (
+      dateSplit[0].length != 4 ||
+      dateSplit[1].length != 2 ||
+      dateSplit[2].length != 2
+    )
+      throw "Error: Date format should be yyyy/mm/dd";
+
+    return dateSplit[1] + "/" + dateSplit[2] + "/" + dateSplit[0];
+  },
+
+  // mm/dd/yyyy
   checkDate(date) {
     if (!date) throw `Error: You must supply a date`;
     if (typeof date !== "string")
@@ -144,6 +171,7 @@ const exportedMethods = {
 
     return date;
   },
+  //checks if string is all numerical
   checkNumber(input) {
     if (!input) throw `Error: You must supply an input`;
     if (typeof input !== "string") throw `Error: Input should be a string.`;
@@ -161,6 +189,7 @@ const exportedMethods = {
     }
     return input;
   },
+  //checks if a password passes restrictions
   checkPassword(password) {
     if (
       !password ||
@@ -185,6 +214,7 @@ const exportedMethods = {
 
     return password.trim();
   },
+  //checks if its a valid email address
   checkEmail(email) {
     if (!email) throw `Error: You must provide an email.`;
     if (typeof email !== "string") throw `Error: Email must be a string.`;
@@ -201,30 +231,15 @@ const exportedMethods = {
     return email;
   },
 
-  // getAllYears() {
-  //   let startingYear = 2000;
-  //   let currentYear = new Date().getFullYear();
-
-  //   let allYears = [];
-
-  //   while (startingYear <= currentYear) {
-  //     allYears.push(startingYear.toString());
-  //     startingYear = startingYear + 1;
-  //   }
-  //   return allYears;
-  // },
-
+  //gets the current month so the dropdown doesnt let the user pick a date past today
   getMonthYearForFormMax() {
-    let date = new Date();
-    let year = date.getFullYear().toString();
-    let month =
-      date.getMonth().toString().length < 2
-        ? "0" + (date.getMonth() + 1).toString()
-        : (date.getMonth() + 1).toString();
+    let year = this.getCurrentYear();
+    let month = this.getCurrentMonth();
 
     return year + "-" + month;
   },
 
+  //gets the current date so the dropdown doesnt let the user pick a date past today
   getFullDateForFormMax() {
     let date = new Date();
     let partialDate = this.getMonthYearForFormMax();
@@ -234,6 +249,23 @@ const exportedMethods = {
         : (date.getDate() + 1).toString();
 
     return partialDate + "-" + day;
+  },
+
+  //gets current month as string
+  getCurrentMonth() {
+    let date = new Date();
+    let month =
+      date.getMonth().toString().length < 2
+        ? "0" + (date.getMonth() + 1).toString()
+        : (date.getMonth() + 1).toString();
+    return month;
+  },
+
+  //gets current year as string
+  getCurrentYear() {
+    let date = new Date();
+    let year = date.getFullYear().toString();
+    return year;
   },
 };
 
