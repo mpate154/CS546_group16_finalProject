@@ -59,11 +59,11 @@ let exportedMethods = {
 
     const existingUser = await usersCollection.findOne({ email: email });
     if (!existingUser) {
-      throw `Either the userId or password is invalid`;
+      throw `Either the email or password is invalid`;
     }
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if(!passwordMatch){
-      throw `Either the userId or password is invalid`;
+      throw `Either the email or password is invalid`;
     }
     
     return {

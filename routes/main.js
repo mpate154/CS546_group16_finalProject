@@ -197,7 +197,7 @@ router
       return res.redirect('/home');
     } catch (e) {
       return res.status(400).render('login', { 
-        error: 'Either the userId or password is invalid',
+        error: 'Either the email or password is invalid',
         ...req.body,
         title: 'Login Page',
         home_or_summary: false,
