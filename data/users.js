@@ -1,6 +1,6 @@
 import {users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
-import validation from '../helper.js';
+import validation from '../helpers.js';
 import bcrypt from 'bcryptjs';
 const saltRounds = 16;
 
@@ -30,13 +30,13 @@ let exportedMethods = {
       throw `A user with the email '${email}' already exists.`;
     }
     let newUser = {
-      firstName: firstName,
-      lastName: lastName,
-      email : email,
-      gender: gender,
-      city: city,
-      state : state,
-      age: age,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email : email.trim(),
+      gender: gender.trim(),
+      city: city.trim(),
+      state : state.trim(),
+      age: parseInt(age),
       password: hashedPassword,
       categories: ['Groceries','Shopping','Restaurant','Transportation','Rent'],
       fixedExpenses: [],
@@ -96,12 +96,12 @@ let exportedMethods = {
     if (usersCol === null) throw 'No user with that id';
 
     const userUpdateInfo = {
-      firstName: firstName,
-      lastName: lastName,
-      email : email,
-      gender: gender,
-      city: city,
-      state : state,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email : email.trim(),
+      gender: gender.trim(),
+      city: city.trim(),
+      state : state.trim(),
       age: age,
       password: hashedPassword,
       categories: usersCol.categories,
@@ -132,13 +132,13 @@ let exportedMethods = {
     if (!user) throw 'User not found';
 
     // Check for duplicates
-    if (user.categories.includes(newCategory)) {
+    if (user.categories.includes(newCategory.trim())) {
       throw `Error: Category '${newCategory}' already exists`;
     }
 
     const updatedInfo = await userCollection.findOneAndUpdate(
       {_id: new ObjectId(userID)},
-      {$push: {categories: newCategory}},
+      {$push: {categories: newCategory.trim()}},
       {returnDocument: 'after'}
     );
 
@@ -148,13 +148,13 @@ let exportedMethods = {
   async deleteCategoryById(userID, categoryToDelete) {
 
     userID = validation.checkId(userID);
-    categoryToDelete = validation.checkString(categoryToDelete);
+    categoryToDelete = validation.checkString(categoryToDelete).trim();
 
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(userID)});
     if (!user) throw 'User not found';
 
-    if (!user.categories.includes(categoryToDelete)) {
+    if (!user.categories.includes(categoryToDelete.trim())) {
       throw `Error: Category '${categoryToDelete}' not found`;
     }
 
@@ -169,9 +169,9 @@ let exportedMethods = {
   },
   async addFixedExpensesById(userID, title, category, amount){
     userID = validation.checkId(userID);
-    title = validation.checkString(title);
-    category = validation.checkString(category);
-    amount = validation.checkBalance(amount); 
+    title = validation.checkString(title).trim();
+    category = validation.checkString(category).trim();
+    amount = validation.checkAmount(amount); 
 
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(userID)});
@@ -179,8 +179,8 @@ let exportedMethods = {
 
     const newFixedExpense = {
       _id: new ObjectId(),
-      title: title,
-      category: category,
+      title: title.trim(),
+      category: category.trim(),
       amount: amount
     };
 
@@ -216,9 +216,9 @@ let exportedMethods = {
   async updateFixedExpenseById(userID, expenseID, title, category, amount) {
     userID = validation.checkId(userID);
     expenseID = validation.checkId(expenseID);
-    title = validation.checkString(title);
-    category = validation.checkString(category);
-    amount = validation.checkBalance(amount);
+    title = validation.checkString(title).trim();
+    category = validation.checkString(category).trim();
+    amount = validation.checkAmount(amount);
   
     const userCollection = await users();
   
@@ -243,5 +243,4 @@ let exportedMethods = {
     return updateResult.value;
   }
 };
-
 export default exportedMethods;

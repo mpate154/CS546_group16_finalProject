@@ -1,4 +1,4 @@
-import {dbConnection} from './mongoConnection.js';
+import {dbConnection} from './mongoConnections.js';
 
 
 const getCollectionFn = (collection) => {
@@ -15,7 +15,3 @@ const getCollectionFn = (collection) => {
 };
 
 export const users = getCollectionFn('users');
-export const income = getCollectionFn('income');
-export const transactions = getCollectionFn('transactions');
-export const monthlySummary = getCollectionFn('monthlySummary');
-export const yearlySummary = getCollectionFn('yearlySummary');
