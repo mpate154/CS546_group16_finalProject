@@ -1,0 +1,42 @@
+<div id="settings_div">
+  <h1>Settings</h1>
+  <div id="user_info">
+    <p>First Name: {{firstName}}</p>
+    <p>Last Name: {{lastName}}</p>
+    <p>Email: {{email}}</p>
+    <p>Gender: {{gender}}</p>
+    <p>City: {{city}}</p>
+    <p>State: {{state}}</p>
+    <p>Age: {{age}}</p>
+    <div id="fixed_expense_and_category_forms">
+        <div id="fixed_expense_form_div">
+      <p>Fixed Expenses: </p>
+
+      {{#each fixedExpenses}}
+        <ul>
+          <li>Title: {{title}}</li>
+          <li>Category: {{category}}</li>
+          <li>Amount: ${{amount}}</li>
+        </ul>
+      {{/each}}
+      </div>
+      <div id="category_form_div">
+        <p>Categories: </p>
+        <ul>
+        {{#each categories}}
+        <li>{{this}}</li>
+        {{/each}}
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{{! when they want to delete a category we have to see if it already has transactions with it, 
+if it does we warn them and then delete those incomes and that category and recalc }}
+
+{{! we check for duplicate categories upon submission (they are/aren't case sensitive, they should be case insensitive i think) }}
+
+{{!  }}

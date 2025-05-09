@@ -11,6 +11,7 @@ export function logger(req,res,next){
   console.log(`[${timestamp}]: ${method} ${path} (${authStatus})`);
   next();
 }
+
 export function loginRedirect(req, res, next) {
   if (req.method === 'GET' && req.session.user) {
     if (req.path === '/login') {

@@ -37,14 +37,13 @@ router.route('/') // landing
   
 });
 
-router
-  .route('/register')
+router.route('/register')
   .get(async (req, res) => {
     if (req.session.user) {
       return res.redirect('/home');
     }
     return res.render('register', { 
-      title: 'Registeration Page',
+      title: 'Registration Page',
       home_or_summary: false,
       landing_signup_login: true,
       general_page: false,
@@ -139,8 +138,7 @@ router
     }
 });
 
-router
-  .route('/login')
+router.route('/login')
   .get(async (req, res) => {
     if (req.session.user) {
       return res.redirect('/home');
@@ -256,6 +254,43 @@ router.route('/home')
     })
   
   });
+
+router.route('/setting')
+  .get(async (req, res) => {
+    try {
+      const user = req.session.user;
+      if (!user) return res.redirect('/login');
+      return res.render('settings', {
+        title: 'Settings',
+        isLoggedIn: true,
+        home_or_summary: false,
+        landing_signup_login: false,
+        general_page: true,
+        include_navbar: true,
+        include_summary_navbar: false,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        gender: user.gender,
+        city: user.city,
+        state: user.state,
+        age: user.age,
+        categories: user.categories,
+        fixedExpenses: user.fixedExpenses
+      });
+    } catch (e) {
+      return res.status(500).send('Internal Server Error');
+    }
+  });
+  // .post(async (req,res) => {
+
+  // })
+  // .put(async (req,res) => {
+
+  // })
+  // .delete(async (req,res)=>{
+
+  // });
 
 
 export default router;
