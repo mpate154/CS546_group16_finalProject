@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 
-
 const exportedMethods = {
   checkId(id) {
     if (!id) throw `Error: You must provide a input`;
@@ -11,8 +10,6 @@ const exportedMethods = {
     if (!ObjectId.isValid(id)) throw `Error: input invalid object ID`;
     return id;
   },
-
-  
   checkFirstName(firstName) {
     if (
       !firstName ||

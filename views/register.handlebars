@@ -1,0 +1,86 @@
+
+<h1>{{title}}</h1>
+
+{{#if error}}
+  <p style="color: red; text-align: center;">{{error}}</p>
+{{/if}}
+
+<form name="signup-form" id="signup-form" method="Post" action="/register">
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input name="firstName" id="firstName" type="text" value="{{firstName}}">
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name: </label>
+      <input name="lastName" id="lastName" type="text" value="{{lastName}}">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input name="email" id="email" type="text" value="{{email}}" class="signup-email">
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group">
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender">
+        <option value="male" {{#if (eq gender 'male')}}selected{{/if}}>Male</option>
+        <option value="female" {{#if (eq gender 'female')}}selected{{/if}}>Female</option>
+        <option value="non_binary" {{#if (eq gender 'non_binary')}}selected{{/if}}>Non-Binary</option>
+        <option value="genderfluid" {{#if (eq gender 'genderfluid')}}selected{{/if}}>Genderfluid</option>
+        <option value="agender" {{#if (eq gender 'agender')}}selected{{/if}}>Agender</option>
+        <option value="prefer_not_to_say" {{#if (eq gender 'prefer_not_to_say')}}selected{{/if}}>Prefer not to say</option>
+        <option value="other" {{#if (eq gender 'other')}}selected{{/if}}>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="age">Age:</label>
+      <input name="age" id="age" type="text" value="{{age}}">
+    </div>
+
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="city">City: </label>
+      <input name="city" id="city" value="{{city}}" type="text">
+    </div>
+    <div class="form-group">
+      <label for="state">State:</label>
+      <input name="state" id="state" value="{{state}}" type="text">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="balance">Your Account Balance:</label>
+    <input name="balance" id="balance" type="text" value="{{balance}}">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="password">Password: </label>
+      <input name="password" id="password" type="password">
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password:</label>
+      <input name="confirmPassword" id="confirmPassword" type="password">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="button-container">
+     <button id="submitButton" name="submitButton" class="submit">Submit</button>
+    </div>
+  </div>
+
+  <a id="loginlink" href="/login">Already have an account? Click here to sign-in</a>
+  <a id="homelink" href="/">Go back to the Main Page!</a>
+
+</form>
+
+

@@ -1,8 +1,16 @@
-import express from "express";
+import express from 'express';
+import session from 'express-session';
+import exphbs from 'express-handlebars';
 const app = express();
-import configRoutes from "./routes/index.js";
-import exphbs from "express-handlebars";
-import { protectIncomePage, protectExpensePage } from "./middleware.js";
+import configRoutes from './routes/index.js';
+import exphbs from 'express-handlebars';
+import {
+  logger,
+  loginRedirect,
+  registerRedirect,
+  protectHomePage,
+  protectSignoutPage,protectIncomePage, protectExpensePage
+} from './middleware.js';
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -16,16 +24,43 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
-app.use("/public", express.static("public"));
+const staticDir = express.static('public');
+
+const handlebarsInstance = exphbs.create({
+  defaultLayout: 'main',
+  // Specify helpers which are only registered on this instance.
+  helpers: {
+    asJSON: (obj, spacing) => {
+      if (typeof spacing === 'number')
+        return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
+
+      return new Handlebars.SafeString(JSON.stringify(obj));
+    },
+    partialsDir: ['views/partials/']
+  }
+});
+
+// Register the Handlebars "eq" helper for comparison
+handlebarsInstance.handlebars.registerHelper('eq', function (a, b) {
+  return a === b;
+});
+
+app.use('/public', express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(rewriteUnsupportedBrowserMethods);
 
-app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+app.engine('handlebars', handlebarsInstance.engine);
+app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
-//app.use("/income", protectIncomePage);
-//app.use("/expense", protectIncomePage);
+app.use(logger);
+app.use('/login', loginRedirect);
+app.use('/register', registerRedirect);
+app.use('/home',protectHomePage);
+app.use('/signout', protectSignoutPage);
+app.use("/income", protectIncomePage);
+app.use("/expense", protectExpensePage);
 
 configRoutes(app);
 

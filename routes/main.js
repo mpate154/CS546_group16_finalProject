@@ -1,40 +1,66 @@
 import { Router } from "express";
 const router = Router();
-import validation from "../helper.js";
+import validation from '../helper.js';
+import xss from 'xss';
+import users from '../data/users.js';
 import exportedMethods from "../helper.js";
 import { ObjectId } from "mongodb";
 import incomeFunctions from "../data/income.js";
 import { income } from "../config/mongoCollections.js";
 import transactionFunctions from "../data/transactions.js";
 
-router
-  .route("/") // landing
-  .get(async (req, res) => {});
+router.route('/') // landing 
+  .get(async (req, res) => {
+    try {
+      const user = req.session.user;
+      if (!user) {
+        // Not logged in
+        return res.render('landing', {
+          title: 'Home Page',
+          isLoggedIn: false,
+          home_or_summary: false,
+          landing_signup_login: true,
+          general_page: false,
+          include_navbar: false,
+          include_summary_navbar: false
+        });
+      } else  {
+        return res.render('landing', {
+          title: 'Home Page',
+          isLoggedIn: true,
+          home_or_summary: false,
+          landing_signup_login: true,
+          general_page: false,
+          include_navbar: false,
+          include_summary_navbar: false
+        });
+      } 
+    } catch (e) {
+      return res.status(500).send('Internal Server Error');
+    }
+  
+});
+
 router
   .route("/register")
   .get(async (req, res) => {
     if (req.session.user) {
       return res.redirect("/home");
     }
-    return res.render("register", {
-      title: "Register Page",
+    return res.render('register', { 
+      title: 'Registeration Page',
+      home_or_summary: false,
+      landing_signup_login: true,
+      general_page: false,
+      include_navbar: false,
+      include_summary_navbar: false,
+      partial: 'registration_script'
     });
   })
   .post(async (req, res) => {
     try {
       const data = req.body;
-      const {
-        firstName,
-        lastName,
-        email,
-        gender,
-        city,
-        state,
-        age,
-        balance,
-        password,
-        confirmPassword,
-      } = data;
+      let { firstName, lastName, email, gender, city, state, age, balance, password, confirmPassword} = data;
 
       if (
         !firstName ||
@@ -60,8 +86,8 @@ router
         gender = validation.checkString(gender);
         city = validation.checkString(city);
         state = validation.checkString(state);
-        age = validation.checkAge(age);
-        balance = validation.checkBalance(balance);
+        age = validation.checkNumber(age);
+        balance = validation.checkAmount(balance);
         password = validation.checkPassword(password);
         confirmPassword = validation.checkPassword(confirmPassword);
 
@@ -78,33 +104,55 @@ router
           state,
           age,
           balance,
-          title: "Register Page",
+          title: 'Registration Page',
+          home_or_summary: false,
+          landing_signup_login: true,
+          general_page: false,
+          include_navbar: false,
+          include_summary_navbar: false,
+          partial: 'registration_script'
         });
       }
 
-      const result = await register(
+      const result = await users.register(
         xss(firstName),
         xss(lastName),
+        xss(email),
         xss(gender),
         xss(city),
         xss(state),
         xss(age),
-        xss(balance),
-        xss(password)
+        xss(password),
+        xss(balance)
       );
 
       if (result && result.registrationCompleted) {
         return res.redirect("/login");
       } else {
-        return res.status(500).render("register", {
-          error: "Internal Server Error",
-          title: "Register Page",
+        return res.status(500).render('register', { 
+          error: 'Internal Server Error',
+          title: 'Registration Page',
+          isLoggedIn: false,
+          home_or_summary: false,
+          landing_signup_login: true,
+          general_page: false,
+          include_navbar: false,
+          include_summary_navbar: false,
+          partial: 'registration_script'
         });
       }
     } catch (e) {
-      return res
-        .status(400)
-        .render("register", { error: e, title: "Register Page" });
+      return res.status(400).render('register', { 
+        error: e,
+        title: 'Registration Page',
+        isLoggedIn: false,
+        home_or_summary: false,
+        landing_signup_login: true,
+        general_page: false,
+        include_navbar: false,
+        include_summary_navbar: false,
+        partial: 'registration_script'
+      });
     }
   });
 
@@ -114,8 +162,14 @@ router
     if (req.session.user) {
       return res.redirect("/home");
     }
-    return res.render("login", {
-      title: "Login Page",
+    return res.render('login',{
+      title: 'Login Page',
+      home_or_summary: false,
+      landing_signup_login: true,
+      general_page: false,
+      include_navbar: false,
+      include_summary_navbar: false,
+      partial: 'registration_script'
     });
   })
   .post(async (req, res) => {
@@ -135,10 +189,17 @@ router
         return res.status(400).render("login", {
           error: e,
           ...req.body,
-          title: "Login Page",
+          title: 'Login Page',
+          home_or_summary: false,
+          landing_signup_login: true,
+          general_page: false,
+          include_navbar: false,
+          include_summary_navbar: false,
+          partial: 'registration_script'
         });
       }
-      const user = await login(xss(email), xss(password));
+      const user = await users.login(xss(email), xss(password));
+
       req.session.user = {
         id: user.id,
         firstName: user.firstName,
@@ -157,16 +218,66 @@ router
       return res.status(400).render("login", {
         error: "Either the userId or password is invalid",
         ...req.body,
-        title: "Login Page",
+        title: 'Login Page',
+        home_or_summary: false,
+        landing_signup_login: true,
+        general_page: false,
+        include_navbar: false,
+        include_summary_navbar: false,
+        partial: 'registration_script'
       });
     }
   });
 
-router
-  .route("/income")
+  router.route('/signout').get(async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    req.session.destroy();
+    return res.render('signout',{
+      title:'Signout Page',
+      home_or_summary: false,
+      landing_signup_login: true,
+      general_page: false,
+      include_navbar: false,
+      include_summary_navbar: false,
+    });
+  });
+
+  router.route('/home')
   .get(async (req, res) => {
-    //do middleware here too or j in app.js?
-    // DO SUBMIT FOR MONTH INPUT
+    if (!req.session.user) return res.redirect('/login');
+
+    const user = req.session.user;
+
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    const currentDate = now.toLocaleDateString('en-US');
+
+    return res.render('home',{
+      title: 'Monthly Summary',
+      home_or_summary: true,
+      landing_signup_login: false,
+      general_page: true,
+      include_navbar: true,
+      include_summary_navbar: true,
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      gender: user.gender,
+      city: user.city,
+      state: user.state,
+      age: user.age,
+      balance: user.balance,
+      categories: user.categories,
+      fixedExpenses: user.fixedExpenses,
+      currentDate,
+      currentTime
+    })
+  
+  });
+
+router.route('/income')
+  .get(async (req, res) => {
     if (req.session.user) {
       try {
         let month = exportedMethods.getCurrentMonth();
@@ -223,7 +334,7 @@ router
       }
     }
   })
-  .post(async (req, res) => {
+  .post(async (req,res) => {
     //top date form to render incomes -> call get with new income value display (which will fetch automatically)
     try {
       if (req.body.form_type === "date_dropdown") {
@@ -276,29 +387,28 @@ router
        // what to do if error on post? client side might catch it and send error back to them.
     }
   })
+
+  router.route("income/:uuid").delete( async (req, res) => {
+    //make get income object and transaction object by uuid
+    let uuid = xss(req.params.uuid);
   
-
-router.route("income/:uuid").delete( async (req, res) => {
-  //make get income object and transaction object by uuid
-  let uuid = xss(req.params.uuid);
-
-  try {
-    if (!uuid) {
-      throw "Uuid not provided";
+    try {
+      if (!uuid) {
+        throw "Uuid not provided";
+      }
+      let deletedIncome = incomeFunctions.removeIncomeByUuid(uuid);
+  
+      res.redirect("/income");
+    } catch (e) {
+      //what to do if delete fails
+      res.status(500);
     }
-    let deletedIncome = incomeFunctions.removeIncomeByUuid(uuid);
-
-    res.redirect("/income");
-  } catch (e) {
-    //what to do if delete fails
-    res.status(500);
-  }
-}).put(async (req, res) => {
+  }).put(async (req, res) => {
+    
+  });
   
-});
 
-router
-  .route("/expense")
+router.route('/expense')
   .get(async (req, res) => {
     
     if (req.session.user) {
@@ -401,11 +511,10 @@ router
       console.log(e); // what to do if error on post? client side might catch it and send error back to them.
     }
   })
-  .put(async (req, res) => {
+  .put(async (req,res) => {
 
-  });
-
-router
+  })
+  router
   .route("expense/:uuid")
   .put(async (req, res) => {
 
@@ -428,45 +537,27 @@ router
     }
   });
 
-router
-  .route("/settings")
+router.route('/account')
   .get(async (req, res) => {
-    try {
-      res.render("settings", {
-        title: "Settings",
-        home_or_summary: false,
-        landing_signup_login: false,
-        general_page: true,
-        include_navbar: true,
-        include_summary_navbar: false,
-        // edit this part
-        firstName: "Maya",
-        lastName: "Patel",
-        email: "mypatel1719@gmail.com",
-        gender: "Woman",
-        city: "Jersey City",
-        state: "NJ",
-        age: "19",
-        fixedExpenses: [
-          {
-            title: "Mercedes",
-            category: "Car Payment",
-            amount: "1200",
-          },
-          {
-            title: "Home",
-            category: "Mortage",
-            amount: "1500",
-          },
-        ],
-        categories: ["Car Payment", "Mortgage", "Groceries", "Shopping"],
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    
   })
-  .post(async (req, res) => {})
-  .put(async (req, res) => {})
-  .delete(async (req, res) => {});
+  .put(async (req,res) => {
 
-export default router;
+  })
+  .delete(async (req,res)=>{
+
+  });
+
+router.route('/setting')
+  .get(async (req, res) => {
+  
+  })
+  .post(async (req,res) => {
+
+  })
+  .put(async (req,res) => {
+
+  })
+  .delete(async (req,res)=>{
+
+  });
