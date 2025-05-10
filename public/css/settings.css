@@ -1,21 +1,22 @@
 body {
-  font-family: serif,Georgia,'Times New Roman';
+
+  font-family: serif, Georgia, "Times New Roman";
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
-  
 }
 
 h1 {
-  font-family: serif,Georgia,'Times New Roman';
+  font-family: serif, Georgia, "Times New Roman";
   text-align: center;
   font-size: 44px;
   color: #356197;
   margin-bottom: 2rem;
   font-style: italic;
 }
-.info_container{
-  font-family: serif,Georgia,'Times New Roman';
+.info_container {
+  font-family: serif, Georgia, "Times New Roman";
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -38,7 +39,7 @@ h1 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 #user_info p {
-  font-family: serif,Georgia,'Times New Roman';
+  font-family: serif, Georgia, "Times New Roman";
   margin: 0.5rem 0;
   font-weight: bold;
   color: #003366;
@@ -57,34 +58,38 @@ h1 {
   background-color: #0056b3;
 }
 
-.editForm{
-  font-family: serif,Georgia,'Times New Roman';
+.editForm {
+  font-family: serif, Georgia, "Times New Roman";
   font-size: 18px;
   width: 500px;
   height: 500px;
   border-radius: 15px;
 }
 
-label, h3{
-  font-family: serif,Georgia,'Times New Roman';
+
+label,
+h3 {
+  font-family: serif, Georgia, "Times New Roman";
 }
 .form-row {
-  font-family: serif,Georgia,'Times New Roman';
+  font-family: serif, Georgia, "Times New Roman";
+
   display: flex;
   justify-content: space-between;
   gap: 20px;
 }
 
 .form-group {
-  font-family: serif,Georgia,'Times New Roman';
+  font-family: serif, Georgia, "Times New Roman";
   flex: 1;
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
 }
 
-input, select{
-  font-family: serif,Georgia,'Times New Roman';
+input,
+select {
+  font-family: serif, Georgia, "Times New Roman";
   padding: 10px;
   font-size: 12px;
   margin-top: 5px;
@@ -93,13 +98,16 @@ input, select{
   font-size: 15px;
 }
 
-input:focus, select:focus {
+
+input:focus,
+select:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
-#expense_category_container{
-  font-family: serif,Georgia,'Times New Roman';
+
+#expense_category_container {
+  font-family: serif, Georgia, "Times New Roman";
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -107,13 +115,15 @@ input:focus, select:focus {
   width: 90%;
   padding: 20px;
   margin: 30px auto;
-  
+
 }
 #expense_category_container {
   display: flex;
   gap: 20px;
 }
-#fixed_expense_form_div, #category_form_div {
+
+#fixed_expense_form_div,
+#category_form_div {
   flex: 1;
   background-color: #e6f2ff;
   padding: 20px;
@@ -121,7 +131,7 @@ input:focus, select:focus {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 form button {
-  font-family: serif,Georgia,'Times New Roman';
+  font-family: serif, Georgia, "Times New Roman";
   width: 100%;
   padding: 10px;
   background-color: #28a745;
@@ -133,13 +143,16 @@ form button {
 form button:hover {
   background-color: #218838;
 }
-#fixed_expense_list, #category_list {
-  font-family: serif,Georgia,'Times New Roman';
+
+#fixed_expense_list,
+#category_list {
+  font-family: serif, Georgia, "Times New Roman";
   list-style: none;
   padding-left: 0;
 }
-#fixed_expense_list li, #category_list li {
-  font-family: serif, Georgia,'Times New Roman';
+#fixed_expense_list li,
+#category_list li {
+  font-family: serif, Georgia, "Times New Roman";
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -148,18 +161,21 @@ form button:hover {
   padding: 0.7rem;
   border-radius: 5px;
 }
-li{
-  font-family: serif, Georgia,'Times New Roman';
+
+li {
+  font-family: serif, Georgia, "Times New Roman";
 }
-#fixed_expense_list button, #category_list button {
-  font-family: serif,Georgia,'Times New Roman';
+#fixed_expense_list button,
+#category_list button {
+  font-family: serif, Georgia, "Times New Roman";
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 5px;
   cursor: pointer;
   color: white;
 }
-#add_fixed_expense_form, #add_category_form{
+
+#add_fixed_expense_form,
   margin-top: 20px;
   padding: 15px;
   background-color: white;
@@ -167,59 +183,61 @@ li{
 }
 
 /* 
-#settings_div {
-  width: 85%;
-  margin: 2rem auto;
-  background-color: #c3b7b7;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
+  #settings_div {
+    width: 85%;
+    margin: 2rem auto;
+    background-color: #c3b7b7;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  #expense_category_container {
+    display: flex;
+    gap: 20px;
+  }
+  #fixed_expense_form_div, #category_form_div {
+    flex: 1;
+    background-color: #e6f2ff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  form {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .editForm{
+    font-size: 18px;
+    width: 550px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  input, select{
+    font-family: serif,Georgia,'Times New Roman';
+    padding: 10px;
+    font-size: 12px;
+    margin-top: 5px;
+  
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 15px;
+  }
+  
+  input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  }
+  
+  
+   */
 
-#expense_category_container {
-  display: flex;
-  gap: 20px;
-}
-#fixed_expense_form_div, #category_form_div {
-  flex: 1;
-  background-color: #e6f2ff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-form {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.editForm{
-  font-size: 18px;
-  width: 550px;
-  margin: 30px auto;
-  padding: 25px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-
-input, select{
-  font-family: serif,Georgia,'Times New Roman';
-  padding: 10px;
-  font-size: 12px;
-  margin-top: 5px;
-
-  border-radius: 5px;
-  border: 1px solid #ced4da;
-  font-size: 15px;
-}
-
-input:focus, select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
-}
-
-
- */

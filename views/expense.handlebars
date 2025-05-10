@@ -1,0 +1,165 @@
+<h1>Expenses</h1>
+<!-- dropdown -->
+<div id="dropdowns">
+  <div id="expense_month_year_dropdown">
+    <form
+      action="/expense"
+      method="POST"
+      name="dropdown_form"
+      id="dropdown_form"
+    >
+      <input type="hidden" , name="form_type" value="date_dropdown" />
+      <label for="dropdown_month_and_year">Pick the month to display:</label>
+      <!-- use getMonthYearForFormMax() helper function for partial_date -->
+      <input
+        type="month"
+        min="2000-01"
+        max="{{partial_date}}"
+        id="dropdown_month_and_year"
+        name="dropdown_month_and_year"
+        value="{{current_transaction_date_to_show}}"
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+</div>
+
+<div id="expense_table">
+  {{#unless no_transactions}}
+    <table>
+      <tr>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {{#each expense_objects}}
+        <tr>
+          <td>${{amount}}</td>
+          <td>{{date}}</td>
+          <td>{{category}}</td>
+          <td>{{description}}</td>
+          <td>
+            <button class="update_expense_button" data-uuid="{{uuid}}">
+              <img
+                src="public/images/pencil_edit.png"
+                alt="edit button"
+                class="pencil_image"
+              /></button>
+          </td>
+          <td>
+            <form action="/expense" method="POST">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="uuid" value="{{uuid}}" />
+              <button type="submit">
+                <img
+                  src="public/images/delete_icon.jpg"
+                  alt="delete button"
+                  class="delete_image"
+                />
+              </button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+  {{/unless}}
+  {{#if no_transactions}}
+    <p>There are no expenses for this month!</p>
+  {{/if}}
+  <div id="dropdown_error_div" hidden></div>
+  {{#if dropdownErrorsExist}}
+    <p class="error">Error: {{dropdownError}}</p>
+  {{/if}}
+</div>
+
+{{! update expense form }}
+<div id="updated_expense_form_div" style="display: none;">
+  <h3>Edit expense:</h3>
+  <form action="/expense" method="POST" id="updated_expense_form">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="hidden" name="uuid" value="{{uuid}}" />
+    <label for="updated_expense_amount">Amount</label>
+    <input
+      type="number"
+      step=".01"
+      name="updated_expense_amount"
+      id="updated_expense_amount"
+    />
+    <label for="updated_expense_date">Date</label>
+    <!-- use getFullDateForFormMax() helper function -->
+    <input
+      name="updated_expense_date"
+      id="updated_expense_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="updated_expense_category">Category</label>
+    <select name="updated_expense_category" id="updated_expense_category">
+      {{#each category}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <label for="updated_expense_description">Description</label>
+    <input
+      type="text"
+      name="updated_expense_description"
+      id="updated_expense_description"
+    />
+    <input type="submit" value="Submit" />
+    <button type="button" id="cancel_update_expense_button">Cancel</button>
+  </form>
+  <div id="updated_expense_error_div" hidden></div>
+  {{#if updateExpenseErrorsExist}}
+    <p class="error">Error: {{updateExpenseError}}</p>
+  {{/if}}
+</div>
+
+<!-- new expense form  -->
+<div id="new_expense">
+  <h3>Insert a new expense:</h3>
+  <form
+    action="/expense"
+    method="POST"
+    name="new_expense_form"
+    id="new_expense_form"
+  >
+    <input type="hidden" , name="form_type" value="new_transaction" />
+    <label for="new_expense_amount">Amount</label>
+    <input
+      type="number"
+      step=".01"
+      name="new_expense_amount"
+      id="new_expense_amount"
+    />
+    <label for="new_expense_date">Date</label>
+    <!-- use getFullDateForFormMax() helper function -->
+    <input
+      name="new_expense_date"
+      id="new_expense_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="new_expense_category">Category</label>
+    <select name="new_expense_category" id="new_expense_category">
+      {{#each category}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <label for="new_expense_description">Description</label>
+    <input
+      type="text"
+      name="new_expense_description"
+      id="new_expense_description"
+    />
+    <input type="submit" value="Submit" />
+  </form>
+  <div id="new_expense_error_div" hidden></div>
+  {{#if newExpenseErrorsExist}}
+    <p class="error">Error: {{newExpenseError}}</p>
+  {{/if}}
+</div>

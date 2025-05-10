@@ -10,6 +10,7 @@
 body {
   height: 100vh;
   width: 100vw;
+  margin: 0;
 }
 
 .container {
@@ -25,16 +26,17 @@ nav {
   height: 100%;
 }
 
-li {
+#general_navbar li {
   display: block;
   padding: 5%;
   color: black;
 }
 
-li:hover {
+#general_navbar li:hover {
   background-color: #c996a4;
 }
-ul {
+
+#general_navbar ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -85,7 +87,7 @@ footer {
   background-color: rgb(167, 125, 146);
   display: flex;
   flex-direction: column;
-  justify-content: center; /* or 'space-evenly' if you want spacing between lines */
+  justify-content: center; 
   align-items: center;
   height: 100%;
 }
@@ -101,9 +103,12 @@ footer p {
 
 /******************** INCOME PAGE *********************/
 
-h2 {
-  width: 50%;
+h1 {
+  font-size: 1.5em;
   margin-top: 0;
+  margin-bottom: 0.83em;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* DROP-DOWNS */
@@ -139,20 +144,37 @@ th {
   background-color: #eed0d8;
 }
 
+td > button {
+  width: 100%;
+}
+
+#income_table button > img {
+  vertical-align: middle;
+}
+
+.pencil_image,
+.delete_image {
+  width: 15px;
+}
+
 /* NEW INCOME FORM */
 
 #new_income {
   padding: 5px;
 }
 
-#new_income_form {
+#new_income_form,
+#updated_income_form,
+#updated_expense_form {
   background-color: #f0ebec;
   width: 50%;
   padding: 10px;
   border-radius: 5px;
 }
 
-#new_income_form > * {
+#new_income_form > *,
+#updated_income_form > *,
+#updated_expense_form > * {
   display: block;
   padding: 3px;
 }
@@ -182,3 +204,5 @@ th {
 #expense_table {
   width: 50%;
 }
+
+/****************** SETTINGS *******************/

@@ -1,0 +1,154 @@
+<h1>Incomes</h1>
+<!-- dropdown -->
+<div id="dropdowns">
+  <div id="income_month_year_dropdown">
+
+    <form
+      action="/income"
+      method="POST"
+      name="dropdown_form"
+      id="dropdown_form"
+    >
+      <input type="hidden" , name="form_type" value="date_dropdown" />
+      <label for="dropdown_month_and_year">Pick the month to display:</label>
+      <!-- use getMonthYearForFormMax() helper function for partial_date -->
+      <input
+        type="month"
+        min="2000-01"
+        max="{{partial_date}}"
+        id="dropdown_month_and_year"
+        name="dropdown_month_and_year"
+        value="{{current_income_date_to_show}}"
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+</div>
+
+<div id="income_table">
+  {{#unless no_incomes}}
+    <table>
+      <tr>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {{#each income_objects}}
+        <tr>
+          <td>${{amount}}</td>
+          <td>{{date}}</td>
+          <td>{{description}}</td>
+          <td>
+            <button class="update_income_button" data-uuid="{{uuid}}">
+              <img
+                src="public/images/pencil_edit.png"
+                alt="edit button"
+                class="pencil_image"
+              /></button>
+
+          </td>
+          <td>
+            <form action="/income" method="POST">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="uuid" value="{{uuid}}" />
+              <button type="submit">
+                <img
+                  src="public/images/delete_icon.jpg"
+                  alt="delete button"
+                  class="delete_image"
+                />
+              </button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+  {{/unless}}
+  {{#if no_incomes}}
+    <p>There are no incomes for this month!</p>
+  {{/if}}
+  <div id="dropdown_error_div" hidden></div>
+   {{#if dropdownErrorsExist}}
+    <p class="error">Error: {{dropdownError}}</p>
+  {{/if}}
+</div>
+
+{{!-- update income form --}}
+<div id="updated_income_form_div" style="display: none;">
+  <h3>Edit income:</h3>
+  <form action="/income" method="POST" id="updated_income_form">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="hidden" name="uuid" value="{{uuid}}" />
+    <label for="updated_income_amount">Amount</label>
+    <input
+      type="number"
+      step=".01"
+      name="updated_income_amount"
+      id="updated_income_amount"
+    />
+    <label for="updated_income_date">Date</label>
+    <!-- use getFullDateForFormMax() helper function -->
+    <input
+      name="updated_income_date"
+      id="updated_income_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="updated_income_description">Description</label>
+    <input
+      type="text"
+      name="updated_income_description"
+      id="updated_income_description"
+    />
+    <input type="submit" value="Submit" />
+    <button type="button" id="cancel_update_income_button">Cancel</button>
+  </form>
+  <div id="updated_income_error_div" hidden></div>
+  {{#if updateIncomeErrorsExist}}
+    <p class="error">Error: {{updateIncomeError}}</p>
+  {{/if}}
+</div>
+
+<!-- new income form  -->
+<div id="new_income">
+  <h3>Insert a new income:</h3>
+  <form
+    action="/income"
+    method="POST"
+    name="new_income_form"
+    id="new_income_form"
+  >
+    <input type="hidden" , name="form_type" value="new_income" />
+
+    <label for="new_income_amount">Amount</label>
+    <input
+      type="number"
+      step=".01"
+      name="new_income_amount"
+      id="new_income_amount"
+    />
+    <label for="new_income_date">Date</label>
+    <!-- use getFullDateForFormMax() helper function -->
+    <input
+      name="new_income_date"
+      id="new_income_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="new_income_description">Description</label>
+    <input
+      type="text"
+      name="new_income_description"
+      id="new_income_description"
+    />
+    <input type="submit" value="Submit" />
+  </form>
+  <div id="new_income_error_div" hidden></div>
+  {{#if newIncomeErrorsExist}}
+    <p class="error">Error: {{newIncomeError}}</p>
+  {{/if}}
+</div>

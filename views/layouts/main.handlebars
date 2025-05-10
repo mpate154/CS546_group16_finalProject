@@ -13,19 +13,18 @@
 
     {{!-- for landing, login, and signup, signout pages --}}
     {{#if landing_signup_login}}
-    <link rel="stylesheet" href="/public/css/landingStyles.css">
+    <link rel="stylesheet" href="/public/css/landingstyle.css">
     {{/if}}
 
     {{!-- for all other pages (income, expense, settings) --}}
     {{#if general_page}}
     <link rel="stylesheet" href="/public/css/general.css">
     {{/if}}
-
-    {{!-- for settings  --}}
+    
+     {{!-- for settings  --}}
     {{#if settings_page}}
     <link rel="stylesheet" href="/public/css/settings.css">
     {{/if}}
-    
 </head>
 
 <body {{#if landing_signup_login}}style="background-image: url('/public/images/background.jpg'); background-size: cover; background-position: center;"{{/if}}>
@@ -62,7 +61,8 @@
     </div>
 
     {{!-- footer --}}
-    {{!-- <div id="footer_div">
+    {{#if include_footer}}
+    <div id="footer_div">
         <footer>
             <p id="footer_title">Creators:</p>
             <p>Elina Rezaeian</p>
@@ -71,13 +71,15 @@
             <p>Maya Patel</p>
           
         </footer>
-    </div> --}}
+      </div> 
+    {{/if}}
+
+     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+
     
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     {{#if partial}}
       {{> (lookup . 'partial') }}
     {{/if}}
-    
 </body>
 </html>

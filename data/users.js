@@ -1,18 +1,28 @@
-import {users} from '../config/mongoCollections.js';
-import {ObjectId} from 'mongodb';
-import validation from '../helpers.js';
-import bcrypt from 'bcryptjs';
+import { users } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
+import validation from "../helpers.js";
+import bcrypt from "bcryptjs";
 const saltRounds = 16;
 
 let exportedMethods = {
   async getUserById(id) {
     id = validation.checkId(id);
     const userCollection = await users();
-    const user = await userCollection.findOne({_id: new ObjectId(id)});
-    if (!user) throw 'Error: User not found';
+    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (!user) throw "Error: User not found";
     return user;
   },
-  async register(firstName, lastName, email, gender, city, state, age, password, balance) {
+  async register(
+    firstName,
+    lastName,
+    email,
+    gender,
+    city,
+    state,
+    age,
+    password,
+    balance
+  ) {
     firstName = validation.checkFirstName(firstName);
     lastName = validation.checkLastName(lastName);
     email = validation.checkEmail(email);
@@ -23,11 +33,13 @@ let exportedMethods = {
     balance = validation.checkAmount(balance);
     password = validation.checkPassword(password);
 
-    if(parseInt(age) < 13){
+
+    if (parseInt(age) < 13) {
       throw `Users must be at least 13 years old to sign up.`;
     }
 
-    const hashedPassword= await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
 
     const usersCollection = await users();
     const existingUser = await usersCollection.findOne({ email: email });
@@ -37,28 +49,35 @@ let exportedMethods = {
     let newUser = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      email : email.trim(),
+      email: email.trim(),
       gender: gender.trim(),
       city: city.trim(),
-      state : state.trim(),
+      state: state.trim(),
       age: parseInt(age),
       password: hashedPassword,
-      categories: ['Groceries','Shopping','Restaurant','Transportation','Rent'],
+      categories: [
+        "Groceries",
+        "Shopping",
+        "Restaurant",
+        "Transportation",
+        "Rent",
+      ],
       fixedExpenses: [],
-      balance: parseFloat(balance)
+
+      balance: parseFloat(balance),
+
     };
-    
+
     const insertInfo = await usersCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-      throw 'Could not register user due to a database error.';
+      throw "Could not register user due to a database error.";
     }
     return { registrationCompleted: true };
   },
-  async login(email,password) {
-
+  async login(email, password) {
     email = validation.checkEmail(email);
-    password = validation.checkPassword(password)
-    email=email.toLowerCase();
+    password = validation.checkPassword(password);
+    email = email.toLowerCase();
 
     const usersCollection = await users();
 
@@ -67,10 +86,11 @@ let exportedMethods = {
       throw `Either the email or password is invalid`;
     }
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
-    if(!passwordMatch){
+
+    if (!passwordMatch) {
       throw `Either the email or password is invalid`;
     }
-    
+
     return {
       id: existingUser._id.toString(),
       firstName: existingUser.firstName.trim(),
@@ -82,10 +102,22 @@ let exportedMethods = {
       age: existingUser.age,
       balance: existingUser.balance,
       categories: existingUser.categories,
-      fixedExpenses: existingUser.fixedExpenses
+      fixedExpenses: existingUser.fixedExpenses,
     };
   },
-  async updateUserPut(id, firstName, lastName, email, gender, city, state, age, balance) {
+
+  async updateUserPut(
+    id,
+    firstName,
+    lastName,
+    email,
+    gender,
+    city,
+    state,
+    age,
+    balance
+  ) {
+
     id = validation.checkId(id);
     firstName = validation.checkFirstName(firstName);
     lastName = validation.checkLastName(lastName);
@@ -97,27 +129,27 @@ let exportedMethods = {
     balance = validation.checkAmount(balance);
 
     const usersCollection = await users();
-    const usersCol = await usersCollection.findOne({_id: new ObjectId(id)});
-    if (usersCol === null) throw 'No user with that id';
+    const usersCol = await usersCollection.findOne({ _id: new ObjectId(id) });
+    if (usersCol === null) throw "No user with that id";
 
     const userUpdateInfo = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      email : email.trim(),
+      email: email.trim(),
       gender: gender.trim(),
       city: city.trim(),
-      state : state.trim(),
+      state: state.trim(),
       age: parseInt(age),
       password: usersCol.password,
       categories: usersCol.categories,
       fixedExpenses: usersCol.fixedExpenses,
-      balance: parseFloat(balance)
+      balance: parseFloat(balance),
     };
 
     const updateInfo = await usersCollection.findOneAndUpdate(
-      {_id: new ObjectId(id)},
-      {$set: userUpdateInfo},
-      {returnOriginal: false}
+      { _id: new ObjectId(id) },
+      { $set: userUpdateInfo },
+      { returnOriginal: false }
     );
     // if (updateInfo.lastErrorObject.n === 0)
     //   throw [
@@ -128,13 +160,12 @@ let exportedMethods = {
     return true;
   },
   async addCategoryById(userID, newCategory) {
-
     userID = validation.checkId(userID);
     newCategory = validation.checkString(newCategory);
 
     const userCollection = await users();
-    const user = await userCollection.findOne({_id: new ObjectId(userID)});
-    if (!user) throw 'User not found';
+    const user = await userCollection.findOne({ _id: new ObjectId(userID) });
+    if (!user) throw "User not found";
 
     // Check for duplicates
     if (user.categories.includes(newCategory.trim())) {
@@ -142,45 +173,48 @@ let exportedMethods = {
     }
 
     const updatedInfo = await userCollection.findOneAndUpdate(
-      {_id: new ObjectId(userID)},
-      {$push: {categories: newCategory.trim()}},
-      {returnDocument: 'after'}
+      { _id: new ObjectId(userID) },
+      { $push: { categories: newCategory.trim() } },
+      { returnDocument: "after" }
     );
 
     //if (!updatedInfo.value) throw 'Error: Could not add category';
     return true;
   },
   async deleteCategoryById(userID, categoryToDelete) {
-
     userID = validation.checkId(userID);
     categoryToDelete = validation.checkString(categoryToDelete).trim();
 
     const userCollection = await users();
-    const user = await userCollection.findOne({_id: new ObjectId(userID)});
-    if (!user) throw 'User not found';
+    const user = await userCollection.findOne({ _id: new ObjectId(userID) });
+    if (!user) throw "User not found";
 
     if (!user.categories.includes(categoryToDelete.trim())) {
       throw `Error: Category '${categoryToDelete}' not found`;
     }
 
     const updatedInfo = await userCollection.findOneAndUpdate(
-      {_id: new ObjectId(userID)},
-      {$pull: {categories: categoryToDelete}},
-      {returnDocument: 'after'}
+      { _id: new ObjectId(userID) },
+      { $pull: { categories: categoryToDelete } },
+      { returnDocument: "after" }
     );
 
     //if (!updatedInfo.value) throw 'Error: Could not delete category';
     return true;
   },
-  async addFixedExpensesById(userID, title, category, amount){
+  async addFixedExpensesById(userID, title, category, amount) {
     userID = validation.checkId(userID);
     title = validation.checkString(title).trim();
     category = validation.checkString(category).trim();
-    amount = validation.checkAmount(amount); 
+    amount = validation.checkAmount(amount);
 
     const userCollection = await users();
-    const user = await userCollection.findOne({_id: new ObjectId(userID)});
-    if (!user) throw 'User not found';
+    const user = await userCollection.findOne({ _id: new ObjectId(userID) });
+    if (!user) throw "User not found";
+
+    if (!user) {
+      console.error("User not found with ID:", userID);
+    }
 
     if (!user) {
       console.error("User not found with ID:", userID);
@@ -190,15 +224,16 @@ let exportedMethods = {
       _id: new ObjectId(),
       title: title.trim(),
       category: category.trim(),
-      amount: parseFloat(amount)
+      amount: parseFloat(amount),
+
     };
 
     console.log("Inserting fixed expense:", newFixedExpense);
 
     const updatedInfo = await userCollection.findOneAndUpdate(
-      {_id: new ObjectId(userID)},
-      {$push: {fixedExpenses: newFixedExpense}},
-      {returnDocument: 'after'}
+      { _id: new ObjectId(userID) },
+      { $push: { fixedExpenses: newFixedExpense } },
+      { returnDocument: "after" }
     );
 
     return newFixedExpense;
@@ -206,19 +241,18 @@ let exportedMethods = {
   async deleteFixedExpenseById(userID, expenseID) {
     userID = validation.checkId(userID);
     expenseID = validation.checkId(expenseID);
-  
+
     const userCollection = await users();
-  
+
     const updateResult = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(userID) },
       {
         $pull: {
-          fixedExpenses: { _id: new ObjectId(expenseID) }
-        }
+          fixedExpenses: { _id: new ObjectId(expenseID) },
+        },
       },
-      { returnDocument: 'after' }
+      { returnDocument: "after" }
     );
-  
     return updateResult.value;
   },
   async updateFixedExpenseById(userID, expenseID, title, category, amount) {
@@ -228,27 +262,30 @@ let exportedMethods = {
     title = validation.checkString(title).trim();
     category = validation.checkString(category).trim();
     amount = parseFloat(validation.checkAmount(amount));
-  
+
+
     const userCollection = await users();
-  
-  
+
+
     const updateResult = await userCollection.findOneAndUpdate(
       {
         _id: new ObjectId(userID),
-        'fixedExpenses._id': new ObjectId(expenseID)
+        "fixedExpenses._id": new ObjectId(expenseID),
       },
       {
         $set: {
-          'fixedExpenses.$.title': title,
-          'fixedExpenses.$.category': category,
-          'fixedExpenses.$.amount': amount
-        }
+          "fixedExpenses.$.title": title,
+          "fixedExpenses.$.category": category,
+          "fixedExpenses.$.amount": amount,
+        },
+
       },
-      { returnDocument: 'after' }
+      { returnDocument: "after" }
     );
-  
+
     //if (!updateResult.value) throw 'Error: Could not update the fixed expense';
     return true;
-  }
+  },
+
 };
 export default exportedMethods;
