@@ -126,15 +126,22 @@ let checkDate = (date) => {
   return date;
 };
 
+//gets current year as string
+let getCurrentYear = () => {
+  let date = new Date();
+  let year = date.getFullYear().toString();
+  return year;
+};
+
 /////////////////// VARIABLES ////////////////////////////
 
 //dropdown is for dropdown on both transaction and income pages
 let dropdown_form = document.getElementById("dropdown_form");
-let dropdown_month_and_year = document.getElemenyById(
+let dropdown_month_and_year = document.getElementById(
   "dropdown_month_and_year"
 );
 let new_income_form = document.getElementById("new_income_form");
-let new_income_amount = document.getElementById("get_income_amount");
+let new_income_amount = document.getElementById("new_income_amount");
 let new_income_date = document.getElementById("new_income_date");
 let new_income_description = document.getElementById("new_income_description");
 let new_expense_form = document.getElementById("new_expense_form");
@@ -144,6 +151,11 @@ let new_expense_category = document.getElementById("new_expense_category");
 let new_expense_description = document.getElementById(
   "new_expense_description"
 );
+let updated_income_amount = document.getElementById("updated_income_amount");
+let updated_income_date = document.getElementById("updated_income_date");
+let updated_income_description = document.getElementById(
+  "updated_income_description"
+);
 
 let dropdown_errors = [];
 let new_income_errors = [];
@@ -151,38 +163,45 @@ let new_expense_errors = [];
 let dropdown_error_div = document.getElementById("dropdown_error_div");
 let new_income_error_div = document.getElementById("new_income_error_div");
 let new_expense_error_div = document.getElementById("new_expense_error_div");
+let updated_income_errors = [];
+let updated_income_error_div = document.getElementById(
+  "updated_income_error_div"
+);
+
+let updated_income_form_div = document.getElementById(
+  "updated_income_form_div"
+);
+let updated_income_form = document.getElementById("updated_income_form");
 
 ///////////// FORM CHECKING ///////////////////////
 
 //month dropdown form on income and transaction pages
 if (dropdown_form) {
-  register_form.addEventListener("submit", (event) => {
+  dropdown_form.addEventListener("submit", (event) => {
     event.preventDefault();
     dropdown_error_div.hidden = true;
     dropdown_error_div.innerHTML = "";
 
     //check in backend whether there are incomes if not then display in thingy
-    if (dropdown_month_and_year) {
-      try {
-        if (
-          month.length != 2 ||
-          parseInt(month) < 1 ||
-          parseInt(month) > 12 ||
-          year.length != 4 ||
-          parseInt(year) < 2000 ||
-          parseInt(year) > parseInt(exportedMethods.getCurrentYear())
-        ) {
-          throw "Invalid date format";
-        }
-      } catch (e) {
-        dropdown_errors.push(e);
+    if (dropdown_month_and_year.value.trim()) {
+      let month = dropdown_month_and_year.value.split("-")[1];
+      let year = dropdown_month_and_year.value.split("-")[0];
+      if (
+        month.length != 2 ||
+        parseInt(month) < 1 ||
+        parseInt(month) > 12 ||
+        year.length != 4 ||
+        parseInt(year) < 2000 ||
+        parseInt(year) > parseInt(getCurrentYear())
+      ) {
+        throw "Invalid date format";
       }
     } else {
       dropdown_errors.push("Month and year input is missing in dropdown.");
     }
 
     if (dropdown_errors.length != 0) {
-      dropdown_error_div = false;
+      dropdown_error_div.hidden = false;
       for (let i = 0; i < dropdown_errors.length; i++) {
         let p_err = document.createElement("p");
         p_err.innerHTML = dropdown_errors[i];
@@ -194,17 +213,18 @@ if (dropdown_form) {
     }
   });
   //new income form
-} else if (new_income_form) {
-  register_form.addEventListener("submit", (event) => {
+}
+if (new_income_form) {
+  new_income_form.addEventListener("submit", (event) => {
     event.preventDefault();
     new_income_error_div.hidden = true;
     new_income_error_div.innerHTML = "";
 
     //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
 
-    if (new_income_amount) {
+    if (new_income_amount && new_income_amount.value.trim()) {
       try {
-        exportedMethods.checkAmount(new_income_amount);
+        checkAmount(new_income_amount.value);
       } catch (e) {
         new_income_errors.push(e);
       }
@@ -212,35 +232,35 @@ if (dropdown_form) {
       new_income_errors.push("Amount input is missing.");
     }
 
-    if (new_income_date) {
+    if (new_income_date && new_income_date.value.trim()) {
       try {
-        let date = exportedMethods.flipDate(new_income_date);
-        exportedMethods.checkDate(date);
+        let date = flipDate(new_income_date.value);
+        checkDate(date);
       } catch (e) {
         new_income_errors.push(e);
       }
     } else {
-      new_income_errors.push("Amount input is missing.");
+      new_income_errors.push("Date input is missing.");
     }
 
-    if (new_income_description) {
+    if (new_income_description && new_income_description.value.trim()) {
       try {
-        let description = new_income_description;
+        let description = new_income_description.value;
         if (description) {
-          description = exportedMethods.checkString(description);
+          description = checkString(description);
         } else description = "";
       } catch (e) {
         new_income_errors.push(e);
       }
     } else {
-      new_income_errors.push("Amount input is missing.");
+      new_income_errors.push("Description input is missing.");
     }
 
     if (new_income_errors.length != 0) {
-      new_income_error_div = false;
+      new_income_error_div.hidden = false;
       for (let i = 0; i < new_income_errors.length; i++) {
         let p_err = document.createElement("p");
-        p_err.innerHTML = dropdown_errors[i];
+        p_err.innerHTML = new_income_errors[i];
         new_income_error_div.appendChild(p_err);
       }
       new_income_errors = [];
@@ -251,14 +271,14 @@ if (dropdown_form) {
 }
 //new expense form
 else if (new_expense_form) {
-  register_form.addEventListener("submit", (event) => {
+  new_expense_form.addEventListener("submit", (event) => {
     event.preventDefault();
     new_expense_error_div.hidden = true;
     new_expense_error_div.innerHTML = "";
 
-    if (new_expense_amount) {
+    if (new_expense_amount && new_expense_amount.value.trim()) {
       try {
-        exportedMethods.checkAmount(new_expense_amount);
+        checkAmount(new_expense_amount.value);
       } catch (e) {
         new_expense_errors.push(e);
       }
@@ -266,32 +286,32 @@ else if (new_expense_form) {
       new_expense_errors.push("Amount input is missing.");
     }
 
-    if (new_expense_date) {
+    if (new_expense_date && new_expense_date.value.trim()) {
       try {
-        let date = exportedMethods.flipDate(new_expense_date);
-        exportedMethods.checkDate(date);
+        let date = flipDate(new_expense_date.value);
+        checkDate(date);
       } catch (e) {
         new_expense_errors.push(e);
       }
     } else {
-      new_expense_errors.push("Amount input is missing.");
+      new_expense_errors.push("Date input is missing.");
     }
 
-    if (new_expense_category) {
+    if (new_expense_category && new_expense_category.value.trim()) {
       try {
-       exportedMethods.checkString(new_expense_category);
+        checkString(new_expense_category.value);
       } catch (e) {
         new_expense_errors.push(e);
       }
     } else {
-      new_expense_errors.push("Amount input is missing.");
+      new_expense_errors.push("Category input is missing.");
     }
 
-    if (new_expense_description) {
+    if (new_expense_description && new_expense_description.value.trim()) {
       try {
-        let description = new_expense_description;
+        let description = new_expense_description.value;
         if (description) {
-          description = exportedMethods.checkString(description);
+          description = checkString(description);
         } else description = "";
       } catch (e) {
         new_expense_errors.push(e);
@@ -301,7 +321,7 @@ else if (new_expense_form) {
     }
 
     if (new_expense_errors.length != 0) {
-      new_expense_error_div = false;
+      new_expense_error_div.hidden = false;
       for (let i = 0; i < new_expense_errors.length; i++) {
         let p_err = document.createElement("p");
         p_err.innerHTML = new_expense_errors[i];
@@ -312,4 +332,96 @@ else if (new_expense_form) {
       new_expense_form.submit();
     }
   });
+}
+
+//the actual form
+if (updated_income_form) {
+  updated_income_form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    updated_income_error_div.hidden = true;
+    updated_income_error_div.innerHTML = "";
+
+    //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
+
+    if (updated_income_amount.value.trim()) {
+      try {
+        checkAmount(updated_income_amount.value);
+      } catch (e) {
+        updated_income_errors.push(e);
+      }
+    } else {
+      updated_income_errors.push("Amount input is missing.");
+    }
+
+    if (updated_income_date.value.trim()) {
+      try {
+        let date = flipDate(updated_income_date.value);
+        checkDate(date);
+      } catch (e) {
+        updated_income_errors.push(e);
+      }
+    } else {
+      updated_income_errors.push("Date input is missing.");
+    }
+
+    if (updated_income_description.value.trim()) {
+      try {
+        let description = updated_income_description.value;
+        if (description) {
+          description = checkString(description);
+        } else description = "";
+      } catch (e) {
+        updated_income_errors.push(e);
+      }
+    } else {
+      updated_income_errors.push("Description input is missing.");
+    }
+
+    if (updated_income_errors.length != 0) {
+      updated_income_error_div.hidden = false;
+      for (let i = 0; i < updated_income_errors.length; i++) {
+        let p_err = document.createElement("p");
+        p_err.innerHTML = updated_income_errors[i];
+        updated_income_error_div.appendChild(p_err);
+      }
+      updated_income_errors = [];
+    } else {
+      updated_income_form.submit();
+    }
+  });
+}
+
+//the function that shows the form when you click the edit button
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".update_button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const uuid = button.dataset.uuid;
+      callForm(uuid);
+    });
+  });
+});
+
+async function callForm(uuid) {
+  updated_income_form_div.style.display =
+    updated_income_form_div.style.display === "none" ? "block" : "none";
+
+  //get data from backend
+
+  let incomeData = await fetch(`/income/getIncomeData/${uuid}`);
+  if (!incomeData.ok) {
+    console.error("Failed to fetch income data");
+    return;
+  }
+
+  incomeData = await incomeData.json();
+
+  //add placeholder and values
+
+  document.getElementById("updated_income_amount").value = incomeData.amount;
+  document.getElementById("updated_income_date").value = incomeData.date;
+  document.getElementById("updated_income_description").value =
+    incomeData.description;
+  document.querySelector("#updated_income_form input[name='uuid']").value =
+    uuid;
 }

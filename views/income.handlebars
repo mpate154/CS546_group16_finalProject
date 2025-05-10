@@ -2,13 +2,14 @@
 <!-- dropdown -->
 <div id="dropdowns">
   <div id="income_month_year_dropdown">
-    <input type="hidden" , name="form_type" value="date_dropdown" />
+
     <form
       action="/income"
       method="POST"
       name="dropdown_form"
       id="dropdown_form"
     >
+      <input type="hidden" , name="form_type" value="date_dropdown" />
       <label for="dropdown_month_and_year">Pick the month to display:</label>
       <!-- use getMonthYearForFormMax() helper function for partial_date -->
       <input
@@ -40,16 +41,13 @@
           <td>{{date}}</td>
           <td>{{description}}</td>
           <td>
-            <form action="/income" method="POST">
-              <input type="hidden" name="_method" value="PUT" />
-              <input type="hidden" name="uuid" value="{{uuid}}" />
-              <button type="submit">
-                <img
-                  src="public/images/pencil_edit.png"
-                  alt="edit button"
-                  id="pencil_image"
-                /></button>
-            </form>
+            <button class="update_button" data-uuid="{{uuid}}">
+              <img
+                src="public/images/pencil_edit.png"
+                alt="edit button"
+                class="pencil_image"
+              /></button>
+
           </td>
           <td>
             <form action="/income" method="POST">
@@ -59,7 +57,7 @@
                 <img
                   src="public/images/delete_icon.jpg"
                   alt="delete button"
-                  id="delete_image"
+                  class="delete_image"
                 />
               </button>
             </form>
@@ -74,6 +72,38 @@
   <div id="dropdown_error_div" hidden></div>
 </div>
 
+<div id="updated_income_form_div" style="display: none;">
+  <h3>Edit income:</h3>
+  <form action="/income" method="POST" id="updated_income_form">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="hidden" name="uuid" value="{{uuid}}" />
+    <label for="updated_income_amount">Amount</label>
+    <input
+      type="number"
+      step=".01"
+      name="updated_income_amount"
+      id="updated_income_amount"
+    />
+    <label for="new_income_date">Date</label>
+    <!-- use getFullDateForFormMax() helper function -->
+    <input
+      name="updated_income_date"
+      id="updated_income_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="updated_income_description">Description</label>
+    <input
+      type="text"
+      name="updated_income_description"
+      id="updated_income_description"
+    />
+    <input type="submit" value="Submit" />
+  </form>
+  <div id="updated_income_error_div" hidden></div>
+</div>
+
 <!-- new income form  -->
 <div id="new_income">
   <h3>Insert a new income:</h3>
@@ -83,7 +113,8 @@
     name="new_income_form"
     id="new_income_form"
   >
-    <input type="hidden" , name="form_type" value="new_transaction" />
+    <input type="hidden" , name="form_type" value="new_income" />
+
     <label for="new_income_amount">Amount</label>
     <input
       type="number"
@@ -93,12 +124,18 @@
     />
     <label for="new_income_date">Date</label>
     <!-- use getFullDateForFormMax() helper function -->
-    <input type="date" min="2000-01-01" max="{{full_date}}" />
-    <label for="new_income-description">Description</label>
+    <input
+      name="new_income_date"
+      id="new_income_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
+    <label for="new_income_description">Description</label>
     <input
       type="text"
-      name="new_income-description"
-      id="new_income-description"
+      name="new_income_description"
+      id="new_income_description"
     />
     <input type="submit" value="Submit" />
   </form>

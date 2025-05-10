@@ -1,45 +1,47 @@
 import { Router } from "express";
 const router = Router();
-import validation from '../helper.js';
-import xss from 'xss';
-import users from '../data/users.js';
-import exportedMethods from "../helper.js";
+import validation from "../helpers.js";
+import xss from "xss";
+import users from "../data/users.js";
+import exportedMethods from "../helpers.js";
 import { ObjectId } from "mongodb";
 import incomeFunctions from "../data/income.js";
 import { income } from "../config/mongoCollections.js";
 import transactionFunctions from "../data/transactions.js";
 
-router.route('/') // landing 
+router
+  .route("/") // landing
   .get(async (req, res) => {
     try {
       const user = req.session.user;
       if (!user) {
         // Not logged in
-        return res.render('landing', {
-          title: 'Home Page',
+        return res.render("landing", {
+          title: "Home Page",
           isLoggedIn: false,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
-          include_summary_navbar: false
+          include_summary_navbar: false,
+          include_footer: false,
         });
-      } else  {
-        return res.render('landing', {
-          title: 'Home Page',
+      } else {
+        return res.render("landing", {
+          title: "Home Page",
           isLoggedIn: true,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
-          include_summary_navbar: false
+          include_summary_navbar: false,
+          include_footer: false,
         });
-      } 
+      }
     } catch (e) {
-      return res.status(500).send('Internal Server Error');
+      return res.status(500).send("Internal Server Error");
     }
-  
-});
+  });
 
 router
   .route("/register")
@@ -47,20 +49,32 @@ router
     if (req.session.user) {
       return res.redirect("/home");
     }
-    return res.render('register', { 
-      title: 'Registeration Page',
+    return res.render("register", {
+      title: "Registration Page",
       home_or_summary: false,
       landing_signup_login: true,
       general_page: false,
       include_navbar: false,
       include_summary_navbar: false,
-      partial: 'registration_script'
+      partial: "registration_script",
+      include_footer: false,
     });
   })
   .post(async (req, res) => {
     try {
       const data = req.body;
-      let { firstName, lastName, email, gender, city, state, age, balance, password, confirmPassword} = data;
+      let {
+        firstName,
+        lastName,
+        email,
+        gender,
+        city,
+        state,
+        age,
+        balance,
+        password,
+        confirmPassword,
+      } = data;
 
       if (
         !firstName ||
@@ -104,13 +118,14 @@ router
           state,
           age,
           balance,
-          title: 'Registration Page',
+          title: "Registration Page",
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
           include_summary_navbar: false,
-          partial: 'registration_script'
+          partial: "registration_script",
+          include_footer: false,
         });
       }
 
@@ -129,29 +144,31 @@ router
       if (result && result.registrationCompleted) {
         return res.redirect("/login");
       } else {
-        return res.status(500).render('register', { 
-          error: 'Internal Server Error',
-          title: 'Registration Page',
+        return res.status(500).render("register", {
+          error: "Internal Server Error",
+          title: "Registration Page",
           isLoggedIn: false,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
           include_summary_navbar: false,
-          partial: 'registration_script'
+          partial: "registration_script",
+          include_footer: false,
         });
       }
     } catch (e) {
-      return res.status(400).render('register', { 
+      return res.status(400).render("register", {
         error: e,
-        title: 'Registration Page',
+        title: "Registration Page",
         isLoggedIn: false,
         home_or_summary: false,
         landing_signup_login: true,
         general_page: false,
         include_navbar: false,
         include_summary_navbar: false,
-        partial: 'registration_script'
+        partial: "registration_script",
+        include_footer: false,
       });
     }
   });
@@ -162,14 +179,15 @@ router
     if (req.session.user) {
       return res.redirect("/home");
     }
-    return res.render('login',{
-      title: 'Login Page',
+    return res.render("login", {
+      title: "Login Page",
       home_or_summary: false,
       landing_signup_login: true,
       general_page: false,
       include_navbar: false,
       include_summary_navbar: false,
-      partial: 'registration_script'
+      partial: "registration_script",
+      include_footer: false,
     });
   })
   .post(async (req, res) => {
@@ -187,15 +205,16 @@ router
         password = validation.checkPassword(password);
       } catch (e) {
         return res.status(400).render("login", {
-          error: e,
+          error: "Either the email or password is invalid",
           ...req.body,
-          title: 'Login Page',
+          title: "Login Page",
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
           include_summary_navbar: false,
-          partial: 'registration_script'
+          partial: "registration_script",
+          include_footer: false,
         });
       }
       const user = await users.login(xss(email), xss(password));
@@ -218,65 +237,71 @@ router
       return res.status(400).render("login", {
         error: "Either the userId or password is invalid",
         ...req.body,
-        title: 'Login Page',
+        title: "Login Page",
         home_or_summary: false,
         landing_signup_login: true,
         general_page: false,
         include_navbar: false,
         include_summary_navbar: false,
-        partial: 'registration_script'
+        partial: "registration_script",
+        include_footer: false,
       });
     }
   });
 
-  router.route('/signout').get(async (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    req.session.destroy();
-    return res.render('signout',{
-      title:'Signout Page',
-      home_or_summary: false,
-      landing_signup_login: true,
-      general_page: false,
-      include_navbar: false,
-      include_summary_navbar: false,
-    });
+router.route("/signout").get(async (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
+  req.session.destroy();
+  return res.render("signout", {
+    title: "Signout Page",
+    home_or_summary: false,
+    landing_signup_login: true,
+    general_page: false,
+    include_navbar: false,
+    include_summary_navbar: false,
+    include_footer: false,
   });
+});
 
-  router.route('/home')
-  .get(async (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
+router.route("/home").get(async (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
 
-    const user = req.session.user;
+  const user = req.session.user;
 
-    const now = new Date();
-    const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-    const currentDate = now.toLocaleDateString('en-US');
-
-    return res.render('home',{
-      title: 'Monthly Summary',
-      home_or_summary: true,
-      landing_signup_login: false,
-      general_page: true,
-      include_navbar: true,
-      include_summary_navbar: true,
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      gender: user.gender,
-      city: user.city,
-      state: user.state,
-      age: user.age,
-      balance: user.balance,
-      categories: user.categories,
-      fixedExpenses: user.fixedExpenses,
-      currentDate,
-      currentTime
-    })
-  
+  const now = new Date();
+  const currentTime = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
+  const currentDate = now.toLocaleDateString("en-US");
 
-router.route('/income')
+  return res.render("home", {
+    title: "Monthly Summary",
+    home_or_summary: true,
+    landing_signup_login: false,
+    general_page: false,
+    include_navbar: true,
+    include_summary_navbar: true,
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    gender: user.gender,
+    city: user.city,
+    state: user.state,
+    age: user.age,
+    balance: user.balance,
+    categories: user.categories,
+    fixedExpenses: user.fixedExpenses,
+    currentDate,
+    currentTime,
+    include_footer: true,
+  });
+});
+
+router
+  .route("/income")
   .get(async (req, res) => {
     if (req.session.user) {
       try {
@@ -284,10 +309,10 @@ router.route('/income')
         let year = exportedMethods.getCurrentYear();
         let no_incomes = false;
 
-        if (req.body.renderMonth) {
-          req.body.renderMonth = xss(req.body.renderMonth);
-          month = req.body.renderMonth.split("-")[1];
-          year = req.body.renderMonth.split("-")[0];
+        if (req.query.renderMonth) {
+          req.query.renderMonth = xss(req.query.renderMonth);
+          month = req.query.renderMonth.split("-")[1];
+          year = req.query.renderMonth.split("-")[0];
           if (
             month.length != 2 ||
             parseInt(month) < 1 ||
@@ -302,14 +327,14 @@ router.route('/income')
         let current_income_to_show = year + "-" + month;
         let p_date = exportedMethods.getMonthYearForFormMax();
         let f_date = exportedMethods.getFullDateForFormMax();
-        let incomes = incomeFunctions.getIncomeByUserIdByMonthAndYear(
+        let incomes = await incomeFunctions.getIncomeByUserIdByMonthAndYear(
           req.session.user.id,
           month,
           year
         );
 
         //what to do if incomes is empty?
-        if (incomes.length() == 0) {
+        if (incomes.length == 0) {
           no_incomes = true;
         }
 
@@ -326,19 +351,20 @@ router.route('/income')
           current_income_date_to_show: current_income_to_show,
           partial_date: p_date,
           full_date: f_date,
+          include_footer: true,
         });
       } catch (e) {
         //what to do when error?
         console.log(e); // get rid of
-        return res.status(500);
+        return res.status(500).send("Internal Server Error");
       }
     }
   })
-  .post(async (req,res) => {
+  .post(async (req, res) => {
     //top date form to render incomes -> call get with new income value display (which will fetch automatically)
     try {
-      if (req.body.form_type === "date_dropdown") {
-        let month_year = req.body.income_month_and_year;
+      if (req.body.form_type == "date_dropdown") {
+        let month_year = req.body.dropdown_month_and_year;
         let date = month_year.split("-");
         if (
           date[0].length !== 4 ||
@@ -346,12 +372,12 @@ router.route('/income')
           parseInt(date[1]) < 1 ||
           parseInt(date[1]) > 12 ||
           parseInt(date[0]) < 2000 ||
-          parseInt(date[0]) < parseInt(getCurrentYear())
+          parseInt(date[0]) < parseInt(exportedMethods.getCurrentYear())
         ) {
           throw "Invalid date format";
         }
         //sends the month that the user chose to show to the get route
-        res.redirect(`/income?month=${month_year}`);
+        res.redirect(`/income?renderMonth=${month_year}`);
       } //botton new income form
       else if (req.body.form_type === "new_income") {
         let {
@@ -360,7 +386,7 @@ router.route('/income')
           new_income_date,
           new_income_description,
         } = req.body;
-        let userId = exportedMethods.checkId(req.session.user);
+        let userId = exportedMethods.checkId(req.session.user.id);
         let amount = exportedMethods.checkAmount(xss(new_income_amount));
         //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
         let date = exportedMethods.flipDate(xss(new_income_date));
@@ -372,7 +398,7 @@ router.route('/income')
 
         let addedIncome = incomeFunctions.addIncome(
           userId,
-          amount,
+          amount.toString(),
           date,
           description
         );
@@ -384,56 +410,88 @@ router.route('/income')
         }
       }
     } catch (e) {
-       // what to do if error on post? client side might catch it and send error back to them.
+      // what to do if error on post? client side might catch it and send error back to them.
+      return res.status(500).send("Internal Server Error");
     }
   })
+  .delete(async (req, res) => {
+    let uuid = xss(req.body.uuid);
 
-  router.route("income/:uuid").delete( async (req, res) => {
-    //make get income object and transaction object by uuid
-    let uuid = xss(req.params.uuid);
-  
     try {
       if (!uuid) {
         throw "Uuid not provided";
       }
-      let deletedIncome = incomeFunctions.removeIncomeByUuid(uuid);
-  
+      let deletedIncome = await incomeFunctions.removeIncomeByUuid(uuid);
+
       res.redirect("/income");
     } catch (e) {
       //what to do if delete fails
-      res.status(500);
+      return res.status(500).send("Internal Server Error");
     }
-  }).put(async (req, res) => {
-    
-  });
-  
+  })
+  .put(async (req, res) => {
+    let uuid = xss(req.body.uuid);
 
-router.route('/expense')
+    try {
+      if (!uuid) {
+        throw "Uuid not provided";
+      }
+      let updatedIncome = await incomeFunctions.updateIncomeByUuid(uuid);
+
+      res.redirect("/income");
+    } catch (e) {
+      return res.status(500).send("Internal Server Error");
+    }
+  });
+
+router.get("/income/getIncomeData/:uuid", async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    let incomeData = await incomeFunctions.getIncomeByUuid(uuid);
+    incomeData.date = exportedMethods.unflipDate(incomeData.date);
+    res.status(200).json(incomeData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Could not fetch income" });
+  }
+});
+
+router
+  .route("/expense")
   .get(async (req, res) => {
-    
     if (req.session.user) {
       try {
         let month = exportedMethods.getCurrentMonth();
         let year = exportedMethods.getCurrentYear();
         let no_transactions = false;
 
-        req.body.renderMonth = xss(req.body.renderMonth);
-        if (req.body.renderMonth) {
-          month = req.body.renderMonth.split("-")[1];
-          year = req.body.renderMonth.split("-")[0];
+        if (req.query.renderMonth) {
+          req.query.renderMonth = xss(req.query.renderMonth);
+          month = req.query.renderMonth.split("-")[1];
+          year = req.query.renderMonth.split("-")[0];
+          if (
+            month.length != 2 ||
+            parseInt(month) < 1 ||
+            parseInt(month) > 12 ||
+            year.length != 4 ||
+            parseInt(year) < 2000 ||
+            parseInt(year) > parseInt(exportedMethods.getCurrentYear())
+          ) {
+            throw "Invalid date format";
+          }
         }
         let current_transaction_to_show = year + "-" + month;
         let p_date = exportedMethods.getMonthYearForFormMax();
         let f_date = exportedMethods.getFullDateForFormMax();
         let transactions =
-          transactionFunctions.getTransactionsByUserIdByMonthAndYear(
+          await transactionFunctions.getTransactionsByUserIdByMonthAndYear(
             req.session.user.id,
             month,
             year
           );
 
         //what to do if incomes is empty?
-        if (transactions.length() == 0) {
+        if (transactions.length == 0) {
           no_transactions = true;
         }
 
@@ -447,25 +505,26 @@ router.route('/expense')
           general_page: true,
           include_navbar: true,
           include_summary_navbar: false,
-          income_objects: transactions,
+          expense_objects: transactions,
           no_transactions: no_transactions,
           //shows the month/year the user picked on the month input
           current_transaction_date_to_show: current_transaction_to_show,
           category: categories,
           partial_date: p_date,
           full_date: f_date,
+          include_footer: true,
         });
       } catch (e) {
         //what to do when error?
         console.log(e); // get rid of
-        return res.status(500);
+        return res.status(500).send("Internal Server Error");
       }
     }
   })
   .post(async (req, res) => {
     try {
       if (req.body.form_type === "date_dropdown") {
-        let month_year = req.body.transaction_month_and_year;
+        let month_year = req.body.dropdown_month_and_year;
         let date = month_year.split("-");
         if (date[0].length !== 4 || date[1].length !== 2) {
           throw "Invalid date format";
@@ -482,7 +541,7 @@ router.route('/expense')
           new_expense_category,
           new_expense_description,
         } = req.body;
-        let userId = exportedMethods.checkId(req.session.user);
+        let userId = exportedMethods.checkId(req.session.user.id);
         let amount = exportedMethods.checkAmount(xss(new_expense_amount));
         //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
         let date = exportedMethods.flipDate(xss(new_expense_date));
@@ -493,9 +552,9 @@ router.route('/expense')
           description = exportedMethods.checkString(description);
         } else description = "";
 
-        let addedTransaction = transactionFunctions.addTransaction(
+        let addedTransaction = await transactionFunctions.addTransaction(
           userId,
-          amount,
+          amount.toString(),
           category,
           date,
           description
@@ -511,17 +570,10 @@ router.route('/expense')
       console.log(e); // what to do if error on post? client side might catch it and send error back to them.
     }
   })
-  .put(async (req,res) => {
-
-  })
-  router
-  .route("expense/:uuid")
-  .put(async (req, res) => {
-
-  })
+  .put(async (req, res) => {})
   .delete(async (req, res) => {
     //make get income object and transaction object by uuid
-    let uuid = xss(req.params.uuid);
+    let uuid = xss(req.body.uuid);
 
     try {
       if (!uuid) {
@@ -533,31 +585,19 @@ router.route('/expense')
       res.redirect("/expense");
     } catch (e) {
       //what to do if delete fails
-      res.status(500);
+      res.status(500).send("Internal Server Error");
     }
   });
+router
+  .route("expense/:uuid")
+  .put(async (req, res) => {})
+  .delete(async (req, res) => {});
 
-router.route('/account')
-  .get(async (req, res) => {
-    
-  })
-  .put(async (req,res) => {
+router
+  .route("/setting")
+  .get(async (req, res) => {})
+  .post(async (req, res) => {})
+  .put(async (req, res) => {})
+  .delete(async (req, res) => {});
 
-  })
-  .delete(async (req,res)=>{
-
-  });
-
-router.route('/setting')
-  .get(async (req, res) => {
-  
-  })
-  .post(async (req,res) => {
-
-  })
-  .put(async (req,res) => {
-
-  })
-  .delete(async (req,res)=>{
-
-  });
+export default router;

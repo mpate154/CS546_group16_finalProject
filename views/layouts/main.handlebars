@@ -19,6 +19,7 @@
     {{#if general_page}}
     <link rel="stylesheet" href="/public/css/general.css">
     {{/if}}
+    <script type="module" src="/public/js/form_process.js"></script>
 </head>
 <body>
 
@@ -54,6 +55,7 @@
     </div>
 
     {{!-- footer --}}
+    {{#if include_footer}}
     <div id="footer_div">
         <footer>
             <p id="footer_title">Creators:</p>
@@ -63,6 +65,7 @@
             <p>Maya Patel</p>
           
         </footer>
+    {{/if}}
 </body>
 
 {{!-- {{> (lookup . 'partial') }} --}}

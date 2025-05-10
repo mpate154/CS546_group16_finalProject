@@ -93,6 +93,7 @@ const exportedMethods = {
   },
 
   //the input for the input="date" is YYYY/MM/DD so we need to flip it
+  //flips from YYYY-MM-DD to MM/DD/YYYY
   flipDate(date) {
     if (!date) throw `Error: You must supply a date`;
     if (typeof date !== "string")
@@ -112,6 +113,28 @@ const exportedMethods = {
       throw "Error: Date format should be yyyy/mm/dd";
 
     return dateSplit[1] + "/" + dateSplit[2] + "/" + dateSplit[0];
+  },
+
+  //changes date format from MM/DD/YYYY -> YYYY-MM-DD
+  unflipDate(date) {
+    if (!date) throw `Error: You must supply a date`;
+    if (typeof date !== "string")
+      throw `Error: Inputted date should be a string.`;
+    date = date.trim();
+    if (date.length === 0) {
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    }
+
+    let dateSplit = date.split("/");
+    if (dateSplit.length < 3) throw "Error: Incorrect date format";
+    if (
+      dateSplit[0].length != 2 ||
+      dateSplit[1].length != 2 ||
+      dateSplit[2].length != 4
+    )
+      throw "Error: Date format is incorrect";
+
+    return dateSplit[2] + "-" + dateSplit[0] + "-" + dateSplit[1];
   },
 
   // mm/dd/yyyy
@@ -242,8 +265,8 @@ const exportedMethods = {
     let partialDate = this.getMonthYearForFormMax();
     let day =
       date.getDate().toString().length < 2
-        ? "0" + (date.getDate() + 1).toString()
-        : (date.getDate() + 1).toString();
+        ? "0" + date.getDate().toString()
+        : date.getDate().toString();
 
     return partialDate + "-" + day;
   },

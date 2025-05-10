@@ -49,7 +49,7 @@
                 <img
                   src="public/images/pencil_edit.png"
                   alt="edit button"
-                  id="pencil_image"
+                  class="pencil_image"
                 /></button>
             </form>
           </td>
@@ -61,7 +61,7 @@
                 <img
                   src="public/images/delete_icon.jpg"
                   alt="delete button"
-                  id="delete_image"
+                  class="delete_image"
                 />
               </button>
             </form>
@@ -95,7 +95,13 @@
     />
     <label for="new_expense_date">Date</label>
     <!-- use getFullDateForFormMax() helper function -->
-    <input type="date" min="2000-01-01" max="{{full_date}}" />
+    <input
+      name="new_expense_date"
+      id="new_expense_date"
+      type="date"
+      min="2000-01-01"
+      max="{{full_date}}"
+    />
     <label for="new_expense_category">Category</label>
     <select name="new_expense_category" id="new_expense_category">
       {{#each category}}
