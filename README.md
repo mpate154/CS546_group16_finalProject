@@ -44,3 +44,4 @@ package.json
 
 **Notes 
 - The "month" input on the income and transaction pages are only supported by chrome and microsoft edge, not safari and firefox. 
+- descriptions are optional so if you dont put it any it won't throw an error

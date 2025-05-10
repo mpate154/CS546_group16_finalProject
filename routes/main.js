@@ -324,6 +324,27 @@ router
             throw "Invalid date format";
           }
         }
+        let dropdownError = "";
+        let dropdownErrorsExist = false;
+        if (req.query.dropdownError) {
+          dropdownError = xss(req.query.dropdownError);
+          dropdownErrorsExist = true;
+        }
+
+        let newIncomeError = "";
+        let newIncomeErrorsExist = false;
+        if (req.query.newIncomeError) {
+          newIncomeError = xss(req.query.newIncomeError);
+          newIncomeErrorsExist = true;
+        }
+
+        let updateIncomeError = "";
+        let updateIncomeErrorsExist = false;
+        if (req.query.updateIncomeError) {
+          updateIncomeError = xss(req.query.updateIncomeError);
+          updateIncomeErrorsExist = true;
+        }
+
         let current_income_to_show = year + "-" + month;
         let p_date = exportedMethods.getMonthYearForFormMax();
         let f_date = exportedMethods.getFullDateForFormMax();
@@ -345,6 +366,12 @@ router
           general_page: true,
           include_navbar: true,
           include_summary_navbar: false,
+          dropdownErrorsExist: dropdownErrorsExist,
+          dropdownError: dropdownError,
+          updateIncomeErrorsExist: updateIncomeErrorsExist,
+          updateIncomeError: updateIncomeError,
+          newIncomeErrorsExist: newIncomeErrorsExist,
+          newIncomeError: newIncomeError,
           income_objects: incomes,
           no_incomes: no_incomes,
           //shows the month/year the user picked on the month input
@@ -356,6 +383,7 @@ router
       } catch (e) {
         //what to do when error?
         console.log(e); // get rid of
+        //waht statsu
         return res.status(500).send("Internal Server Error");
       }
     }
@@ -364,53 +392,64 @@ router
     //top date form to render incomes -> call get with new income value display (which will fetch automatically)
     try {
       if (req.body.form_type == "date_dropdown") {
-        let month_year = req.body.dropdown_month_and_year;
-        let date = month_year.split("-");
-        if (
-          date[0].length !== 4 ||
-          date[1].length !== 2 ||
-          parseInt(date[1]) < 1 ||
-          parseInt(date[1]) > 12 ||
-          parseInt(date[0]) < 2000 ||
-          parseInt(date[0]) < parseInt(exportedMethods.getCurrentYear())
-        ) {
-          throw "Invalid date format";
+        try {
+          let month_year = req.body.dropdown_month_and_year;
+          let date = month_year.split("-");
+          if (
+            date[0].length !== 4 ||
+            date[1].length !== 2 ||
+            parseInt(date[1]) < 1 ||
+            parseInt(date[1]) > 12 ||
+            parseInt(date[0]) < 2000 ||
+            parseInt(date[0]) > parseInt(exportedMethods.getCurrentYear())
+          ) {
+            throw "Invalid date format";
+          }
+          //sends the month that the user chose to show to the get route
+          res.redirect(`/income?renderMonth=${month_year}`);
+        } catch (e) {
+          //waht status
+          res.status(500).redirect(`/income?dropdownError=${e}`);
         }
-        //sends the month that the user chose to show to the get route
-        res.redirect(`/income?renderMonth=${month_year}`);
       } //botton new income form
       else if (req.body.form_type === "new_income") {
-        let {
-          form_type,
-          new_income_amount,
-          new_income_date,
-          new_income_description,
-        } = req.body;
-        let userId = exportedMethods.checkId(req.session.user.id);
-        let amount = exportedMethods.checkAmount(xss(new_income_amount));
-        //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
-        let date = exportedMethods.flipDate(xss(new_income_date));
-        date = exportedMethods.checkDate(date);
-        let description = xss(new_income_description);
-        if (description) {
-          description = exportedMethods.checkString(description);
-        } else description = "";
+        try {
+          let {
+            form_type,
+            new_income_amount,
+            new_income_date,
+            new_income_description,
+          } = req.body;
+          let userId = exportedMethods.checkId(req.session.user.id);
+          let amount = exportedMethods.checkAmount(xss(new_income_amount));
+          //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
+          let date = exportedMethods.flipDate(xss(new_income_date));
+          date = exportedMethods.checkDate(date);
+          let description = xss(new_income_description);
+          if (description) {
+            description = exportedMethods.checkString(description);
+          } else description = "";
 
-        let addedIncome = incomeFunctions.addIncome(
-          userId,
-          amount.toString(),
-          date,
-          description
-        );
-        if (addedIncome === null) {
-          throw "Could not add income object.";
-        } else {
-          //rerender the page with the new income object.??
-          return res.redirect("/income");
+          let addedIncome = incomeFunctions.addIncome(
+            userId,
+            amount.toString(),
+            date,
+            description
+          );
+          if (addedIncome === null) {
+            throw "Could not add income object.";
+          } else {
+            //rerender the page with the new income object.??
+            return res.redirect("/income");
+          }
+        } catch (e) {
+          //waht status
+          res.status(500).redirect(`/income?newIncomeError=${e}`);
         }
       }
     } catch (e) {
       // what to do if error on post? client side might catch it and send error back to them.
+      console.log(e);
       return res.status(500).send("Internal Server Error");
     }
   })
@@ -426,21 +465,40 @@ router
       res.redirect("/income");
     } catch (e) {
       //what to do if delete fails
-      return res.status(500).send("Internal Server Error");
+      return res.status(500).redirect(`/income?dropdownError=${e}`);
     }
   })
   .put(async (req, res) => {
-    let uuid = xss(req.body.uuid);
-
     try {
-      if (!uuid) {
-        throw "Uuid not provided";
-      }
-      let updatedIncome = await incomeFunctions.updateIncomeByUuid(uuid);
+      let uuid = xss(req.body.uuid);
+      let amount = xss(req.body.updated_income_amount);
+      let date = xss(req.body.updated_income_date);
+      let description = xss(req.body.updated_income_description);
 
-      res.redirect("/income");
+      uuid = exportedMethods.checkString(uuid);
+      amount = exportedMethods.checkAmount(amount);
+      date = exportedMethods.flipDate(date);
+      if (description) {
+        description = exportedMethods.checkString(description);
+      } else description = "";
+      try {
+        if (!uuid) {
+          throw "Uuid not provided";
+        }
+        let updatedIncome = await incomeFunctions.updateIncomeByUuid(
+          uuid,
+          amount.toString(),
+          date,
+          description
+        );
+
+        res.redirect("/income");
+      } catch (e) {
+        res.redirect(`/income?updateIncomeError=${e}`);
+      }
     } catch (e) {
       return res.status(500).send("Internal Server Error");
+      //display error on form if throw
     }
   });
 
@@ -480,6 +538,27 @@ router
             throw "Invalid date format";
           }
         }
+        let dropdownError = "";
+        let dropdownErrorsExist = false;
+        if (req.query.dropdownError) {
+          dropdownError = xss(req.query.dropdownError);
+          dropdownErrorsExist = true;
+        }
+
+        let newExpenseError = "";
+        let newExpenseErrorsExist = false;
+        if (req.query.newExpenseError) {
+          newExpenseError = xss(req.query.newExpenseError);
+          newExpenseErrorsExist = true;
+        }
+
+        let updateExpenseError = "";
+        let updateExpenseErrorsExist = false;
+        if (req.query.updateExpenseError) {
+          updateExpenseError = xss(req.query.updateExpenseError);
+          updateExpenseErrorsExist = true;
+        }
+
         let current_transaction_to_show = year + "-" + month;
         let p_date = exportedMethods.getMonthYearForFormMax();
         let f_date = exportedMethods.getFullDateForFormMax();
@@ -505,6 +584,12 @@ router
           general_page: true,
           include_navbar: true,
           include_summary_navbar: false,
+          dropdownErrorsExist: dropdownErrorsExist,
+          dropdownError: dropdownError,
+          updateExpenseErrorsExist: updateExpenseErrorsExist,
+          updateExpenseError: updateExpenseError,
+          newExpenseErrorsExist: newExpenseErrorsExist,
+          newExpenseError: newExpenseError,
           expense_objects: transactions,
           no_transactions: no_transactions,
           //shows the month/year the user picked on the month input
@@ -524,53 +609,69 @@ router
   .post(async (req, res) => {
     try {
       if (req.body.form_type === "date_dropdown") {
-        let month_year = req.body.dropdown_month_and_year;
-        let date = month_year.split("-");
-        if (date[0].length !== 4 || date[1].length !== 2) {
-          throw "Invalid date format";
+        try {
+          let month_year = req.body.dropdown_month_and_year;
+          let date = month_year.split("-");
+          if (
+            date[0].length !== 4 ||
+            date[1].length !== 2 ||
+            parseInt(date[1]) < 1 ||
+            parseInt(date[1]) > 12 ||
+            parseInt(date[0]) < 2000 ||
+            parseInt(date[0]) > parseInt(exportedMethods.getCurrentYear())
+          ) {
+            throw "Invalid date format";
+          }
+          //sends the month that the user chose to show to the get route
+
+          res.redirect(`/expense?renderMonth=${month_year}`);
+        } catch (e) {
+          //status?
+          res.status(500).redirect(`/expense?dropdownError=${e}`);
         }
-        //sends the month that the user chose to show to the get route
-        //do this or just put it in req.body.user?
-        res.redirect(`/expense?month=${month_year}`);
       } //botton new income form
       else if (req.body.form_type === "new_transaction") {
-        let {
-          form_type,
-          new_expense_amount,
-          new_expense_date,
-          new_expense_category,
-          new_expense_description,
-        } = req.body;
-        let userId = exportedMethods.checkId(req.session.user.id);
-        let amount = exportedMethods.checkAmount(xss(new_expense_amount));
-        //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
-        let date = exportedMethods.flipDate(xss(new_expense_date));
-        let category = exportedMethods.checkString(xss(new_expense_category));
-        date = exportedMethods.checkDate(date);
-        let description = xss(new_expense_description);
-        if (description) {
-          description = exportedMethods.checkString(description);
-        } else description = "";
+        try {
+          let {
+            form_type,
+            new_expense_amount,
+            new_expense_date,
+            new_expense_category,
+            new_expense_description,
+          } = req.body;
+          let userId = exportedMethods.checkId(req.session.user.id);
+          let amount = exportedMethods.checkAmount(xss(new_expense_amount));
+          //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
+          let date = exportedMethods.flipDate(xss(new_expense_date));
+          let category = exportedMethods.checkString(xss(new_expense_category));
+          date = exportedMethods.checkDate(date);
+          let description = xss(new_expense_description);
+          if (description) {
+            description = exportedMethods.checkString(description);
+          } else description = "";
 
-        let addedTransaction = await transactionFunctions.addTransaction(
-          userId,
-          amount.toString(),
-          category,
-          date,
-          description
-        );
-        if (addedTransaction === null) {
-          throw "Could not add transaction object.";
-        } else {
-          //rerender the page with the new income object.??
-          return res.redirect("/expense");
+          let addedTransaction = await transactionFunctions.addTransaction(
+            userId,
+            amount.toString(),
+            category,
+            date,
+            description
+          );
+          if (addedTransaction === null) {
+            throw "Could not add transaction object.";
+          } else {
+            //rerender the page with the new income object.??
+            return res.redirect("/expense");
+          }
+        } catch (e) {
+          res.status(500).redirect(`/expense?newExpenseError=${e}`);
         }
       }
     } catch (e) {
       console.log(e); // what to do if error on post? client side might catch it and send error back to them.
+      return res.status(500).send("Internal Server Error");
     }
   })
-  .put(async (req, res) => {})
   .delete(async (req, res) => {
     //make get income object and transaction object by uuid
     let uuid = xss(req.body.uuid);
@@ -585,13 +686,59 @@ router
       res.redirect("/expense");
     } catch (e) {
       //what to do if delete fails
-      res.status(500).send("Internal Server Error");
+      return res.status(500).redirect(`/expense?dropdownError=${e}`);
+    }
+  })
+  .put(async (req, res) => {
+    try {
+      let uuid = xss(req.body.uuid);
+      let amount = xss(req.body.updated_expense_amount);
+      let date = xss(req.body.updated_expense_date);
+      let category = xss(req.body.updated_expense_category);
+      let description = xss(req.body.updated_expense_description);
+
+      uuid = exportedMethods.checkString(uuid);
+      amount = exportedMethods.checkAmount(amount);
+      category = exportedMethods.checkString(category);
+
+      date = exportedMethods.flipDate(date);
+      if (description) {
+        description = exportedMethods.checkString(description);
+      } else description = "";
+      try {
+        if (!uuid) {
+          throw "Uuid not provided";
+        }
+        let updatedTransaction =
+          await transactionFunctions.updateTransactionByUuid(
+            uuid,
+            amount.toString(),
+            date,
+            category,
+            description
+          );
+
+        res.redirect("/expense");
+      } catch (e) {
+        res.redirect(`/expense?updateExpenseError=${e}`);
+      }
+    } catch (e) {
+      return res.status(500).send("Internal Server Error");
+      //display error on form if throw
     }
   });
-router
-  .route("expense/:uuid")
-  .put(async (req, res) => {})
-  .delete(async (req, res) => {});
+
+router.get("/expense/getExpenseData/:uuid", async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    let transactionData = await transactionFunctions.getTransactionByUuid(uuid);
+    transactionData.date = exportedMethods.unflipDate(transactionData.date);
+    res.status(200).json(transactionData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Could not fetch transaction" });
+  }
+});
 
 router
   .route("/setting")

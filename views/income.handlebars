@@ -41,7 +41,7 @@
           <td>{{date}}</td>
           <td>{{description}}</td>
           <td>
-            <button class="update_button" data-uuid="{{uuid}}">
+            <button class="update_income_button" data-uuid="{{uuid}}">
               <img
                 src="public/images/pencil_edit.png"
                 alt="edit button"
@@ -70,8 +70,12 @@
     <p>There are no incomes for this month!</p>
   {{/if}}
   <div id="dropdown_error_div" hidden></div>
+   {{#if dropdownErrorsExist}}
+    <p class="error">Error: {{dropdownError}}</p>
+  {{/if}}
 </div>
 
+{{!-- update income form --}}
 <div id="updated_income_form_div" style="display: none;">
   <h3>Edit income:</h3>
   <form action="/income" method="POST" id="updated_income_form">
@@ -84,7 +88,7 @@
       name="updated_income_amount"
       id="updated_income_amount"
     />
-    <label for="new_income_date">Date</label>
+    <label for="updated_income_date">Date</label>
     <!-- use getFullDateForFormMax() helper function -->
     <input
       name="updated_income_date"
@@ -100,8 +104,12 @@
       id="updated_income_description"
     />
     <input type="submit" value="Submit" />
+    <button type="button" id="cancel_update_income_button">Cancel</button>
   </form>
   <div id="updated_income_error_div" hidden></div>
+  {{#if updateIncomeErrorsExist}}
+    <p class="error">Error: {{updateIncomeError}}</p>
+  {{/if}}
 </div>
 
 <!-- new income form  -->
@@ -140,4 +148,7 @@
     <input type="submit" value="Submit" />
   </form>
   <div id="new_income_error_div" hidden></div>
+  {{#if newIncomeErrorsExist}}
+    <p class="error">Error: {{newIncomeError}}</p>
+  {{/if}}
 </div>

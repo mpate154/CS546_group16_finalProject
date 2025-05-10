@@ -89,7 +89,7 @@ const transactionFunctions = {
     month = exportedMethods.checkNumber(month);
     year = exportedMethods.checkNumber(year);
     if (month.length != 2 || year.length != 4)
-      throw "Error: invalid format for year and date";
+      throw "Invalid format for year and date";
 
     const pattern = `^${month}/\\d{2}/${year}`;
     const transactionCollection = await transactions();
@@ -117,7 +117,7 @@ const transactionFunctions = {
     //check month and year format
 
     year = exportedMethods.checkNumber(year);
-    if (year.length != 4) throw "Error: invalid format for year and date";
+    if (year.length != 4) throw "Invalid format for year and date";
 
     const pattern = `^(0[1-9]|1[0-2])/\\d{2}/${year}`;
     const transactionCollection = await transactions();
@@ -175,7 +175,7 @@ const transactionFunctions = {
     return `${deletedTrans.uuid.toString()} has been deleted.`;
   },
 
-  async updateIncomeByUuid(uuid, amount, date, description) {
+  async updateTransactionByUuid(uuid, amount, date, category, description) {
     //make transaction one if not made alr
     uuid = exportedMethods.checkString(uuid);
     amount = exportedMethods.checkAmount(amount);
@@ -183,7 +183,9 @@ const transactionFunctions = {
     if (description) {
       description = exportedMethods.checkString(description);
     } else description = "";
+    category = exportedMethods.checkString(category);
 
+    let transactionCollection = await transactions();
     const transToUpdate = await transactionCollection.findOne({
       uuid: uuid,
     });
@@ -191,22 +193,32 @@ const transactionFunctions = {
     if (transToUpdate === null)
       throw "Income UUID does not have corresponding income.";
 
+    //check if user has that category (even though it is drop down)
+    //if not valid category throw
+    const userCollection = await users();
+    let userInfo = await userCollection.findOne(
+      { _id: new ObjectId(transToUpdate.userId) },
+      { projection: { _id: 0, categories: 1 } }
+    );
+    if (!userInfo) throw "User couldn't be fetched.";
+    if (!userInfo.categories.includes(category)) throw "Invalid category.";
+
     let newTransaction = {
-      userId: incomeToUpdate.userId,
-      uuid: incomeToUpdate.uuid,
+      userId: transToUpdate.userId,
+      uuid: transToUpdate.uuid,
       amount: amount,
+      category: category,
       date: date,
       description: description,
     };
 
-    const transactionCollection = await transactions();
     const updatedTransaction = await transactionCollection.findOneAndReplace(
       { uuid: uuid },
       newTransaction,
       { returnDocument: "after" }
     );
     if (!updatedTransaction)
-      throw `Error: Update failed! Could not update transaction with uuid ${uuid}`;
+      throw `Update failed! Could not update transaction with uuid ${uuid}`;
   },
 };
 

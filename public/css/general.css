@@ -87,7 +87,7 @@ footer {
   background-color: rgb(167, 125, 146);
   display: flex;
   flex-direction: column;
-  justify-content: center; /* or 'space-evenly' if you want spacing between lines */
+  justify-content: center; 
   align-items: center;
   height: 100%;
 }
@@ -164,7 +164,8 @@ td > button {
 }
 
 #new_income_form,
-#edit_income_form {
+#updated_income_form,
+#updated_expense_form {
   background-color: #f0ebec;
   width: 50%;
   padding: 10px;
@@ -172,7 +173,8 @@ td > button {
 }
 
 #new_income_form > *,
-#edit_income_form > * {
+#updated_income_form > *,
+#updated_expense_form > * {
   display: block;
   padding: 3px;
 }

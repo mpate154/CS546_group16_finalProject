@@ -157,6 +157,15 @@ let updated_income_description = document.getElementById(
   "updated_income_description"
 );
 
+let updated_expense_amount = document.getElementById("updated_expense_amount");
+let updated_expense_date = document.getElementById("updated_expense_date");
+let updated_expense_category = document.getElementById(
+  "updated_expense_category"
+);
+let updated_expense_description = document.getElementById(
+  "updated_expense_description"
+);
+
 let dropdown_errors = [];
 let new_income_errors = [];
 let new_expense_errors = [];
@@ -172,6 +181,23 @@ let updated_income_form_div = document.getElementById(
   "updated_income_form_div"
 );
 let updated_income_form = document.getElementById("updated_income_form");
+
+let updated_expense_errors = [];
+let updated_expense_error_div = document.getElementById(
+  "updated_expense_error_div"
+);
+
+let updated_expense_form_div = document.getElementById(
+  "updated_expense_form_div"
+);
+let updated_expense_form = document.getElementById("updated_expense_form");
+
+let cancel_update_income_button = document.getElementById(
+  "cancel_update_income_button"
+);
+let cancel_update_expense_button = document.getElementById(
+  "cancel_update_expense_button"
+);
 
 ///////////// FORM CHECKING ///////////////////////
 
@@ -252,8 +278,6 @@ if (new_income_form) {
       } catch (e) {
         new_income_errors.push(e);
       }
-    } else {
-      new_income_errors.push("Description input is missing.");
     }
 
     if (new_income_errors.length != 0) {
@@ -270,69 +294,67 @@ if (new_income_form) {
   });
 }
 //new expense form
-else if (new_expense_form) {
-  new_expense_form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    new_expense_error_div.hidden = true;
-    new_expense_error_div.innerHTML = "";
+// else if (new_expense_form) {
+//   new_expense_form.addEventListener("submit", (event) => {
+//     event.preventDefault();
+//     new_expense_error_div.hidden = true;
+//     new_expense_error_div.innerHTML = "";
 
-    if (new_expense_amount && new_expense_amount.value.trim()) {
-      try {
-        checkAmount(new_expense_amount.value);
-      } catch (e) {
-        new_expense_errors.push(e);
-      }
-    } else {
-      new_expense_errors.push("Amount input is missing.");
-    }
+//     if (new_expense_amount && new_expense_amount.value.trim()) {
+    //   try {
+    //     checkAmount(new_expense_amount.value);
+    //   } catch (e) {
+    //     new_expense_errors.push(e);
+    //   }
+    // } else {
+    //   new_expense_errors.push("Amount input is missing.");
+    // }
 
-    if (new_expense_date && new_expense_date.value.trim()) {
-      try {
-        let date = flipDate(new_expense_date.value);
-        checkDate(date);
-      } catch (e) {
-        new_expense_errors.push(e);
-      }
-    } else {
-      new_expense_errors.push("Date input is missing.");
-    }
+    // if (new_expense_date && new_expense_date.value.trim()) {
+    //   try {
+    //     let date = flipDate(new_expense_date.value);
+    //     checkDate(date);
+    //   } catch (e) {
+    //     new_expense_errors.push(e);
+    //   }
+    // } else {
+    //   new_expense_errors.push("Date input is missing.");
+    // }
 
-    if (new_expense_category && new_expense_category.value.trim()) {
-      try {
-        checkString(new_expense_category.value);
-      } catch (e) {
-        new_expense_errors.push(e);
-      }
-    } else {
-      new_expense_errors.push("Category input is missing.");
-    }
+    // if (new_expense_category && new_expense_category.value.trim()) {
+    //   try {
+    //     checkString(new_expense_category.value);
+    //   } catch (e) {
+    //     new_expense_errors.push(e);
+    //   }
+    // } else {
+    //   new_expense_errors.push("Category input is missing.");
+    // }
 
-    if (new_expense_description && new_expense_description.value.trim()) {
-      try {
-        let description = new_expense_description.value;
-        if (description) {
-          description = checkString(description);
-        } else description = "";
-      } catch (e) {
-        new_expense_errors.push(e);
-      }
-    } else {
-      new_expense_errors.push("Amount input is missing.");
-    }
+//     if (new_expense_description && new_expense_description.value.trim()) {
+//       try {
+//         let description = new_expense_description.value;
+//         if (description) {
+//           description = checkString(description);
+//         } else description = "";
+//       } catch (e) {
+//         new_expense_errors.push(e);
+//       }
+//     }
 
-    if (new_expense_errors.length != 0) {
-      new_expense_error_div.hidden = false;
-      for (let i = 0; i < new_expense_errors.length; i++) {
-        let p_err = document.createElement("p");
-        p_err.innerHTML = new_expense_errors[i];
-        new_expense_error_div.appendChild(p_err);
-      }
-      new_expense_errors = [];
-    } else {
-      new_expense_form.submit();
-    }
-  });
-}
+//     if (new_expense_errors.length != 0) {
+//       new_expense_error_div.hidden = false;
+//       for (let i = 0; i < new_expense_errors.length; i++) {
+//         let p_err = document.createElement("p");
+//         p_err.innerHTML = new_expense_errors[i];
+//         new_expense_error_div.appendChild(p_err);
+//       }
+//       new_expense_errors = [];
+//     } else {
+//       new_expense_form.submit();
+//     }
+//   });
+// }
 
 //the actual form
 if (updated_income_form) {
@@ -373,8 +395,6 @@ if (updated_income_form) {
       } catch (e) {
         updated_income_errors.push(e);
       }
-    } else {
-      updated_income_errors.push("Description input is missing.");
     }
 
     if (updated_income_errors.length != 0) {
@@ -386,7 +406,70 @@ if (updated_income_form) {
       }
       updated_income_errors = [];
     } else {
+      updated_income_form_div.style.display = "none";
       updated_income_form.submit();
+    }
+  });
+} else if (updated_expense_form) {
+  updated_expense_form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    updated_expense_error_div.hidden = true;
+    updated_expense_error_div.innerHTML = "";
+
+    //input type=date returns yyyy/mm/dd so we use flipDate to change format to mm/dd/yyyy
+
+    if (updated_expense_amount.value.trim()) {
+      try {
+        checkAmount(updated_expense_amount.value);
+      } catch (e) {
+        updated_expense_errors.push(e);
+      }
+    } else {
+      updated_expense_errors.push("Amount input is missing.");
+    }
+
+    if (updated_expense_date.value.trim()) {
+      try {
+        let date = flipDate(updated_expense_date.value);
+        checkDate(date);
+      } catch (e) {
+        updated_expense_errors.push(e);
+      }
+    } else {
+      updated_expense_errors.push("Date input is missing.");
+    }
+    if (new_expense_category.value.trim()) {
+      try {
+        checkString(new_expense_category.value);
+      } catch (e) {
+        new_expense_errors.push(e);
+      }
+    } else {
+      new_expense_errors.push("Category input is missing.");
+    }
+
+    if (updated_expense_description.value.trim()) {
+      try {
+        let description = updated_expense_description.value;
+        if (description) {
+          description = checkString(description);
+        } else description = "";
+      } catch (e) {
+        updated_expense_errors.push(e);
+      }
+    }
+
+    if (updated_expense_errors.length != 0) {
+      updated_expense_error_div.hidden = false;
+      for (let i = 0; i < updated_expense_errors.length; i++) {
+        let p_err = document.createElement("p");
+        p_err.innerHTML = updated_expense_errors[i];
+        updated_expense_error_div.appendChild(p_err);
+      }
+      updated_expense_errors = [];
+    } else {
+      updated_expense_form_div.style.display = "none";
+      updated_expense_form.submit();
     }
   });
 }
@@ -394,17 +477,34 @@ if (updated_income_form) {
 //the function that shows the form when you click the edit button
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".update_button").forEach((button) => {
+  document.querySelectorAll(".update_income_button").forEach((button) => {
     button.addEventListener("click", () => {
       const uuid = button.dataset.uuid;
-      callForm(uuid);
+      callIncomeForm(uuid);
     });
   });
+
+  document.querySelectorAll(".update_expense_button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const uuid = button.dataset.uuid;
+      callExpenseForm(uuid);
+    });
+  });
+
+  if (cancel_update_income_button) {
+    cancel_update_income_button.addEventListener("click", () => {
+      updated_income_form_div.style.display = "none";
+    });
+  }
+  if (cancel_update_expense_button) {
+    cancel_update_expense_button.addEventListener("click", () => {
+      updated_expense_form_div.style.display = "none";
+    });
+  }
 });
 
-async function callForm(uuid) {
-  updated_income_form_div.style.display =
-    updated_income_form_div.style.display === "none" ? "block" : "none";
+async function callIncomeForm(uuid) {
+  updated_income_form_div.style.display = "block";
 
   //get data from backend
 
@@ -423,5 +523,30 @@ async function callForm(uuid) {
   document.getElementById("updated_income_description").value =
     incomeData.description;
   document.querySelector("#updated_income_form input[name='uuid']").value =
+    uuid;
+}
+
+async function callExpenseForm(uuid) {
+  updated_expense_form_div.style.display = "block";
+
+  //get data from backend
+
+  let expenseData = await fetch(`/expense/getExpenseData/${uuid}`);
+  if (!expenseData.ok) {
+    console.error("Failed to fetch expense data");
+    return;
+  }
+
+  expenseData = await expenseData.json();
+
+  //add placeholder and values
+
+  document.getElementById("updated_expense_amount").value = expenseData.amount;
+  document.getElementById("updated_expense_date").value = expenseData.date;
+  document.getElementById("updated_expense_description").value =
+    expenseData.description;
+  document.getElementById("updated_expense_category").value =
+    expenseData.category;
+  document.querySelector("#updated_expense_form input[name='uuid']").value =
     uuid;
 }

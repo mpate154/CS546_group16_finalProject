@@ -76,7 +76,7 @@ const incomeFunctions = {
     month = exportedMethods.checkNumber(month);
     year = exportedMethods.checkNumber(year);
     if (month.length != 2 || year.length != 4)
-      throw "Error: invalid format for year and date";
+      throw "Invalid format for year and date";
 
     const pattern = `^${month}/\\d{2}/${year}`;
     const incomeCollection = await income();
@@ -103,7 +103,7 @@ const incomeFunctions = {
     //check month and year format
 
     year = exportedMethods.checkNumber(year);
-    if (year.length != 4) throw "Error: invalid format for year and date";
+    if (year.length != 4) throw "Invalid format for year and date";
 
     const pattern = `^(0[1-9]|1[0-2])/\\d{2}/${year}`;
     const incomeCollection = await income();
@@ -168,6 +168,7 @@ const incomeFunctions = {
       description = exportedMethods.checkString(description);
     } else description = "";
 
+    const incomeCollection = await income();
     const incomeToUpdate = await incomeCollection.findOne({
       uuid: uuid,
     });
@@ -183,14 +184,13 @@ const incomeFunctions = {
       description: description,
     };
 
-    const incomeCollection = await income();
     const updatedIncome = await incomeCollection.findOneAndReplace(
       { uuid: uuid },
       newIncome,
       { returnDocument: "after" }
     );
     if (!updatedIncome)
-      throw `Error: Update failed! Could not update income with uuid ${uuid}`;
+      throw `Update failed! Could not update income with uuid ${uuid}`;
   },
 };
 
