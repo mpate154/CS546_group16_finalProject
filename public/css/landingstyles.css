@@ -1,0 +1,292 @@
+#page_content{
+    display: block;
+    margin: auto;
+    
+  }
+  /***************** LANDING LAYOUT ************************/
+  
+  
+  body {
+    font-family: serif,Georgia,'Times New Roman';
+    background-size: cover;    /* Cover the whole viewport */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* This makes it fixed */
+  }
+  
+  .landing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0 5%;
+  }
+  
+  .description-box {
+    background-color: #ffffffd9;
+    border-radius: 15px;
+    padding: 30px;
+    margin-right: 30px;
+    max-width: 55%;
+    text-align: left;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .description-box h1 {
+    font-size: 44px;
+    margin-bottom: 15px;
+    font-style: italic;
+    text-align: left;
+    color: #5185bd;
+  }
+  
+  .description-box p {
+    font-size: 20px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+  
+  .btn-container{
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .description-box .btn {
+    display: inline-block;
+    font-size: 18px;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    background-color: #d426ae;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .description-box .btn:hover {
+    background-color: #c20198;
+  }
+  
+  .team-box {
+    background-color: #ffffffd9;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 100%;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .team-box h2 {
+    font-size: 32px;
+    margin-top: -8px;
+    font-style: italic;
+    margin-bottom: 15px;
+    color:  #5185bd;
+  }
+  
+  /* Team Member Styling */
+  .member-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+  }
+  
+  .member1{
+    margin-right: 10px;
+    text-align: center;
+    font-size: 18px;
+  }
+  .member2{
+    margin-left: 10px;
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .member-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    object-fit: cover;
+  }
+  
+  .member1 p {
+  
+    margin: 0;
+    font-style: italic;
+  
+    font-size: 18px;
+    color: #333;
+  }
+  .member2 p {
+  
+    margin: 0;
+    font-style: italic;
+    
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .landing-container {
+        flex-direction: column;
+    }
+  
+    .description-box,
+    .team-box {
+        max-width: 90%;
+        margin-bottom: 20px;
+    }
+  
+    .member-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+  }
+  
+  
+  /***************** SIGNUP/SIGNIN LAYOUT ************************/
+  
+  h1 {
+    text-align: center;
+    font-style: italic;
+    margin-top: 20px;
+    font-size: 44px;
+    color: #457dc3;
+  }
+  
+  form {
+    font-size: 18px;
+    width: 550px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  input, select{
+    padding: 10px;
+    font-size: 12px;
+    margin-top: 5px;
+  
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 15px;
+  }
+  
+  input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  }
+  
+  #gender{
+    font-family: serif;
+    font-size: 16px;
+  }
+  
+  
+  .button-container {
+    font-family: 'Times New Roman', Times, serif;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  .submit {
+    font-family: 'Times New Roman', Times, serif;
+    padding: 12px 40px;
+    font-size: 18px;
+    background-color: #28a745;
+    width: 100%;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit:hover {
+    background-color: #218838;
+  }
+  
+  a{
+    display: block; 
+    text-align: center; 
+    font-style: italic;
+    margin-top: 10px;
+  }
+  
+  .link-container {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .link-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /***************** SIGNOUT LAYOUT ************************/
+  
+  .signout-container {
+    background-color: #ffffffd9;
+    border-radius: 15px;
+    padding: 30px;
+    margin:auto;
+    width: 50%;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .signout-container h1 {
+    margin-bottom: 44px;
+    color: #457dc3;
+  }
+  
+  .signout-container p {
+    font-size: 18px;
+    color: #000000;
+    margin-bottom: 25px;
+  }
+  
+  .signout-container a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #007bff;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .signout-container a#homelink {
+    background-color: #28a745;
+  }
+  
+  .signout-container a:hover {
+    background-color: #0056b3;
+  }
+  
+  .signout-container a#homelink:hover {
+    background-color: #218838;
+  }

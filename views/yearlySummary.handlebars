@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <h1>{{year}} Balance</h1>
+    <p>For: {{userId}}</p>
+
+  <div class="details">
+    <div id="pChart">
+      <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    </div>
+
+    <div id="info">
+      <p>Total Income: {{totalIncome}}</p>
+      <p>Total Fixed Expenses: {{totalFixedExpenses}}</p>
+      <p>Total Variable Expenses: {{totalVariableExpenses}}</p>
+      <h3>Cost Breakdown by Category</h3>
+      {{#each breakdown }}
+        <ul>
+          <li>{{@key}}: {{this}}</li>
+        </ul>
+      {{/each}}
+
+    </div>
+
+  </div>
+    
+    
+
+    {{#if error}}
+        <p>{{error}}</p>
+    {{/if}}
+
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+<script>
+  const data = {{{ totalSpentPerCategory }}}
+  const barColors = [
+    "#b91d47",
+    "#00aba9",
+    "#2b5797",
+    "#e8c3b9",
+    "#1e7145"
+  ];
+
+  new Chart("myChart", {
+    type: "pie",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        backgroundColor: barColors,
+        data: Object.values(data)
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Breakdown"
+      }
+    }
+  });
+</script>
+</body>
+</html>

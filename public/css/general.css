@@ -1,0 +1,184 @@
+/* CSS styles for income, expense, settings  */
+
+/***************** GENERAL LAYOUT ************************/
+
+* {
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+      "Lucida Sans", Arial, sans-serif;
+  }
+  
+  body {
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: [left] 15% [page_break] auto [right];
+    grid-template-rows: [top] 82% [footer_begin] 18% [bottom];
+    height: 100vh;
+  }
+  
+  /* GENERAL NAVBAR */
+  
+  nav {
+    height: 100%;
+  }
+  
+  li {
+    display: block;
+    padding: 5%;
+    color: black;
+  }
+  
+  li:hover {
+    background-color: #c996a4;
+  }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  #general_navbar_div {
+    grid-row: 1 / span 3;
+    background-color: #e6aebe;
+  }
+  
+  /* make this work */
+  .navbar_link:active {
+    background-color: darkgray;
+    text-decoration: underline;
+  }
+  
+  #signout_button {
+    margin-top: auto;
+  }
+  
+  /* PAGE CONTENT */
+  
+  #page_content {
+    background-color: #ffffff;
+    padding: 1rem;
+    overflow-y: auto; /*supposed to make it scrollable */
+  }
+  
+  /* FOOTER */
+  
+  footer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertically centers the text inside */
+    padding-left: 10px;
+    margin: 0;
+  }
+  #footer_div {
+    background-color: rgb(167, 125, 146);
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* or 'space-evenly' if you want spacing between lines */
+    align-items: center;
+    height: 100%;
+  }
+  
+  footer p {
+    display: block;
+    margin: 2px;
+  }
+  
+  #footer_title {
+    font-weight: bold;
+  }
+  
+  /******************** INCOME PAGE *********************/
+  
+  h2 {
+    width: 50%;
+    margin-top: 0;
+  }
+  
+  /* DROP-DOWNS */
+  
+  #dropdowns {
+    width: 50%;
+    padding: 5px;
+  }
+  
+  /* INCOME TABLE */
+  
+  #income_table {
+    width: 50%;
+  }
+  
+  table,
+  th,
+  td {
+    padding: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  
+  td {
+    font-size: 0.8rem;
+  }
+  
+  tr:nth-child(odd) {
+    background-color: #f7edf0;
+  }
+  
+  th {
+    background-color: #eed0d8;
+  }
+  
+  /* NEW INCOME FORM */
+  
+  #new_income {
+    padding: 5px;
+  }
+  
+  #new_income_form {
+    background-color: #f0ebec;
+    width: 50%;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  #new_income_form > * {
+    display: block;
+    padding: 3px;
+  }
+  
+  /****************** EXPENSE PAGE *******************/
+  
+  /* NEW EXPENSE FORM  */
+  
+  #new_expense {
+    padding: 5px;
+  }
+  
+  #new_expense_form {
+    background-color: #f0ebec;
+    width: 50%;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  #new_expense_form > * {
+    display: block;
+    padding: 3px;
+  }
+  
+  /* EXPENSE TABLE */
+  
+  #expense_table {
+    width: 50%;
+  }

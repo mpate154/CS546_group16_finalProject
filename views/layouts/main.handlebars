@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+
+    {{!-- for home/monthly summary pages --}}
+    {{#if home_or_summary}} 
+    <link rel="stylesheet" href="/public/css/summary.css" />
+    {{/if}}
+
+    {{!-- for landing, login, and signup, signout pages --}}
+    {{#if landing_signup_login}}
+    <link rel="stylesheet" href="/public/css/landingStyles.css">
+    {{/if}}
+
+    {{!-- for all other pages (income, expense, settings) --}}
+    {{#if general_page}}
+    <link rel="stylesheet" href="/public/css/general.css">
+    {{/if}}
+</head>
+<body {{#if landing_signup_login}}style="background-image: url('/public/images/background.jpg'); background-size: cover; background-position: center;"{{/if}}>
+
+    {{!-- for home/monthly, yearly, income, expense, and settings --}}
+    {{#if include_navbar}}
+    <div class="container">
+      <div id="general_navbar_div">
+        <nav id="general_navbar">
+          <ul>
+            <li class="navbar_link"><a href="/home">Home</a></li>
+            <li class="navbar_link"><a href="/income">Income</a></li>
+            <li class="navbar_link"><a href="/expense">Expenses</a></li>
+            <li class="navbar_link"><a href="/settings">Settings</a></li>
+            <li class="navbar_link" id="signout_button">
+              <a href="/signout">Signout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    {{/if}}
+
+    {{!-- for home/monthly and yearly --}}
+    {{#if include_summary_navbar}}
+     <div id="summary_navbar">
+        <div><a class="summary_navbar_a" href="/home">Monthly Summary</a></div>
+        <div><a class="summary_navbar_a" href="/yearly">Yearly Summary</a></div>
+      </div>
+    {{/if}}
+
+    {{!-- page content --}}
+    <div id="page_content">
+        {{{body}}} 
+    </div>
+
+    {{!-- footer --}}
+    {{!-- <div id="footer_div">
+        <footer>
+            <p id="footer_title">Creators:</p>
+            <p>Elina Rezaeian</p>
+            <p>Nastaran Jamalipour Soofi</p>
+            <p>Samantha York</p>
+            <p>Maya Patel</p>
+          
+        </footer>
+    </div> --}}
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    {{#if partial}}
+      {{> (lookup . 'partial') }}
+    {{/if}}
+    
+</body>
+</html>
