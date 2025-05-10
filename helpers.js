@@ -12,7 +12,7 @@ const exportedMethods = {
   },
 
   checkUserId(id) {
-    console.log("🔍 checkId() called with:", id, "type:", typeof id);
+    //console.log("🔍 checkId() called with:", id, "type:", typeof id);
     if (typeof id !== "string" || id.trim() === "") {
       throw "Input should be a string HERE.";
     }
@@ -141,6 +141,7 @@ const exportedMethods = {
 
     return date;
   },
+  //checks if string is all numerical
   checkNumber(input) {
     if (!input) throw `Error: You must supply an input`;
     if (typeof input !== "string") throw `Error: Input should be a string.`;
@@ -156,14 +157,21 @@ const exportedMethods = {
     ) {
       throw "Error: Invalid characters in input. There should only be numbers.";
     }
-    return parseInt(input);
+    return input;
   },
-  checkPassword(password){
-    if (!password || typeof password !== 'string' || password.trim().length === 0) {
-      throw 'You must provide a valid password to search.';
+  //checks if a password passes restrictions
+  checkPassword(password) {
+    if (
+      !password ||
+      typeof password !== "string" ||
+      password.trim().length === 0
+    ) {
+      throw "You must provide a valid password to search.";
     }
-    if(password.trim().length != password.length) throw ` Your password shouldn't contain spaces.`
-    if( password.trim().length < 8  ) throw `Your password must be at least 8 characters`
+    if (password.trim().length != password.length)
+      throw ` Your password shouldn't contain spaces.`;
+    if (password.trim().length < 8)
+      throw `Your password must be at least 8 characters`;
     if (!/[A-Z]/.test(password)) {
       throw `Your password must contain at least one uppercase letter.`;
     }
@@ -176,21 +184,56 @@ const exportedMethods = {
 
     return password.trim();
   },
+  //checks if its a valid email address
   checkEmail(email) {
     if (!email) throw `Error: You must provide an email.`;
-    if (typeof email !== 'string') throw `Error: Email must be a string.`;
-  
+    if (typeof email !== "string") throw `Error: Email must be a string.`;
+
     email = email.trim().toLowerCase();
-    if (email.length === 0) throw `Error: Email cannot be an empty string or just spaces.`;
-  
+    if (email.length === 0)
+      throw `Error: Email cannot be an empty string or just spaces.`;
+
     // This regex matches most real-world emails
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
-    if (!emailRegex.test(email)) throw `Error: Invalid email format.`;
-  
-    return email;
-  }, 
 
+    if (!emailRegex.test(email)) throw `Error: Invalid email format.`;
+
+    return email;
+  },
+  //gets the current month so the dropdown doesnt let the user pick a date past today
+  getMonthYearForFormMax() {
+    let year = this.getCurrentYear();
+    let month = this.getCurrentMonth();
+
+    return year + "-" + month;
+  },
+  //gets the current date so the dropdown doesnt let the user pick a date past today
+  getFullDateForFormMax() {
+    let date = new Date();
+    let partialDate = this.getMonthYearForFormMax();
+    let day =
+      date.getDate().toString().length < 2
+        ? "0" + date.getDate().toString()
+        : date.getDate().toString();
+
+    return partialDate + "-" + day;
+  },
+   //gets current month as string
+   getCurrentMonth() {
+    let date = new Date();
+    let month =
+      date.getMonth().toString().length < 2
+        ? "0" + (date.getMonth() + 1).toString()
+        : (date.getMonth() + 1).toString();
+    return month;
+  },
+
+  //gets current year as string
+  getCurrentYear() {
+    let date = new Date();
+    let year = date.getFullYear().toString();
+    return year;
+  },
 
   checkYear(input) {
     if (!input) throw `Error: You must supply a year`;
@@ -219,13 +262,112 @@ const exportedMethods = {
       checkAmount(amt);
     }
 
-
   },
 
   checkObject(input) {
     if (typeof input !== 'object' || Array.isArray(input) || input === null) throw `must provide a valid object`;
     return input;
-  }
+  },
+
+  //the input for the input="date" is YYYY/MM/DD so we need to flip it
+  //flips from YYYY-MM-DD to MM/DD/YYYY
+  flipDate(date) {
+    if (!date) throw `Error: You must supply a date`;
+    if (typeof date !== "string")
+      throw `Error: Inputted date should be a string.`;
+    date = date.trim();
+    if (date.length === 0) {
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    }
+
+    let dateSplit = date.split("-");
+    if (dateSplit.length < 3) throw "Error: Incorrect date format";
+    if (
+      dateSplit[0].length != 4 ||
+      dateSplit[1].length != 2 ||
+      dateSplit[2].length != 2
+    )
+      throw "Error: Date format should be yyyy/mm/dd";
+
+    return dateSplit[1] + "/" + dateSplit[2] + "/" + dateSplit[0];
+  },
+
+  //changes date format from MM/DD/YYYY -> YYYY-MM-DD
+  unflipDate(date) {
+    if (!date) throw `Error: You must supply a date`;
+    if (typeof date !== "string")
+      throw `Error: Inputted date should be a string.`;
+    date = date.trim();
+    if (date.length === 0) {
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    }
+
+    let dateSplit = date.split("/");
+    if (dateSplit.length < 3) throw "Error: Incorrect date format";
+    if (
+      dateSplit[0].length != 2 ||
+      dateSplit[1].length != 2 ||
+      dateSplit[2].length != 4
+    )
+      throw "Error: Date format is incorrect";
+
+    return dateSplit[2] + "-" + dateSplit[0] + "-" + dateSplit[1];
+  },
+
+  // mm/dd/yyyy
+  checkDate(date) {
+    if (!date) throw `Error: You must supply a date`;
+    if (typeof date !== "string")
+      throw `Error: Inputted date should be a string.`;
+    date = date.trim();
+    if (date.length === 0) {
+      throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    }
+
+    let dateSplit = date.split("/");
+    if (dateSplit.length < 3) throw "Error: Incorrect date format";
+    if (
+      dateSplit[0].length != 2 ||
+      dateSplit[1].length != 2 ||
+      dateSplit[2].length != 4
+    )
+      throw "Error: Date format should be mm/dd/yyyy";
+    if (parseInt(dateSplit[0]) < 1 || parseInt(dateSplit[0]) > 12)
+      throw "Error: Month should be between 1 and 12 inclusive.";
+
+    //make sure date is only for today and before
+    if (parseInt(dateSplit[2]) > new Date().getFullYear())
+      throw "Error: Year should be before " + new Date().getFullYear();
+
+    if (
+      (parseInt(dateSplit[2]) == new Date().getFullYear() &&
+        parseInt(dateSplit[0]) > new Date().getMonth() + 1) ||
+      (parseInt(dateSplit[2]) == new Date().getFullYear() &&
+        parseInt(dateSplit[0]) == new Date().getMonth() + 1 &&
+        parseInt(dateSplit[1]) > new Date().getDate())
+    )
+      throw "Error: Date must be today or a date before.";
+
+    let days = {
+      "01": "31",
+      "02": "28",
+      "03": "31",
+      "04": "30",
+      "05": "31",
+      "06": "30",
+      "07": "31",
+      "08": "31",
+      "09": "30",
+      10: "31",
+      11: "30",
+      12: "31",
+    };
+
+    if (!(parseInt(dateSplit[1]) <= parseInt(days[dateSplit[0]])))
+      throw "Error: Invalid day for dateReleased";
+
+    return date;
+  },
   
 };
 

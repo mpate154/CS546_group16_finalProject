@@ -5,7 +5,7 @@ import month from "./monthlySummary.js";
 
 const yearlyFunctions = {
     async addYearlySummary(userId, year) {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
         const userCollection = await users();
@@ -28,7 +28,7 @@ const yearlyFunctions = {
             }
         }
 
-        const findUserId = await userCollection.findOne({userId: userId, year:year});
+        const findUserId = await userCollection.findOne({_id: userId, year:year});
         if (findUserId) throw "userId and year combo already exists";
 
         let newYearly = {userId, year, totalSpentPerCategory, totalIncome, totalFixedExpenses, totalVariableExpenses};
@@ -39,7 +39,7 @@ const yearlyFunctions = {
         return yearlySum;
     }, 
     async getYearlySummary(userId, year) {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         const yearlyCollection = await yearlySummary();
         const foundYearSum = await yearlyCollection.findOne({year: year});
@@ -48,7 +48,7 @@ const yearlyFunctions = {
     },
 
     async updateTotalFixedExpenses(userId, year) {
-        uuserId = exportedMethods.checkUserId(userId);
+        uuserId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
 
         let totalFixedExpenses = 0;
@@ -62,14 +62,14 @@ const yearlyFunctions = {
         }
 
         const yearlyCollection = await yearlySummary();
-        const updatedInfo = await yearlyCollection.findOneAndUpdate({userId: userId, year: year}, {$set: {totalFixedExpenses: totalFixedExpenses}}, {returnDocument: 'after'});
+        const updatedInfo = await yearlyCollection.findOneAndUpdate({_id: userId, year: year}, {$set: {totalFixedExpenses: totalFixedExpenses}}, {returnDocument: 'after'});
         if (!updatedInfo) throw 'total fixed expenses could not be updated';
         return `${updatedInfo._id.toString()} has been updated`;
     },
 
 
     async updateTotalVariableExpenses(userId, year) {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
 
         let totalVariableExpenses = 0;
@@ -83,13 +83,13 @@ const yearlyFunctions = {
         }
 
         const yearlyCollection = await yearlySummary();
-        const updatedInfo = await yearlyCollection.findOneAndUpdate({userId: userId, year:year}, {$set: {totalVariableExpenses: totalVariableExpenses}}, {returnDocument: 'after'});
+        const updatedInfo = await yearlyCollection.findOneAndUpdate({_id: userId, year:year}, {$set: {totalVariableExpenses: totalVariableExpenses}}, {returnDocument: 'after'});
         if (!updatedInfo) throw 'total variable expenses could not be updated';
         return `${updatedInfo._id.toString()} has been updated`;
     }, 
 
     async updateTotalIncome(userId, year) {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
         let totalIncome = 0;
@@ -103,13 +103,13 @@ const yearlyFunctions = {
         }
 
         const yearlyCollection = await yearlySummary();
-        const updatedInfo = await yearlyCollection.findOneAndUpdate({userId: userId, year:year}, {$set: {totalIncome: totalIncome}}, {returnDocument: 'after'});
+        const updatedInfo = await yearlyCollection.findOneAndUpdate({_id: userId, year:year}, {$set: {totalIncome: totalIncome}}, {returnDocument: 'after'});
         if (!updatedInfo) throw 'total income could not be updated';
         return `${updatedInfo._id.toString()} has been updated`;
     }, 
 
     async updateTotalSpentPerCategory(userId, year) {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
         let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -124,17 +124,17 @@ const yearlyFunctions = {
         }
 
         const yearlyCollection = await yearlySummary();
-        const updatedInfo = await yearlyCollection.findOneAndUpdate({userId: userId, year:year}, {$set: {totalSpentPerCategory: totalSpentPerCategory}}, {returnDocument: 'after'});
+        const updatedInfo = await yearlyCollection.findOneAndUpdate({_id: userId, year:year}, {$set: {totalSpentPerCategory: totalSpentPerCategory}}, {returnDocument: 'after'});
         if (!updatedInfo) throw 'total income could not be updated';
         return `${updatedInfo._id.toString()} has been updated`;
     }, 
-    
+
     async recalculateYearly() {
-        userId = exportedMethods.checkUserId(userId);
+        userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
         const yearlyCollection = await yearlySummary();
-        const findYearSum = await yearlyCollection.findOne({userId: userId, year:year});
+        const findYearSum = await yearlyCollection.findOne({_id: userId, year:year});
         if (!findYearSum) throw `${year} yearly summary doesn't exist`;
         await this.updateTotalIncome(userId, year);
         await this.updateTotalFixedExpenses(userId, year);

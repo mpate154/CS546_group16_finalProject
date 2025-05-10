@@ -141,7 +141,18 @@
     justify-content: center;
   }
 
-  #pChart, #info {
-    flex: 1 1 300px;
-    max-width: 500px;
+  #charts {
+    flex: 2;
+    justify-content: center;
   }
+
+#info {
+    flex: 1;
+    justify-content: center;
+  }
+
+ul, li {
+    padding: 0;
+    margin: 0;
+}
+

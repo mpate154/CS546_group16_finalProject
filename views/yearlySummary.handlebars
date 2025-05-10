@@ -11,32 +11,26 @@
     <p>For: {{userId}}</p>
 
   <div class="details">
-    <div id="pChart">
-      <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <div id="charts">
+      <canvas id="pieChart" style="width:100%;max-width:600px"></canvas>
+      <canvas id="lineChart" style="width:100%;max-width:600px"></canvas>
     </div>
-
     <div id="info">
       <p>Total Income: {{totalIncome}}</p>
       <p>Total Fixed Expenses: {{totalFixedExpenses}}</p>
       <p>Total Variable Expenses: {{totalVariableExpenses}}</p>
       <h3>Cost Breakdown by Category</h3>
-      {{#each breakdown }}
-        <ul>
+      <ul>
+        {{#each breakdown }}
           <li>{{@key}}: {{this}}</li>
-        </ul>
-      {{/each}}
-
+        {{/each}}
+      </ul>
     </div>
-
   </div>
-    
-    
-
+  
     {{#if error}}
         <p>{{error}}</p>
     {{/if}}
-
-<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 
 <script>
   const data = {{{ totalSpentPerCategory }}}
@@ -48,7 +42,7 @@
     "#1e7145"
   ];
 
-  new Chart("myChart", {
+  new Chart("pieChart", {
     type: "pie",
     data: {
       labels: Object.keys(data),
@@ -64,6 +58,34 @@
       }
     }
   });
+
+  const monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const yValues = [7,8,8,9,9,9,10,11, ,14,14,15];
+
+  new Chart("lineChart", {
+    type: "line",
+    data: {
+      labels: monthList,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yValues
+      }]
+    },
+    options: {
+      legend: {display: false},
+      scales: {
+        yAxes: [{ticks: 
+          {min: 6,
+          max:16
+          }
+        }]
+      }
+    }
+  });
+
 </script>
 </body>
 </html>

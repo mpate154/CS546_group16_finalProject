@@ -1,9 +1,7 @@
 import { income } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import exportedMethods from "../helpers.js";
-//const { v4: uuidv4 } = require("uuid");
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
 
 const incomeFunctions = {
   //returns an income object
@@ -51,19 +49,21 @@ const incomeFunctions = {
     let incomeFromUserId = await incomeCollection
       .find({ userId: userId })
       .toArray();
-    if (incomeFromUserId.length == 0) throw "Could not fetch all incomes.";
+    //if (incomeFromUserId.length == 0) throw "Could not fetch all incomes.";
 
     //sort
-    incomeFromUserId.sort((x, y) => {
-      const dateX = new Date(x.date);
-      const dateY = new Date(y.date);
-      return dateY - dateX;
-    });
+    if (incomeFromUserId.length !== 0) {
+      incomeFromUserId.sort((x, y) => {
+        const dateX = new Date(x.date);
+        const dateY = new Date(y.date);
+        return dateY - dateX;
+      });
 
-    incomeFromUserId = incomeFromUserId.map((element) => {
-      element._id = element._id.toString();
-      return element;
-    });
+      incomeFromUserId = incomeFromUserId.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+    }
 
     return incomeFromUserId;
   },
@@ -76,20 +76,24 @@ const incomeFunctions = {
     month = exportedMethods.checkNumber(month);
     year = exportedMethods.checkNumber(year);
     if (month.length != 2 || year.length != 4)
-      throw "Error: invalid format for year and date";
+      throw "Invalid format for year and date";
 
     const pattern = `^${month}/\\d{2}/${year}`;
     const incomeCollection = await income();
     let incomeFromUserId = await incomeCollection
       .find({ $and: [{ userId: userId }, { date: { $regex: pattern } }] })
       .toArray();
-    if (incomeFromUserId.length === 0)
-      throw "Could not fetch all incomes from month and year.";
-
-    incomeFromUserId = incomeFromUserId.map((element) => {
-      element._id = element._id.toString();
-      return element;
-    });
+    if (incomeFromUserId.length !== 0) {
+      incomeFromUserId.sort((x, y) => {
+        const dateX = new Date(x.date);
+        const dateY = new Date(y.date);
+        return dateY - dateX;
+      });
+      incomeFromUserId = incomeFromUserId.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+    }
     return incomeFromUserId;
   },
 
@@ -99,20 +103,24 @@ const incomeFunctions = {
     //check month and year format
 
     year = exportedMethods.checkNumber(year);
-    if (year.length != 4) throw "Error: invalid format for year and date";
+    if (year.length != 4) throw "Invalid format for year and date";
 
     const pattern = `^(0[1-9]|1[0-2])/\\d{2}/${year}`;
     const incomeCollection = await income();
     let incomeFromUserIdByYear = await incomeCollection
       .find({ $and: [{ userId: userId }, { date: { $regex: pattern } }] })
       .toArray();
-    if (incomeFromUserIdByYear.length == 0)
-      throw `Could not fetch all incomes from ${year}.`;
-
-    incomeFromUserIdByYear = incomeFromUserIdByYear.map((element) => {
-      element._id = element._id.toString();
-      return element;
-    });
+    if (incomeFromUserIdByYear.length !== 0) {
+      incomeFromUserIdByYear.sort((x, y) => {
+        const dateX = new Date(x.date);
+        const dateY = new Date(y.date);
+        return dateY - dateX;
+      });
+      incomeFromUserIdByYear = incomeFromUserIdByYear.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+    }
     return incomeFromUserIdByYear;
   },
 
@@ -127,11 +135,24 @@ const incomeFunctions = {
     return `${deletedIncome._id.toString()} has been deleted.`;
   },
 
+  async getIncomeByUuid(uuid) {
+    let incomeUuid = exportedMethods.checkString(uuid);
+
+    const incomeCollection = await income();
+    const oneIncome = await incomeCollection.findOne({
+      uuid: uuid,
+    });
+    if (oneIncome === null)
+      throw "Income uuid does not have corresponding income.";
+    oneIncome._id = oneIncome._id.toString();
+    return oneIncome;
+  },
+
   async removeIncomeByUuid(uuid) {
     uuid = exportedMethods.checkString(uuid);
     const incomeCollection = await income();
     const deletedIncome = await incomeCollection.findOneAndDelete({
-      uuid: new ObjectId(uuid),
+      uuid: uuid,
     });
 
     if (!deletedIncome) throw "Could not delete income.";
@@ -147,6 +168,7 @@ const incomeFunctions = {
       description = exportedMethods.checkString(description);
     } else description = "";
 
+    const incomeCollection = await income();
     const incomeToUpdate = await incomeCollection.findOne({
       uuid: uuid,
     });
@@ -162,15 +184,14 @@ const incomeFunctions = {
       description: description,
     };
 
-    const incomeCollection = await income();
     const updatedIncome = await incomeCollection.findOneAndReplace(
       { uuid: uuid },
       newIncome,
       { returnDocument: "after" }
     );
     if (!updatedIncome)
-      throw `Error: Update failed! Could not update income with uuid ${uuid}`;
-  }
+      throw `Update failed! Could not update income with uuid ${uuid}`;
+  },
 };
 
 export default incomeFunctions;
