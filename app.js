@@ -9,7 +9,8 @@ import {
      loginRedirect,
      registerRedirect,
      protectHomePage,
-     protectSignoutPage
+     protectSignoutPage,
+     protectSettingsPage
    } from './middleware.js';
 
 const staticDir = express.static('public');
@@ -52,7 +53,9 @@ app.use(logger);
 app.use('/login', loginRedirect);
 app.use('/register', registerRedirect);
 app.use('/home',protectHomePage);
+app.use('/settings', protectSettingsPage);
 app.use('/signout', protectSignoutPage);
+
 
 configRoutes(app);
 

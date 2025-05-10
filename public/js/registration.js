@@ -3,8 +3,10 @@ const signinForm = document.getElementById('signin-form');
 
 function showError(message) {
 
+  const serverError = document.querySelector('#server_error');
+  if (serverError) serverError.remove();
   document.querySelectorAll('.client-error').forEach(e => e.remove());
-
+  
   let errorP = document.createElement('p');
   errorP.style.color = 'red';
   errorP.style.textAlign = 'center';
@@ -116,7 +118,7 @@ if (signupForm) {
       return;
     }
 
-    if (!age || isNaN(age) || parseInt(age) < 1) {
+    if (!age || isNaN(age) || parseInt(age) < 13) {
       showError('Age must be a valid number.');
       document.getElementById('password').value = '';
       document.getElementById('confirmPassword').value = '';

@@ -47,4 +47,12 @@ export function protectSignoutPage(req, res, next) {
   }
   next();
 }
+
+export function protectSettingsPage(req, res, next) {
+  if (req.method === 'GET' && !req.session.user) {
+    console.log("[Setting PROTECTION]: User not logged in, redirecting to /login");
+     return res.redirect('/login');
+    }
+  next();
+}
    

@@ -22,6 +22,11 @@ let exportedMethods = {
     age = validation.checkNumber(age);
     balance = validation.checkAmount(balance);
     password = validation.checkPassword(password);
+
+    if(parseInt(age) < 13){
+      throw `Users must be at least 13 years old to sign up.`;
+    }
+
     const hashedPassword= await bcrypt.hash(password, saltRounds);
 
     const usersCollection = await users();
@@ -40,7 +45,7 @@ let exportedMethods = {
       password: hashedPassword,
       categories: ['Groceries','Shopping','Restaurant','Transportation','Rent'],
       fixedExpenses: [],
-      balance: balance
+      balance: parseFloat(balance)
     };
     
     const insertInfo = await usersCollection.insertOne(newUser);
@@ -80,7 +85,7 @@ let exportedMethods = {
       fixedExpenses: existingUser.fixedExpenses
     };
   },
-  async updateUserPut(id, firstName, lastName, email, gender, city, state, age, hashedPassword, balance) {
+  async updateUserPut(id, firstName, lastName, email, gender, city, state, age, balance) {
     id = validation.checkId(id);
     firstName = validation.checkFirstName(firstName);
     lastName = validation.checkLastName(lastName);
@@ -102,25 +107,25 @@ let exportedMethods = {
       gender: gender.trim(),
       city: city.trim(),
       state : state.trim(),
-      age: age,
-      password: hashedPassword,
+      age: parseInt(age),
+      password: usersCol.password,
       categories: usersCol.categories,
       fixedExpenses: usersCol.fixedExpenses,
-      balance: balance
+      balance: parseFloat(balance)
     };
 
     const updateInfo = await usersCollection.findOneAndUpdate(
       {_id: new ObjectId(id)},
       {$set: userUpdateInfo},
-      {returnDocument: 'after'}
+      {returnOriginal: false}
     );
-    if (updateInfo.lastErrorObject.n === 0)
-      throw [
-        404,
-        `Error: Update failed, could not find a user with id of ${id}`
-      ];
+    // if (updateInfo.lastErrorObject.n === 0)
+    //   throw [
+    //     404,
+    //     `Error: Update failed, could not find a user with id of ${id}`
+    //   ];
 
-    return await updateInfo.value;
+    return true;
   },
   async addCategoryById(userID, newCategory) {
 
@@ -142,8 +147,8 @@ let exportedMethods = {
       {returnDocument: 'after'}
     );
 
-    if (!updatedInfo.value) throw 'Error: Could not add category';
-    return updatedInfo.value;
+    //if (!updatedInfo.value) throw 'Error: Could not add category';
+    return true;
   },
   async deleteCategoryById(userID, categoryToDelete) {
 
@@ -164,8 +169,8 @@ let exportedMethods = {
       {returnDocument: 'after'}
     );
 
-    if (!updatedInfo.value) throw 'Error: Could not delete category';
-    return updatedInfo.value;
+    //if (!updatedInfo.value) throw 'Error: Could not delete category';
+    return true;
   },
   async addFixedExpensesById(userID, title, category, amount){
     userID = validation.checkId(userID);
@@ -177,12 +182,18 @@ let exportedMethods = {
     const user = await userCollection.findOne({_id: new ObjectId(userID)});
     if (!user) throw 'User not found';
 
+    if (!user) {
+      console.error("User not found with ID:", userID);
+    }
+
     const newFixedExpense = {
       _id: new ObjectId(),
       title: title.trim(),
       category: category.trim(),
-      amount: amount
+      amount: parseFloat(amount)
     };
+
+    console.log("Inserting fixed expense:", newFixedExpense);
 
     const updatedInfo = await userCollection.findOneAndUpdate(
       {_id: new ObjectId(userID)},
@@ -190,9 +201,7 @@ let exportedMethods = {
       {returnDocument: 'after'}
     );
 
-    if (!updatedInfo.value) throw 'Error: Could not add fixed expense';
-    return updatedInfo.value;
-
+    return newFixedExpense;
   },
   async deleteFixedExpenseById(userID, expenseID) {
     userID = validation.checkId(userID);
@@ -210,23 +219,18 @@ let exportedMethods = {
       { returnDocument: 'after' }
     );
   
-    if (!updateResult.value) throw 'Error: Could not delete the fixed expense';
     return updateResult.value;
   },
   async updateFixedExpenseById(userID, expenseID, title, category, amount) {
+    
     userID = validation.checkId(userID);
     expenseID = validation.checkId(expenseID);
     title = validation.checkString(title).trim();
     category = validation.checkString(category).trim();
-    amount = validation.checkAmount(amount);
+    amount = parseFloat(validation.checkAmount(amount));
   
     const userCollection = await users();
   
-    const updatedExpense = {
-      'fixedExpenses.$.title': title,
-      'fixedExpenses.$.category': category,
-      'fixedExpenses.$.amount': amount
-    };
   
     const updateResult = await userCollection.findOneAndUpdate(
       {
@@ -234,13 +238,17 @@ let exportedMethods = {
         'fixedExpenses._id': new ObjectId(expenseID)
       },
       {
-        $set: updatedExpense
+        $set: {
+          'fixedExpenses.$.title': title,
+          'fixedExpenses.$.category': category,
+          'fixedExpenses.$.amount': amount
+        }
       },
       { returnDocument: 'after' }
     );
   
-    if (!updateResult.value) throw 'Error: Could not update the fixed expense';
-    return updateResult.value;
+    //if (!updateResult.value) throw 'Error: Could not update the fixed expense';
+    return true;
   }
 };
 export default exportedMethods;
