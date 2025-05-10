@@ -12,6 +12,7 @@ import {
   protectSignoutPage,
   protectIncomePage,
   protectExpensePage,
+  protectSettingsPage,
 } from "./middleware.js";
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -62,7 +63,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
 
 app.engine("handlebars", handlebarsInstance.engine);
-app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
+//app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 app.use(logger);
@@ -72,6 +73,7 @@ app.use("/home", protectHomePage);
 app.use("/signout", protectSignoutPage);
 app.use("/income", protectIncomePage);
 app.use("/expense", protectExpensePage);
+app.use("/settings", protectSettingsPage);
 
 configRoutes(app);
 

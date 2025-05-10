@@ -19,7 +19,7 @@ const exportedMethods = {
       throw "You must provide a valid firstName to search.";
     }
 
-    if (!firstName.match(/^[a-zA-Z]+$/))
+    if (!firstName.trim().match(/^[a-zA-Z]+$/))
       throw `Your firstName must only contain letters.`;
 
     if (firstName.trim().length < 2 || firstName.trim().length > 20)
@@ -35,7 +35,7 @@ const exportedMethods = {
     ) {
       throw "You must provide a valid lastName to search.";
     }
-    if (!lastName.match(/^[a-zA-Z]+$/))
+    if (!lastName.trim().match(/^[a-zA-Z]+$/))
       throw `Your lastName must only contain letters.`;
 
     if (lastName.trim().length < 2 || lastName.trim().length > 20)

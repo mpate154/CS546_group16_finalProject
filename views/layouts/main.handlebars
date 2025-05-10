@@ -19,9 +19,12 @@
     {{#if general_page}}
     <link rel="stylesheet" href="/public/css/general.css">
     {{/if}}
-    <script type="module" src="/public/js/form_process.js"></script>
+     {{!-- for settings  --}}
+    {{#if settings_page}}
+    <link rel="stylesheet" href="/public/css/settings.css">
+    {{/if}}
 </head>
-<body>
+<body {{#if landing_signup_login}}style="background-image: url('/public/images/background.jpg'); background-size: cover; background-position: center;"{{/if}}>
 
     {{!-- for home/monthly, yearly, income, expense, and settings --}}
     {{#if include_navbar}}
@@ -66,7 +69,11 @@
           
         </footer>
     {{/if}}
-</body>
 
-{{!-- {{> (lookup . 'partial') }} --}}
+     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    {{#if partial}}
+      {{> (lookup . 'partial') }}
+    {{/if}}
+</body>
 </html>

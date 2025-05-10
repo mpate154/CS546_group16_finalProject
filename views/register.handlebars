@@ -2,7 +2,7 @@
 <h1>{{title}}</h1>
 
 {{#if error}}
-  <p style="color: red; text-align: center;">{{error}}</p>
+  <p id="server_error" name="server_error" style="color: red; text-align: center;">{{error}}</p>
 {{/if}}
 
 <form name="signup-form" id="signup-form" method="Post" action="/register">
@@ -82,5 +82,3 @@
   <a id="homelink" href="/">Go back to the Main Page!</a>
 
 </form>
-
-

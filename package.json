@@ -4,10 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "seed": "node ./tasks/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "author": "Elina Rezaeian",
+  "author": "Elina Rezaeian, Maya Patel, Samantha York, Nastaran Soofi",
   "license": "MIT",
   "description": "",
   "dependencies": {
@@ -18,7 +19,10 @@
     "express-session": "^1.18.1",
     "handlebars": "^4.7.8",
     "mongodb": "^6.16.0",
-    "xss": "^1.0.15",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17"
   }
 }
