@@ -14,6 +14,7 @@ import {
   protectExpensePage,
   protectSettingsPage,
 } from "./middleware.js";
+     
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -67,6 +68,7 @@ app.engine("handlebars", handlebarsInstance.engine);
 app.set("view engine", "handlebars");
 
 app.use(logger);
+
 app.use("/login", loginRedirect);
 app.use("/register", registerRedirect);
 app.use("/home", protectHomePage);
@@ -75,9 +77,11 @@ app.use("/income", protectIncomePage);
 app.use("/expense", protectExpensePage);
 app.use("/settings", protectSettingsPage);
 
+
+
 configRoutes(app);
 
-//CHANGE LOCAL HOST
+
 app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");

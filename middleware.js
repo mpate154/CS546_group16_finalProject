@@ -11,6 +11,7 @@ export function logger(req, res, next) {
   console.log(`[${timestamp}]: ${method} ${path} (${authStatus})`);
   next();
 }
+
 export function loginRedirect(req, res, next) {
   if (req.method === "GET" && req.session.user) {
     if (req.path === "/login") {
@@ -82,3 +83,13 @@ export function protectSettingsPage(req, res, next) {
   }
   next();
 }
+
+
+export function protectSettingsPage(req, res, next) {
+  if (req.method === 'GET' && !req.session.user) {
+    console.log("[Setting PROTECTION]: User not logged in, redirecting to /login");
+     return res.redirect('/login');
+    }
+  next();
+}
+

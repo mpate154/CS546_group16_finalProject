@@ -1,3 +1,4 @@
+
 function showFormError(message, formId) {
   const form = document.getElementById(formId);
   form.querySelectorAll(".form-error").forEach((e) => e.remove());
@@ -51,6 +52,7 @@ document
 
       return;
     }
+
 
     if (
       !lastName ||
@@ -198,11 +200,13 @@ document
 const handleDeleteCategory = async (category, liElement, optionElement) => {
   try {
     const response = await fetch(`/settings/deleteCategory`, {
+
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ category }),
+
     });
 
     if (response.ok) {
@@ -225,6 +229,7 @@ document.querySelectorAll(".delete-category").forEach((button) => {
     const optionElement = document.querySelector(
       `#fixedCategory option[value="${category}"]`
     );
+
     await handleDeleteCategory(category, liElement, optionElement);
   });
 });
@@ -385,3 +390,4 @@ document
       `;
     }
   });
+

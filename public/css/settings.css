@@ -1,4 +1,5 @@
 body {
+
   font-family: serif, Georgia, "Times New Roman";
   background-color: #f8f9fa;
   margin: 0;
@@ -15,6 +16,7 @@ h1 {
 }
 .info_container {
   font-family: serif, Georgia, "Times New Roman";
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -64,12 +66,14 @@ h1 {
   border-radius: 15px;
 }
 
+
 label,
 h3 {
   font-family: serif, Georgia, "Times New Roman";
 }
 .form-row {
   font-family: serif, Georgia, "Times New Roman";
+
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -94,12 +98,14 @@ select {
   font-size: 15px;
 }
 
+
 input:focus,
 select:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
+
 #expense_category_container {
   font-family: serif, Georgia, "Times New Roman";
   display: flex;
@@ -109,11 +115,13 @@ select:focus {
   width: 90%;
   padding: 20px;
   margin: 30px auto;
+
 }
 #expense_category_container {
   display: flex;
   gap: 20px;
 }
+
 #fixed_expense_form_div,
 #category_form_div {
   flex: 1;
@@ -135,6 +143,7 @@ form button {
 form button:hover {
   background-color: #218838;
 }
+
 #fixed_expense_list,
 #category_list {
   font-family: serif, Georgia, "Times New Roman";
@@ -152,6 +161,7 @@ form button:hover {
   padding: 0.7rem;
   border-radius: 5px;
 }
+
 li {
   font-family: serif, Georgia, "Times New Roman";
 }
@@ -164,8 +174,8 @@ li {
   cursor: pointer;
   color: white;
 }
+
 #add_fixed_expense_form,
-#add_category_form {
   margin-top: 20px;
   padding: 15px;
   background-color: white;
@@ -173,6 +183,7 @@ li {
 }
 
 /* 
+
   #settings_div {
     width: 85%;
     margin: 2rem auto;
@@ -229,3 +240,4 @@ li {
   
   
    */
+

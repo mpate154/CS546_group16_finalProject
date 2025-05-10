@@ -33,11 +33,13 @@ let exportedMethods = {
     balance = validation.checkAmount(balance);
     password = validation.checkPassword(password);
 
+
     if (parseInt(age) < 13) {
       throw `Users must be at least 13 years old to sign up.`;
     }
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
 
     const usersCollection = await users();
     const existingUser = await usersCollection.findOne({ email: email });
@@ -61,7 +63,9 @@ let exportedMethods = {
         "Rent",
       ],
       fixedExpenses: [],
+
       balance: parseFloat(balance),
+
     };
 
     const insertInfo = await usersCollection.insertOne(newUser);
@@ -82,6 +86,7 @@ let exportedMethods = {
       throw `Either the email or password is invalid`;
     }
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
+
     if (!passwordMatch) {
       throw `Either the email or password is invalid`;
     }
@@ -100,6 +105,7 @@ let exportedMethods = {
       fixedExpenses: existingUser.fixedExpenses,
     };
   },
+
   async updateUserPut(
     id,
     firstName,
@@ -111,6 +117,7 @@ let exportedMethods = {
     age,
     balance
   ) {
+
     id = validation.checkId(id);
     firstName = validation.checkFirstName(firstName);
     lastName = validation.checkLastName(lastName);
@@ -209,11 +216,16 @@ let exportedMethods = {
       console.error("User not found with ID:", userID);
     }
 
+    if (!user) {
+      console.error("User not found with ID:", userID);
+    }
+
     const newFixedExpense = {
       _id: new ObjectId(),
       title: title.trim(),
       category: category.trim(),
       amount: parseFloat(amount),
+
     };
 
     console.log("Inserting fixed expense:", newFixedExpense);
@@ -241,17 +253,19 @@ let exportedMethods = {
       },
       { returnDocument: "after" }
     );
-
     return updateResult.value;
   },
   async updateFixedExpenseById(userID, expenseID, title, category, amount) {
+    
     userID = validation.checkId(userID);
     expenseID = validation.checkId(expenseID);
     title = validation.checkString(title).trim();
     category = validation.checkString(category).trim();
     amount = parseFloat(validation.checkAmount(amount));
 
+
     const userCollection = await users();
+
 
     const updateResult = await userCollection.findOneAndUpdate(
       {
@@ -264,6 +278,7 @@ let exportedMethods = {
           "fixedExpenses.$.category": category,
           "fixedExpenses.$.amount": amount,
         },
+
       },
       { returnDocument: "after" }
     );
@@ -271,5 +286,6 @@ let exportedMethods = {
     //if (!updateResult.value) throw 'Error: Could not update the fixed expense';
     return true;
   },
+
 };
 export default exportedMethods;

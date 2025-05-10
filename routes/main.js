@@ -9,6 +9,7 @@ import incomeFunctions from "../data/income.js";
 import { income } from "../config/mongoCollections.js";
 import transactionFunctions from "../data/transactions.js";
 
+
 //---------------------------- Landing Routes ----------------------------//
 router
   .route("/") // landing
@@ -41,12 +42,14 @@ router
           include_summary_navbar: false,
           partial: false,
           include_footer: false,
+
         });
       }
     } catch (e) {
       return res.status(500).send("Internal Server Error");
     }
   });
+
 
 //---------------------------- Register Routes ----------------------------//
 router
@@ -99,6 +102,7 @@ router
           .status(400)
           .render("register", { error: "All fields are required", ...data });
       }
+  
 
       try {
         firstName = validation.checkFirstName(firstName);

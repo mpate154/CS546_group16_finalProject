@@ -9,6 +9,7 @@ function showError(message) {
   let errorP = document.createElement("p");
   errorP.style.color = "red";
   errorP.style.textAlign = "center";
+
   errorP.innerText = message;
   errorP.classList.add("client-error");
 
@@ -148,6 +149,7 @@ if (signupForm) {
       showError("Age must be a valid number.");
       document.getElementById("password").value = "";
       document.getElementById("confirmPassword").value = "";
+
       return;
     }
 
