@@ -10,7 +10,7 @@
       id="dropdown_form"
     >
       <input type="hidden" name="form_type" value="date_dropdown" />
-      <label for="dropdown_month_and_year">Pick the month to display:</label>
+      <label for="dropdown_month_and_year" class="label-1">Pick the Month to Display:</label>
       <!-- use getMonthYearForFormMax() helper function for partial_date -->
       <input
         type="month"
@@ -20,7 +20,7 @@
         name="dropdown_month_and_year"
         value="{{current_transaction_date_to_show}}"
       />
-      <input type="submit" value="Submit" />
+      <input class="submit-input" type="submit" value="Submit" />
     </form>
   </div>
 </div>
@@ -70,7 +70,7 @@
 
 {{! update expense form }}
 <div id="updated_expense_form_div" style="display: none;">
-  <h3>Edit expense:</h3>
+  <h3>Edit Expense:</h3>
   <form action="/expense" method="POST" id="updated_expense_form">
     <input type="hidden" name="_method" value="PUT" />
     <input type="hidden" name="uuid" value="{{uuid}}" />
@@ -102,7 +102,7 @@
       name="updated_expense_description"
       id="updated_expense_description"
     />
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" class="submit-input"/>
     <button type="button" id="cancel_update_expense_button">Cancel</button>
   </form>
   <div id="updated_expense_error_div" hidden></div>
@@ -113,7 +113,7 @@
 
 <!-- new expense form  -->
 <div id="new_expense">
-  <h3>Insert a new expense:</h3>
+  <h3>Insert a New Expense:</h3>
   <form
     action="/expense"
     method="POST"
@@ -149,7 +149,7 @@
       name="new_expense_description"
       id="new_expense_description"
     />
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" class="submit-input"/>
   </form>
   <div id="new_expense_error_div" hidden></div>
   {{#if newExpenseErrorsExist}}

@@ -22,8 +22,7 @@ document
   .addEventListener("click", function () {
     const form = document.getElementById("edit_info_form");
     form.style.display = form.style.display === "none" ? "block" : "none";
-  });
-
+});
 // edit form ajax and validation
 document
   .getElementById("edit_info_form")
@@ -110,34 +109,17 @@ document
     });
 
     if (response.ok) {
-      document.querySelector(
-        "#user_info p:nth-child(1)"
-      ).innerText = `First Name: ${firstName}`;
-      document.querySelector(
-        "#user_info p:nth-child(2)"
-      ).innerText = `Last Name: ${lastName}`;
-      document.querySelector(
-        "#user_info p:nth-child(3)"
-      ).innerText = `Email: ${email}`;
-      document.querySelector(
-        "#user_info p:nth-child(4)"
-      ).innerText = `Gender: ${gender}`;
-      document.querySelector(
-        "#user_info p:nth-child(5)"
-      ).innerText = `City: ${city}`;
-      document.querySelector(
-        "#user_info p:nth-child(6)"
-      ).innerText = `State: ${state}`;
-      document.querySelector(
-        "#user_info p:nth-child(7)"
-      ).innerText = `Age: ${age}`;
-      document.querySelector(
-        "#user_info p:nth-child(8)"
-      ).innerText = `Balance: ${balance}`;
-
+      document.querySelector(".first-name").innerText = `First Name: ${firstName}`;
+      document.querySelector(".last-name").innerText = `Last Name: ${lastName}`;
+      document.querySelector(".email").innerText = `Email: ${email}`;
+      document.querySelector(".gender").innerText = `Gender: ${gender}`;
+      document.querySelector(".age").innerText = `Age: ${age}`;
+      document.querySelector(".city").innerText = `City: ${city}`;
+      document.querySelector(".state").innerText = `State: ${state}`;
+      document.querySelector(".balance").innerText = `Balance: $${balance}`;
       document.getElementById("edit_info_form").style.display = "none";
     } else {
-      alert('Failed to update user information.');
+      alert("Failed to update user information.");
     }
   });
 

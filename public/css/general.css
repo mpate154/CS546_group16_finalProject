@@ -25,13 +25,12 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: [left] 15% [page_break] auto [right];
-  grid-template-rows: [top] 82% [footer_begin] 18% [bottom];
+  grid-template-columns: 15% auto;
+  grid-template-rows: 100% auto;
   height: 100vh;
 }
 
 /* GENERAL NAVBAR */
-
 nav {
   height: 100%;
 }
@@ -120,6 +119,10 @@ footer p {
   width: 50%;
   padding: 5px;
 }
+.label-1{
+  font-weight:600;
+  font-size: 18px;
+}
 
 /* INCOME TABLE */
 
@@ -163,7 +166,6 @@ td > button {
 }
 
 /* NEW INCOME FORM */
-
 #new_income {
   padding: 5px;
 }
@@ -178,7 +180,15 @@ td > button {
   border-radius: 5px;
 }
 
+
 #new_income_form > * {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 50%;
+}
+
+#updated_income_form > * {
   display: block;
   margin: auto;
   margin-bottom: 10px;
@@ -189,7 +199,7 @@ td > button {
 #updated_income_form > *,
 #updated_expense_form > * {
   display: block;
-  padding: 3px;
+  padding: 5px;
 }
 
 /****************** EXPENSE PAGE *******************/
@@ -213,6 +223,13 @@ td > button {
   margin-bottom: 10px;
   width: 50%;
 }
+#updated_expense_form > * {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 50%;
+}
+
 
 /* EXPENSE TABLE */
 
@@ -232,19 +249,39 @@ td > button {
   cursor: pointer;
 }
 
+#cancel_update_income_button,#cancel_update_expense_button{
+  font-family: serif, Georgia, "Times New Roman";
+  width: 100%;
+  padding: 10px;
+  background-color: #ef97a5;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#cancel_update_income_button:hover,#cancel_update_expense_button:hover{
+  background-color: #e8657b;
+}
+button{
+  background-color: #fbe4e8;;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
 button:hover {
-  background-color: #ebcdd2;
+  background-color: #ee8a9a;
 }
 
 input,
 select {
   font-family: serif, Georgia, "Times New Roman";
   font-size: 12px;
-  padding: 3px;
+  padding: 5px;
   margin-left: 5px;
   margin-bottom: 10px;
   border-radius: 5px;
-  border: 1px solid #ced4da;
+  border: 0.5px solid #ced4da;
   font-size: 15px;
 }
 #new_income_error_div{
@@ -253,4 +290,14 @@ select {
 
 #new_expense_error_div{
   color: rgb(230, 20, 20);
+}
+
+.submit-input{
+  font-family: serif, Georgia, "Times New Roman";
+  background-color: #fbe4e8;
+  color: black;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  font-size: 15px;
+  padding: 3px;
 }

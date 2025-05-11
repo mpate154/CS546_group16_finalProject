@@ -5,18 +5,18 @@
       <div class="detail">
         <div id="user_info">
           <div class="info-row">
-            <p>First Name: {{firstName}}</p>
-            <p>Last Name: {{lastName}}</p>
-            <p>Email: {{email}}</p>
+            <p class="first-name">First Name: {{firstName}}</p>
+            <p class="last-name">Last Name: {{lastName}}</p>
+            <p class="email">Email: {{email}}</p>
           </div>
           <div class="info-row">
-            <p>Gender: {{gender}}</p>
-            <p>Age: {{age}}</p>
-            <p>City: {{city}}</p>
-            <p>State: {{state}}</p>
+            <p class="gender">Gender: {{gender}}</p>
+            <p class="age">Age: {{age}}</p>
+            <p class="city">City: {{city}}</p>
+            <p class="state">State: {{state}}</p>
           </div>
           <div class="info-row">
-            <p>Balance: ${{balance}}</p>
+            <p class="balance">Balance: ${{balance}}</p>
           </div>
           <button id="editInfoButton">Edit Information</button>
         </div>
@@ -24,7 +24,7 @@
       </div>
       
 
-      <div class="editForm">
+      <div id="editForm" class="editForm">
         <form id="edit_info_form" action="/settings/updateUser" method="POST" style="display: none;">
           <h3>Edit Information</h3>
           
@@ -84,8 +84,7 @@
 
     </div>
     
-  
-  
+
 
   <div id="expense_category_container">
     <div id="fixed_expense_form_div">
