@@ -132,6 +132,10 @@ let exportedMethods = {
     const usersCol = await usersCollection.findOne({ _id: new ObjectId(id) });
     if (usersCol === null) throw "No user with that id";
 
+    if (parseInt(age) < 13) {
+      throw `Users must be at least 13 years old to sign up.`;
+    }
+
     const userUpdateInfo = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),

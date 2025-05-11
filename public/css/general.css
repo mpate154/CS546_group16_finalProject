@@ -3,8 +3,18 @@
 /***************** GENERAL LAYOUT ************************/
 
 * {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+  font-family: serif, Georgia, "Times New Roman";
+}
+h1 {
+  font-family: serif, Georgia, "Times New Roman";
+  text-align: center;
+  font-size: 40px;
+  color: #356197;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  font-style: italic;
+  border-bottom: solid 1px gray;
+
 }
 
 body {
@@ -103,13 +113,6 @@ footer p {
 
 /******************** INCOME PAGE *********************/
 
-h1 {
-  font-size: 1.5em;
-  margin-top: 0;
-  margin-bottom: 0.83em;
-  margin-left: 0;
-  margin-right: 0;
-}
 
 /* DROP-DOWNS */
 
@@ -122,18 +125,20 @@ h1 {
 
 #income_table {
   width: 50%;
+  border-radius: 15px;
 }
 
 table,
 th,
 td {
-  padding: 5px;
+  padding: 10px 22px;
+  font-size: 16px;
   border: 1px solid black;
   border-collapse: collapse;
 }
 
 td {
-  font-size: 0.8rem;
+  font-size: 16px;
 }
 
 tr:nth-child(odd) {
@@ -163,13 +168,21 @@ td > button {
   padding: 5px;
 }
 
+
 #new_income_form,
 #updated_income_form,
 #updated_expense_form {
-  background-color: #f0ebec;
+  background-color: #e6f2ff;
   width: 50%;
   padding: 10px;
   border-radius: 5px;
+}
+
+#new_income_form > * {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 50%;
 }
 
 #new_income_form > *,
@@ -188,7 +201,7 @@ td > button {
 }
 
 #new_expense_form {
-  background-color: #f0ebec;
+  background-color: #e6f2ff;
   width: 50%;
   padding: 10px;
   border-radius: 5px;
@@ -196,7 +209,9 @@ td > button {
 
 #new_expense_form > * {
   display: block;
-  padding: 3px;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 50%;
 }
 
 /* EXPENSE TABLE */
@@ -205,4 +220,37 @@ td > button {
   width: 50%;
 }
 
-/****************** SETTINGS *******************/
+.submit-button{
+  font-family: serif, Georgia, "Times New Roman";
+  margin: auto;
+  width: 100%;
+  padding: 10px;
+  background-color: #fbe4e8;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ebcdd2;
+}
+
+input,
+select {
+  font-family: serif, Georgia, "Times New Roman";
+  font-size: 12px;
+  padding: 3px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  font-size: 15px;
+}
+#new_income_error_div{
+  color: rgb(230, 20, 20);
+}
+
+#new_expense_error_div{
+  color: rgb(230, 20, 20);
+}

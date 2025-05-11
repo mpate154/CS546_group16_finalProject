@@ -3,12 +3,13 @@
 <div id="dropdowns">
   <div id="expense_month_year_dropdown">
     <form
+
       action="/expense"
       method="POST"
       name="dropdown_form"
       id="dropdown_form"
     >
-      <input type="hidden" , name="form_type" value="date_dropdown" />
+      <input type="hidden" name="form_type" value="date_dropdown" />
       <label for="dropdown_month_and_year">Pick the month to display:</label>
       <!-- use getMonthYearForFormMax() helper function for partial_date -->
       <input
@@ -43,22 +44,14 @@
           <td>{{description}}</td>
           <td>
             <button class="update_expense_button" data-uuid="{{uuid}}">
-              <img
-                src="public/images/pencil_edit.png"
-                alt="edit button"
-                class="pencil_image"
-              /></button>
+              ✏️</button>
           </td>
           <td>
             <form action="/expense" method="POST">
               <input type="hidden" name="_method" value="DELETE" />
               <input type="hidden" name="uuid" value="{{uuid}}" />
               <button type="submit">
-                <img
-                  src="public/images/delete_icon.jpg"
-                  alt="delete button"
-                  class="delete_image"
-                />
+                ❌
               </button>
             </form>
           </td>
@@ -127,7 +120,7 @@
     name="new_expense_form"
     id="new_expense_form"
   >
-    <input type="hidden" , name="form_type" value="new_transaction" />
+    <input type="hidden" name="form_type" value="new_transaction" />
     <label for="new_expense_amount">Amount</label>
     <input
       type="number"
@@ -163,3 +156,5 @@
     <p class="error">Error: {{newExpenseError}}</p>
   {{/if}}
 </div>
+
+

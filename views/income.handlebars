@@ -20,7 +20,7 @@
         name="dropdown_month_and_year"
         value="{{current_income_date_to_show}}"
       />
-      <input type="submit" value="Submit" />
+      <input class="submit" type="submit" value="Submit" />
     </form>
   </div>
 </div>
@@ -41,25 +41,14 @@
           <td>{{date}}</td>
           <td>{{description}}</td>
           <td>
-            <button class="update_income_button" data-uuid="{{uuid}}">
-              <img
-                src="public/images/pencil_edit.png"
-                alt="edit button"
-                class="pencil_image"
-              /></button>
+            <button class="update_income_button" data-uuid="{{uuid}}">✏️</button>
 
           </td>
           <td>
             <form action="/income" method="POST">
               <input type="hidden" name="_method" value="DELETE" />
               <input type="hidden" name="uuid" value="{{uuid}}" />
-              <button type="submit">
-                <img
-                  src="public/images/delete_icon.jpg"
-                  alt="delete button"
-                  class="delete_image"
-                />
-              </button>
+              <button type="submit">❌</button>
             </form>
           </td>
         </tr>

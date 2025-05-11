@@ -17,3 +17,5 @@ const getCollectionFn = (collection) => {
 export const users = getCollectionFn('users');
 export const income = getCollectionFn('income');
 export const transactions = getCollectionFn('transactions');
+export const monthlySummary = getCollectionFn('monthlySummary');
+export const yearlySummary = getCollectionFn('yearlySummary');

@@ -45,10 +45,7 @@ document
       firstName.length > 20 ||
       !/^[a-zA-Z]+$/.test(firstName)
     ) {
-      showFormError(
-        "First Name must be 2-20 characters long and only contain letters.",
-        "edit_info_form"
-      );
+      alert('First Name must be 2-20 characters long and only contain letters.');
 
       return;
     }
@@ -60,10 +57,7 @@ document
       lastName.length > 20 ||
       !/^[a-zA-Z]+$/.test(lastName)
     ) {
-      showFormError(
-        "Last Name must be 2-20 characters long and only contain letters.",
-        "edit_info_form"
-      );
+      alert('Last Name must be 2-20 characters long and only contain letters.')
       return;
     }
 
@@ -72,30 +66,27 @@ document
       typeof email !== "string" ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
-      showFormError("Invalid email format.", "edit_info_form");
+      alert('Invalid email format.')
       return;
     }
 
     if (!age || isNaN(age) || parseInt(age) < 1) {
-      showFormError("Age must be a valid number.", "edit_info_form");
+      alert('Age must be a valid number.');
       return;
     }
 
     if (!city || !/^[a-zA-Z\s]+$/.test(city)) {
-      showFormError("City should only contain letters.", "edit_info_form");
+      alert('City should only contain letters.');
       return;
     }
 
     if (!state || !/^[a-zA-Z\s]+$/.test(state)) {
-      showFormError("State should only contain letters.", "edit_info_form");
+      alert('State should only contain letters.');
       return;
     }
 
     if (!balance || isNaN(balance) || parseFloat(balance) < 0) {
-      showFormError(
-        "Balance should be a valid positive number.",
-        "edit_info_form"
-      );
+      alert('Balance should be a valid positive number.');
       return;
     }
 
@@ -146,7 +137,7 @@ document
 
       document.getElementById("edit_info_form").style.display = "none";
     } else {
-      showFormError("Failed to update user information.", "edit_info_form");
+      alert('Failed to update user information.');
     }
   });
 
@@ -159,7 +150,7 @@ document
     const category = document.getElementById("newCategory").value;
 
     if (!category) {
-      showFormError("Category is required!", "add_category_form");
+      alert('Category is required!');
       return;
     }
 
@@ -245,11 +236,11 @@ document
     const amount = document.getElementById("fixedAmount").value.trim();
 
     if (!title || typeof title !== "string" || title.trim().length === 0) {
-      showFormError("Title is required!", "add_fixed_expense_form");
+      alert('Title is required!');
       return;
     }
     if (!amount || amount.trim().length === 0) {
-      showFormError("Amount is required!", "add_fixed_expense_form");
+      alert('Amount is required!');
       return;
     }
 
@@ -292,17 +283,11 @@ document
         li.scrollIntoView({ behavior: "smooth" });
       } else {
         const errorResponse = await response.json();
-        showFormError(
-          `Error: ${errorResponse.error}`,
-          "add_fixed_expense_form"
-        );
+        alert(`Error: ${errorResponse.error}`);
       }
     } catch (error) {
       console.error(error);
-      showFormError(
-        "An error occurred while adding the expense.",
-        "add_fixed_expense_form"
-      );
+      alert('An error occurred while adding the expense.')
     }
   });
 
@@ -338,8 +323,8 @@ document
         <input type="text" value="${title}" id="edit-title-${id}">
        <input type="text" value="${category}" id="edit-category-${id}" disabled>
         <input type="text" value="${amount}" id="edit-amount-${id}">
-        <button class="save-expense" data-id="${id}">Save</button>
-        <button class="cancel-edit" data-id="${id}">Cancel</button>
+        <button class="save-expense" data-id="${id}">✅</button>
+        <button class="cancel-edit" data-id="${id}">❌</button>
       `;
     }
     if (target.classList.contains("save-expense")) {

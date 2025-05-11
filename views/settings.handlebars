@@ -4,14 +4,20 @@
     <div class="info_container">
       <div class="detail">
         <div id="user_info">
-          <p>First Name: {{firstName}}</p>
-          <p>Last Name: {{lastName}}</p>
-          <p>Email: {{email}}</p>
-          <p>Gender: {{gender}}</p>
-          <p>City: {{city}}</p>
-          <p>State: {{state}}</p>
-          <p>Age: {{age}}</p>
-          <p>Balance: {{balance}}</p>
+          <div class="info-row">
+            <p>First Name: {{firstName}}</p>
+            <p>Last Name: {{lastName}}</p>
+            <p>Email: {{email}}</p>
+          </div>
+          <div class="info-row">
+            <p>Gender: {{gender}}</p>
+            <p>Age: {{age}}</p>
+            <p>City: {{city}}</p>
+            <p>State: {{state}}</p>
+          </div>
+          <div class="info-row">
+            <p>Balance: ${{balance}}</p>
+          </div>
           <button id="editInfoButton">Edit Information</button>
         </div>
 
@@ -24,7 +30,7 @@
           
           <div class="form-row">
             <div class="form-group">
-              <label for="fistName">First Name:</label>
+              <label for="firstName">First Name:</label>
               <input type="text" id="firstName" name="firstName" placeholder="First Name" value="{{firstName}}">
             </div>
             <div class="form-group">
@@ -65,7 +71,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="Balance">Balance:</label>
+            <label for="balance">Balance:</label>
             <input type="text" id="balance" name="balance" placeholder="balance" value="{{balance}}">
           </div>
           
@@ -83,10 +89,10 @@
 
   <div id="expense_category_container">
     <div id="fixed_expense_form_div">
-      <h3>Fixed Expenses</h3>
+      <h3 class="title-3">Fixed Expenses</h3>
       <div id="fixedExpenseError"></div>
-      
-      <ul id="fixed_expense_list">
+      <div id="fixed_expense_list_container">
+        <ul id="fixed_expense_list">
         {{#each fixedExpenses}}
         <li data-id="{{_id}}">
           <span class="expense-title">{{title}}</span> - 
@@ -96,7 +102,10 @@
           <button class="delete-expense">❌</button>
         </li>
         {{/each}}
-      </ul>
+        </ul>
+
+      </div>
+      
 
       <!-- Add Fixed Expense -->
       <form id="add_fixed_expense_form">
@@ -125,15 +134,19 @@
     </div>
 
     <div id="category_form_div">
-      <h3>Categories</h3>
-      <ul id="category_list">
-        {{#each categories}}
-        <li data-category="{{this}}">
-          {{this}} 
-          <button class="delete-category" data-category="{{this}}">❌</button>
-        </li>
-        {{/each}}
-      </ul>
+      <h3 class="title-3" >Categories</h3>
+      <div id="category_list_container">
+        <ul id="category_list">
+          {{#each categories}}
+          <li data-category="{{this}}">
+            {{this}} 
+            <button class="delete-category" data-category="{{this}}">❌</button>
+          </li>
+          {{/each}}
+        </ul>
+
+      </div>
+      
 
       <form id="add_category_form">
         <div class="form-group">
