@@ -28,6 +28,7 @@ Brief description of the project:
 - Categorize transactions (e.g., Food, Rent, Travel)
 - Add and delete your personalized categories
 - Visual monthly and yearly summaries with charts or tables
+- See pie chart without certain categories by clicking it
 - Add fixed expenses
 - Edit personal information
 
@@ -67,7 +68,8 @@ Brief description of the project:
 - Edit and delete incomes/expenses by clicking the icons in the table next to the specific transaction.
     - For edit, a form will appear with prefilled information. You can edit the income/expense, then hit submit. Go to the corresponding month to see the change. If you no longer want to edit, you can click the cancel button on the form. Then, any changes that were made in the form will not be applied.
     - For delete, that income/expense will immediately disappear from the table. 
-- View your monthly and yearly summaries by navigating to the home page. Use the top navbar to toggle between the two summaries. 
+- View your monthly and yearly summaries by navigating to the home page. Use the top navbar to toggle between the two summaries.
+    - Click a category in the pie chart if you wish to view the chart without that category!
 - Adjust personal preferences in settings
     - Change your name, email, gender, age, city, state, and starting balance by clicking the "edit information" button. Once your changes are made, click the "save changes" button. If you no longer wish to edit this information, click "edit information" once again.
     - Note: If you change your age to below 13, it will not save as those under 13 are not permitted to use our app.
