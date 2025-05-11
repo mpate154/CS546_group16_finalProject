@@ -291,11 +291,11 @@ router.route("/signout").get(async (req, res) => {
 
 //---------------------------- Home Routes ----------------------------//
 router.get('/home', async (req, res) => {
-  console.log("In home page");
+  //console.log("In home page");
   try {
-    console.log("In try");
+    //console.log("In try");
     if (!req.session.user) return res.redirect('/login');
-    console.log("after session user check");
+    //console.log("after session user check");
 
     const user = req.session.user;
     const now = new Date();
@@ -309,10 +309,10 @@ router.get('/home', async (req, res) => {
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-    console.log("recalculating monthly summary");
+    //console.log("recalculating monthly summary");
     await monthlySummaryFunctions.recalculateMonthlySummary(user.id, paddedMonth, numericYear);
     const monthlySummary = await monthlySummaryFunctions.getMonthlySummary(user.id, paddedMonth, numericYear);
-    console.log("monthly summary: ", monthlySummary );
+    //console.log("monthly summary: ", monthlySummary );
 
     if (!monthlySummary) {
       return res.render('home', {
@@ -362,7 +362,7 @@ router.get('/home', async (req, res) => {
       json: JSON.stringify
     });
   } catch (error) {
-    console.error("Error in /home route:", error);
+    //console.error("Error in /home route:", error);
     return res.status(500).render('error', { error: error.toString() });
   }
 });
@@ -451,7 +451,7 @@ router
         });
       } catch (e) {
         //what to do when error?
-        console.log(e); // get rid of
+        //console.log(e); // get rid of
         //waht statsu
         return res.status(500).send("Internal Server Error");
       }
@@ -518,7 +518,7 @@ router
       }
     } catch (e) {
       // what to do if error on post? client side might catch it and send error back to them.
-      console.log(e);
+      //console.log(e);
       return res.status(500).send("Internal Server Error");
     }
   })
@@ -578,7 +578,7 @@ router.get("/income/getIncomeData/:uuid", async (req, res) => {
     incomeData.date = exportedMethods.unflipDate(incomeData.date);
     res.status(200).json(incomeData);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not fetch income" });
   }
 });
@@ -673,7 +673,7 @@ router
         });
       } catch (e) {
         //what to do when error?
-        console.log(e); // get rid of
+        //console.log(e); // get rid of
         return res.status(500).send("Internal Server Error");
       }
     }
@@ -740,7 +740,7 @@ router
         }
       }
     } catch (e) {
-      console.log(e); // what to do if error on post? client side might catch it and send error back to them.
+      //console.log(e); // what to do if error on post? client side might catch it and send error back to them.
       return res.status(500).send("Internal Server Error");
     }
   })
@@ -807,7 +807,7 @@ router.get("/expense/getExpenseData/:uuid", async (req, res) => {
     transactionData.date = exportedMethods.unflipDate(transactionData.date);
     res.status(200).json(transactionData);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not fetch transaction" });
   }
 });
@@ -881,7 +881,7 @@ router.put("/settings/updateUser", async (req, res) => {
       message: "User Information Updated Successfully",
     });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not update user information" });
   }
 });
@@ -916,7 +916,7 @@ router.post("/settings/addFixedExpense", async (req, res) => {
 
     res.status(200).json(newExpense);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not add fixed expense" });
   }
 });
@@ -953,7 +953,7 @@ router.put("/settings/updateFixedExpense/:id", async (req, res) => {
 
     res.status(200).json({ success: true, message: "Fixed Expense Updated" });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not update fixed expense" });
   }
 });
@@ -972,7 +972,7 @@ router.get("/settings/getFixedExpense/:id", async (req, res) => {
     }
     res.status(200).json(expense);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not fetch expense" });
   }
 });
@@ -1000,7 +1000,7 @@ router.delete("/settings/deleteFixedExpense/:id", async (req, res) => {
 
     res.status(200).json({ success: true, message: "Fixed Expense Deleted" });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not delete fixed expense" });
   }
 });
@@ -1029,7 +1029,7 @@ router.post("/settings/addCategory", async (req, res) => {
 
     res.status(200).json({ success: true, message: "Category Added" });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not add category" });
   }
 });
@@ -1057,7 +1057,7 @@ router.delete("/settings/deleteCategory", async (req, res) => {
     };
     res.status(200).json({ success: true, message: "Category Deleted" });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not delete category" });
   }
 });
