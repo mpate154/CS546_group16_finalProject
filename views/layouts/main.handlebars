@@ -19,12 +19,19 @@
     {{#if general_page}}
     <link rel="stylesheet" href="/public/css/general.css">
     {{/if}}
+
+    {{!-- for settings  --}}
+    {{#if settings_page}}
+    <link rel="stylesheet" href="/public/css/settings.css">
+    {{/if}}
+
 </head>
 <body {{#if landing_signup_login}}style="background-image: url('/public/images/background.jpg'); background-size: cover; background-position: center;"{{/if}}>
-
     {{!-- for home/monthly, yearly, income, expense, and settings --}}
+
+<div class="container">
     {{#if include_navbar}}
-    <div class="container">
+    
       <div id="general_navbar_div">
         <nav id="general_navbar">
           <ul>
@@ -38,6 +45,7 @@
           </ul>
         </nav>
       </div>
+    
     {{/if}}
 
     {{!-- for home/monthly and yearly --}}
@@ -52,23 +60,11 @@
     <div id="page_content">
         {{{body}}} 
     </div>
-
-    {{!-- footer --}}
-    {{!-- <div id="footer_div">
-        <footer>
-            <p id="footer_title">Creators:</p>
-            <p>Elina Rezaeian</p>
-            <p>Nastaran Jamalipour Soofi</p>
-            <p>Samantha York</p>
-            <p>Maya Patel</p>
-          
-        </footer>
-    </div> --}}
+  </div>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     {{#if partial}}
       {{> (lookup . 'partial') }}
     {{/if}}
-    
 </body>
 </html>

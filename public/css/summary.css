@@ -1,158 +1,215 @@
-/* CSS styles for monthly/home and yearly  */
+/* === GENERAL LAYOUT === */
 
-/****************** GENERAL LAYOUT ************************/
-
-* {
-    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-      "Lucida Sans", Arial, sans-serif;
-  }
-  
-  body {
-    height: 100vh;
-    width: 100vw;
-  }
-  
-  .container {
-    display: grid;
-    grid-template-columns: [left] 15% [page_break] auto [right];
-    grid-template-rows: [top] 10% [page_break] auto [footer_begin] 18% [bottom];
-    height: 100vh;
-  }
-  
-  /* GENERAL NAVBAR */
-  
-  nav {
-    height: 100%;
-  }
-  
-  li {
-    display: block;
-    padding: 5%;
-    color: black;
-  }
-  
-  li:hover {
-    background-color: #c996a4;
-  }
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  a {
-    color: black;
-    text-decoration: none;
-  }
-  
-  #general_navbar_div {
-    grid-row: 1 / span 3;
-    background-color: #e6aebe;
-  }
-  
-  /* make this work */
-  .navbar_link:active {
-    background-color: darkgray;
-    text-decoration: underline;
-  }
-  
-  #signout_button {
-    margin-top: auto;
-  }
-  
-  /* SUMMARY NAVBAR */
-  
-  #summary_navbar {
-    background-color: #f4cdd2;
-    display: flex;
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* make this work */
-  #summary_navbar:active {
-    background-color: darkgray;
-    text-decoration: underline;
-  }
-  
-  #summary_navbar > div {
-    flex: 1; /* Each takes up 50% */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .summary_navbar_a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    line-height: normal;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  #summary_navbar > div:hover {
-    background-color: #d4afb4;
-  }
-  
-  /* PAGE CONTENT */
-  
-  #page_content {
-    background-color: #ffffff;
-    padding: 1rem;
-    overflow-y: auto; /*supposed to make it scrollable */
-  }
-  
-  /* FOOTER */
-  
-  footer {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* vertically centers the text inside */
-    padding-left: 10px;
-    margin: 0;
-  }
-  #footer_div {
-    background-color: rgb(167, 125, 146);
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* or 'space-evenly' if you want spacing between lines */
-    align-items: center;
-    height: 100%;
-  }
-  
-  footer p {
-    display: block;
-    margin: 2px;
-  }
-
-
-  /*  displayyyy   */
-
-  .details {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  #charts {
-    flex: 2;
-    justify-content: center;
-  }
-
-#info {
-    flex: 1;
-    justify-content: center;
-  }
-
-ul, li {
-    padding: 0;
-    margin: 0;
+.container {
+  display: grid;
+  grid-template-columns: 15% auto;
+  grid-template-rows: 10% auto;
+  height: 100vh;
 }
 
+#general_navbar_div {
+  grid-row: 1 / span 2;
+  background-color: #e6aebe;
+}
+
+#page_content {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* === NAVBAR === */
+nav {
+  height: 100%;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+li {
+  display: block;
+  padding: 5%;
+  color: black;
+}
+li:hover {
+  background-color: #c996a4;
+}
+a {
+  color: black;
+  text-decoration: none;
+}
+.navbar_link:active {
+  background-color: darkgray;
+  text-decoration: underline;
+}
+#signout_button {
+  margin-top: auto;
+}
+
+/* === SUMMARY NAVBAR === */
+#summary_navbar {
+  background-color: #f4cdd2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+#summary_navbar > div {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.summary_navbar_a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+#summary_navbar > div:hover {
+  background-color: #d4afb4;
+}
+
+/* Category box */
+.category-breakdown {
+  padding: 1rem;
+  background-color: #e6f2ff;
+  border-radius: 12px;
+  width: 300px;
+}
+
+.category-breakdown h2 {
+  text-align: center;
+}
+
+.category-breakdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-breakdown li {
+  font-size: 0.95rem;
+  padding: 0.4rem 0.8rem;
+  margin: 0.25rem 0;
+  background-color: #fbd7e2;
+  color: #333;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Chart section */
+.chart-section {
+  background-color: #e6f2ff;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+/* Make the entire chart section a column layout */
+.summary-bottom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+/* First row: Daily Trend goes full width */
+.chart-row-wide .full-width {
+  width: 100%;
+  background-color: #e6f2ff;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+/* Second row: Category & Pie Chart side by side */
+.chart-row-flex {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Category list fills full block height */
+.category-scroll-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-right: -0.5rem;
+  height: 100%;
+}
+
+.daily-chart-section, .monthly-chart-section {
+  width: 100%;
+  max-width: 976px; /* precise: 3 blocks + 2 gaps + buffer */
+  background-color: #e6f2ff;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto 2rem auto;
+}
+
+#dailyExpenseChart {
+  width: 100% !important;
+  max-width: 900px;
+  height: 300px !important;
+}
+
+.overview-section {
+  background-color: #e6f2ff;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.overview-section h2 {
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+.overview-section {
+  background-color: #e6f2ff;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 300px;
+}
+
+.overview-section h2 {
+  text-align: center;
+}
+
+.overview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overview-list li {
+  font-size: 0.95rem;
+  padding: 0.4rem 0.8rem;
+  margin: 0.25rem 0;
+  background-color: #fbd7e2;
+  color: #333;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}

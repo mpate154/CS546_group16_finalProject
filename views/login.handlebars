@@ -1,7 +1,7 @@
 <h1>{{title}}</h1>
 
 {{#if error}}
-  <p style="color: red; text-align: center;">{{error}}</p>
+  <p id="server_error" name="server_error" style="color: red; text-align: center;">{{error}}</p>
 {{/if}}
 
 <form id="signin-form" method="POST" action="/login">

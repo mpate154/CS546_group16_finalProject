@@ -11,14 +11,6 @@ const exportedMethods = {
     return id;
   },
 
-  checkUserId(id) {
-    //console.log("🔍 checkId() called with:", id, "type:", typeof id);
-    if (typeof id !== "string" || id.trim() === "") {
-      throw "Input should be a string HERE.";
-    }
-    return id.trim();
-  },
-
   checkFirstName(firstName){
     if (!firstName || typeof firstName !== 'string' || firstName.trim().length === 0) {
       throw 'You must provide a valid firstName to search.';
@@ -245,7 +237,8 @@ const exportedMethods = {
     let regex = /^[0-9]{4}$/;
     if (!(regex.test(input))) throw `invalid year: ${input}`;
     const date = new Date();
-    if (parseInt(input) > date.getFullYear() || parseInt(input) < 2000) throw `invalid year[2000-current]: ${input}`; //year in the future 
+    input = parseInt(input);
+    if (input > date.getFullYear() || input < 2000) throw `invalid year[2000-current]: ${input}`; //year in the future 
     return input;
   },  
 

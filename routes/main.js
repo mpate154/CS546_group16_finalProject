@@ -8,8 +8,11 @@ import { ObjectId } from "mongodb";
 import incomeFunctions from "../data/income.js";
 import { income } from "../config/mongoCollections.js";
 import transactionFunctions from "../data/transactions.js";
+import monthlySummaryFunctions from '../data/monthlySummary.js';
 import yearlyFunctions from "../data/yearlySummary.js";
 
+
+//---------------------------- Landing Routes ----------------------------//
 router
   .route("/") // landing
   .get(async (req, res) => {
@@ -19,24 +22,29 @@ router
         // Not logged in
         return res.render("landing", {
           title: "Home Page",
+          settings_page: false,
           isLoggedIn: false,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
           include_summary_navbar: false,
+          partial: false,
           include_footer: false,
         });
       } else {
         return res.render("landing", {
           title: "Home Page",
+          settings_page: false,
           isLoggedIn: true,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
           include_navbar: false,
           include_summary_navbar: false,
+          partial: false,
           include_footer: false,
+
         });
       }
     } catch (e) {
@@ -44,6 +52,8 @@ router
     }
   });
 
+
+//---------------------------- Register Routes ----------------------------//
 router
   .route("/register")
   .get(async (req, res) => {
@@ -52,6 +62,7 @@ router
     }
     return res.render("register", {
       title: "Registration Page",
+      settings_page: false,
       home_or_summary: false,
       landing_signup_login: true,
       general_page: false,
@@ -93,6 +104,7 @@ router
           .status(400)
           .render("register", { error: "All fields are required", ...data });
       }
+  
 
       try {
         firstName = validation.checkFirstName(firstName);
@@ -105,6 +117,10 @@ router
         balance = validation.checkAmount(balance);
         password = validation.checkPassword(password);
         confirmPassword = validation.checkPassword(confirmPassword);
+
+        if (parseInt(age) < 13) {
+          throw `Users must be at least 13 years old to sign up.`;
+        }
 
         if (password !== confirmPassword) {
           throw "Passwords do not match.";
@@ -120,6 +136,7 @@ router
           age,
           balance,
           title: "Registration Page",
+          settings_page: false,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
@@ -148,6 +165,7 @@ router
         return res.status(500).render("register", {
           error: "Internal Server Error",
           title: "Registration Page",
+          settings_page: false,
           isLoggedIn: false,
           home_or_summary: false,
           landing_signup_login: true,
@@ -162,6 +180,7 @@ router
       return res.status(400).render("register", {
         error: e,
         title: "Registration Page",
+        settings_page: false,
         isLoggedIn: false,
         home_or_summary: false,
         landing_signup_login: true,
@@ -174,6 +193,7 @@ router
     }
   });
 
+//----------------------------- Login Routes -----------------------------//
 router
   .route("/login")
   .get(async (req, res) => {
@@ -182,6 +202,7 @@ router
     }
     return res.render("login", {
       title: "Login Page",
+      settings_page: false,
       home_or_summary: false,
       landing_signup_login: true,
       general_page: false,
@@ -206,9 +227,10 @@ router
         password = validation.checkPassword(password);
       } catch (e) {
         return res.status(400).render("login", {
-          error: "Either the email or password is invalid",
+          error: e,
           ...req.body,
           title: "Login Page",
+          settings_page: false,
           home_or_summary: false,
           landing_signup_login: true,
           general_page: false,
@@ -236,9 +258,10 @@ router
       return res.redirect("/home");
     } catch (e) {
       return res.status(400).render("login", {
-        error: "Either the userId or password is invalid",
+        error: "Either the email or password is invalid",
         ...req.body,
         title: "Login Page",
+        settings_page: false,
         home_or_summary: false,
         landing_signup_login: true,
         general_page: false,
@@ -250,57 +273,149 @@ router
     }
   });
 
+//---------------------------- Signout Routes ----------------------------//
 router.route("/signout").get(async (req, res) => {
   if (!req.session.user) return res.redirect("/login");
   req.session.destroy();
   return res.render("signout", {
     title: "Signout Page",
+    settings_page: false,
     home_or_summary: false,
     landing_signup_login: true,
     general_page: false,
     include_navbar: false,
     include_summary_navbar: false,
+    partial: false,
     include_footer: false,
   });
 });
 
-router.route("/home").get(async (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
+//---------------------------- Home Routes ----------------------------//
+router.delete("/settings/deleteCategory", async (req, res) => {
+  try {
+    const user = req.session.user;
+    const { category } = req.body;
+    await users.deleteCategoryById(user.id, xss(category));
 
-  const user = req.session.user;
-
-  const now = new Date();
-  const currentTime = now.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-  const currentDate = now.toLocaleDateString("en-US");
-
-  return res.render("home", {
-    title: "Monthly Summary",
-    home_or_summary: true,
-    landing_signup_login: false,
-    general_page: false,
-    include_navbar: true,
-    include_summary_navbar: true,
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    gender: user.gender,
-    city: user.city,
-    state: user.state,
-    age: user.age,
-    balance: user.balance,
-    categories: user.categories,
-    fixedExpenses: user.fixedExpenses,
-    currentDate,
-    currentTime,
-    include_footer: true,
-  });
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+    res.status(200).json({ success: true, message: "Category Deleted" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Could not delete category" });
+  }
 });
 
+//---------------------------- Home Routes ----------------------------//
+
+router.get('/home', async (req, res) => {
+  try {
+    if (!req.session.user) return res.redirect('/login');
+    const user = req.session.user;
+
+    const now = new Date();
+    let numericMonth = now.getMonth() + 1;
+    let numericYear = now.getFullYear();
+
+    // If user selected a specific month/year from dropdown
+    if (req.query.month && req.query.year) {
+      const m = parseInt(req.query.month);
+      const y = parseInt(req.query.year);
+      if (!isNaN(m) && m >= 1 && m <= 12 && !isNaN(y) && y >= 2020 && y <= now.getFullYear()) {
+        numericMonth = m;
+        numericYear = y;
+      }
+    }
+
+    const paddedMonth = numericMonth.toString().padStart(2, '0');
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const monthMap = {
+      "01": "January", "02": "February", "03": "March", "04": "April",
+      "05": "May", "06": "June", "07": "July", "08": "August",
+      "09": "September", "10": "October", "11": "November", "12": "December"
+    };
+    const selectedMonth = req.query.month;
+
+    const currentDate = now.toLocaleDateString('en-US');
+    const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    // Dropdown month options
+    const monthOptions = monthNames.map((name, index) => ({
+      name,
+      value: (index + 1).toString().padStart(2, '0'),
+      selected: index + 1 === numericMonth
+    }));
+
+    // Dropdown year options
+    const yearOptions = [];
+    for (let y = now.getFullYear(); y >= 2020; y--) {
+      yearOptions.push({
+        value: y.toString(),
+        selected: y === numericYear
+      });
+    }
+
+    // Update and fetch monthly summary
+    await monthlySummaryFunctions.recalculateMonthlySummary(user.id, paddedMonth, numericYear.toString());
+    const monthlySummary = await monthlySummaryFunctions.getMonthlySummary(user.id, paddedMonth, numericYear.toString());
+
+    if (!monthlySummary) {
+      return res.render('home', {
+        title: 'Monthly Summary',
+        home_or_summary: true,
+        include_navbar: true,
+        include_summary_navbar: true,
+        currentDate,
+        currentTime,
+        month: monthNames[numericMonth - 1], // readable month name
+        year: numericYear,
+        monthName: monthMap[selectedMonth] || selectedMonth,
+        monthOptions,
+        yearOptions,
+        noData: true
+      });
+    }
+
+    const dailyExpenses = await monthlySummaryFunctions.getDailyExpenses(user.id, paddedMonth, numericYear.toString());
+
+    return res.render('home', {
+      title: 'Monthly Summary',
+      home_or_summary: true,
+      include_navbar: true,
+      include_summary_navbar: true,
+      ...user,
+      currentDate,
+      currentTime,
+      month: monthNames[numericMonth - 1],
+      year: numericYear,
+      monthOptions,
+      yearOptions,
+      monthName: monthMap[selectedMonth] || selectedMonth,
+      ...monthlySummary,
+      dailyExpenses,
+      json: JSON.stringify
+    });
+  } catch (e) {
+    console.error("Error in /home route:", e);
+    return res.status(500).render("error", { error: e.toString() });
+  }
+});
+//----------------------------Income Routes----------------------------------//
 router
   .route("/income")
   .get(async (req, res) => {
@@ -380,10 +495,12 @@ router
           partial_date: p_date,
           full_date: f_date,
           include_footer: true,
+          partial: "incomeExpense_script",
+          settings_page: false,
         });
       } catch (e) {
         //what to do when error?
-        console.log(e); // get rid of
+        //console.log(e); // get rid of
         //waht statsu
         return res.status(500).send("Internal Server Error");
       }
@@ -450,7 +567,7 @@ router
       }
     } catch (e) {
       // what to do if error on post? client side might catch it and send error back to them.
-      console.log(e);
+      //console.log(e);
       return res.status(500).send("Internal Server Error");
     }
   })
@@ -510,11 +627,12 @@ router.get("/income/getIncomeData/:uuid", async (req, res) => {
     incomeData.date = exportedMethods.unflipDate(incomeData.date);
     res.status(200).json(incomeData);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not fetch income" });
   }
 });
 
+//----------------------------Expense Routes----------------------------------//
 router
   .route("/expense")
   .get(async (req, res) => {
@@ -599,10 +717,12 @@ router
           partial_date: p_date,
           full_date: f_date,
           include_footer: true,
+          partial: "incomeExpense_script",
+          settings_page: false,
         });
       } catch (e) {
         //what to do when error?
-        console.log(e); // get rid of
+        //console.log(e); // get rid of
         return res.status(500).send("Internal Server Error");
       }
     }
@@ -669,7 +789,7 @@ router
         }
       }
     } catch (e) {
-      console.log(e); // what to do if error on post? client side might catch it and send error back to them.
+      //console.log(e); // what to do if error on post? client side might catch it and send error back to them.
       return res.status(500).send("Internal Server Error");
     }
   })
@@ -736,52 +856,326 @@ router.get("/expense/getExpenseData/:uuid", async (req, res) => {
     transactionData.date = exportedMethods.unflipDate(transactionData.date);
     res.status(200).json(transactionData);
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     res.status(500).json({ error: "Could not fetch transaction" });
   }
 });
 
-router
-  .route("/setting")
-  .get(async (req, res) => {})
-  .post(async (req, res) => {})
-  .put(async (req, res) => {})
-  .delete(async (req, res) => {});
+//--------------------------- Settings Routes ---------------------------//
+router.route("/settings").get(async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.redirect("/login");
+    return res.render("settings", {
+      title: "Settings",
+      isLoggedIn: true,
+      home_or_summary: false,
+      landing_signup_login: false,
+      general_page: true,
+      include_navbar: true,
+      include_summary_navbar: false,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      gender: user.gender,
+      city: user.city,
+      state: user.state,
+      age: user.age,
+      balance: user.balance,
+      categories: user.categories,
+      fixedExpenses: user.fixedExpenses,
+      partial: "settings_script",
+      settings_page: true,
+    });
+  } catch (e) {
+    return res.status(500).send("Internal Server Error");
+  }
+});
 
-router.route('/yearlySummary/:userId/:year')
+//----------------------- Update User Information -----------------------//
+router.put("/settings/updateUser", async (req, res) => {
+  try {
+    const { firstName, lastName, email, gender, city, state, age, balance } =
+      req.body;
+    const userId = req.session.user.id;
+    await users.updateUserPut(
+      userId,
+      xss(firstName),
+      xss(lastName),
+      xss(email),
+      xss(gender),
+      xss(city),
+      xss(state),
+      xss(age),
+      xss(balance)
+    );
+
+    const updatedUser = await users.getUserById(userId);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "User Information Updated Successfully",
+    });
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not update user information" });
+  }
+});
+
+//----------------------- Add Fixed Expense -----------------------//
+router.post("/settings/addFixedExpense", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.redirect("/login");
+    const { title, category, amount } = req.body;
+    const newExpense = await users.addFixedExpensesById(
+      user.id,
+      xss(title),
+      xss(category),
+      xss(amount)
+    );
+
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+
+    res.status(200).json(newExpense);
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not add fixed expense" });
+  }
+});
+
+//----------------------- Edit Fixed Expense -----------------------//
+router.put("/settings/updateFixedExpense/:id", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.redirect("/login");
+    const { title, category, amount } = req.body;
+    await users.updateFixedExpenseById(
+      user.id,
+      req.params.id,
+      xss(title),
+      xss(category),
+      xss(amount)
+    );
+
+    const updatedUser = await users.getUserById(user.id);
+
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+
+    res.status(200).json({ success: true, message: "Fixed Expense Updated" });
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not update fixed expense" });
+  }
+});
+router.get("/settings/getFixedExpense/:id", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.status(401).json({ error: "Unauthorized" });
+
+    const userData = await users.getUserById(user.id);
+    const expense = userData.fixedExpenses.find(
+      (e) => e._id.toString() === req.params.id
+    );
+
+    if (!expense) {
+      return res.status(404).json({ error: "Expense not found" });
+    }
+    res.status(200).json(expense);
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not fetch expense" });
+  }
+});
+
+//----------------------- Delete Fixed Expense -----------------------//
+router.delete("/settings/deleteFixedExpense/:id", async (req, res) => {
+  try {
+    const user = req.session.user;
+    await users.deleteFixedExpenseById(user.id, req.params.id);
+
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+
+    res.status(200).json({ success: true, message: "Fixed Expense Deleted" });
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not delete fixed expense" });
+  }
+});
+
+//----------------------- Add Category -----------------------//
+router.post("/settings/addCategory", async (req, res) => {
+  try {
+    const user = req.session.user;
+    const { category } = req.body;
+    await users.addCategoryById(user.id, xss(category));
+
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+
+    res.status(200).json({ success: true, message: "Category Added" });
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not add category" });
+  }
+});
+
+//----------------------- Delete Category -----------------------//
+router.delete("/settings/deleteCategory", async (req, res) => {
+  try {
+    const user = req.session.user;
+    const { category } = req.body;
+    await users.deleteCategoryById(user.id, xss(category));
+
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+    res.status(200).json({ success: true, message: "Category Deleted" });
+  } catch (e) {
+    //console.error(e);
+    res.status(500).json({ error: "Could not delete category" });
+  }
+});
+//----------------------- Yearly Summary -----------------------//
+router.route('/yearly')
   .get(async (req, res) => {
     try {
-        const {userId, year} = req.params;
-        //make sure this actually error checks 
-        validation.checkUserId(userId);
-        validation.checkYear(year);
-        const summ = await yearlyFunctions.getYearlySummary(userId, year);
-        res.render('yearlySummary', {
-            title: "Yearly summary", 
-            userId: summ.userId, 
-            year: summ.year, 
-            breakdown: summ.totalSpentPerCategory,
-            totalSpentPerCategory: JSON.stringify(summ.totalSpentPerCategory), 
-            totalIncome: summ.totalIncome, 
-            totalFixedExpenses: summ.totalFixedExpenses, 
-            totalVariableExpenses: summ.totalVariableExpenses, 
-            home_or_summary: true, 
-            landing_signup_login: false, 
-            general_page: false, 
-            include_navbar: true, 
-            include_summary_navbar: true});
+      if (!req.session.user) {
+        return res.redirect('/login');
+      }
+      const user = req.session.user;
+      let currentYear = new Date().getFullYear();
+      let year = req.query.year || currentYear;
+      //check later for form for queing different year
+
+      await yearlyFunctions.recalculateYearly(user.id, year.toString());
+      
+      let yearSummary;
+      //try {
+        yearSummary = await yearlyFunctions.getYearlySummary(user.id, year.toString());
+      // } catch (e) {
+      //   yearSummary = {totalSpentPerCategory: {}, totalIncome: 0, totalFixedExpenses: 0, totalVariableExpenses: 0};
+      // }
+      const yearOptions = [];
+      for (let y = currentYear; y >= 2000; y--) {
+        yearOptions.push({
+          value: y.toString(),
+          selected: y.toString() === year.toString()
+        });
+      }
+
+      if (!yearSummary) {
+        return res.render('yearlySummary', {
+          title: "Yearly summary", 
+          year: year, 
+          noStats: true,
+          yearOptions:yearOptions,
+          home_or_summary: true, 
+          landing_signup_login: false, 
+          general_page: false, 
+          include_navbar: true, 
+          include_summary_navbar: true
+        });
+      }
+
+      const monthlyExpenses = await yearlyFunctions.getMonthlyExpenses(user.id, year.toString());
+      
+      return res.render('yearlySummary', {
+        title: "Yearly summary", 
+        year: year, 
+        currentYear: year,
+        noStats: Object.keys(yearSummary.totalSpentPerCategory || {}).length === 0 || !yearSummary,
+        breakdown: yearSummary.totalSpentPerCategory,
+        totalSpentPerCategory: JSON.stringify(yearSummary.totalSpentPerCategory), 
+        totalIncome: yearSummary.totalIncome, 
+        totalFixedExpenses: yearSummary.totalFixedExpenses, 
+        totalVariableExpenses: yearSummary.totalVariableExpenses, 
+        monthlyExpenses: JSON.stringify(monthlyExpenses),
+        yearOptions:yearOptions,
+        home_or_summary: true, 
+        landing_signup_login: false, 
+        general_page: false, 
+        include_navbar: true, 
+        include_summary_navbar: true
+      });
     } catch (e) {
-        console.log("route error: ", e);
-        res.status(404).render("yearlySummary", {error: e});
+      console.log("route error: ", e);
     }
-  })
-  .post(async (req,res) => {
+});
 
-  })
-  .put(async (req,res) => {
 
-  })
-  .delete(async (req,res)=>{
-
-  });
 export default router;

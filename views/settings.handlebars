@@ -1,42 +1,163 @@
 <div id="settings_div">
-  <h1>Settings</h1>
-  <div id="user_info">
-    <p>First Name: {{firstName}}</p>
-    <p>Last Name: {{lastName}}</p>
-    <p>Email: {{email}}</p>
-    <p>Gender: {{gender}}</p>
-    <p>City: {{city}}</p>
-    <p>State: {{state}}</p>
-    <p>Age: {{age}}</p>
-    <div id="fixed_expense_and_category_forms">
-        <div id="fixed_expense_form_div">
-      <p>Fixed Expenses: </p>
 
-      {{#each fixedExpenses}}
-        <ul>
-          <li>Title: {{title}}</li>
-          <li>Category: {{category}}</li>
-          <li>Amount: ${{amount}}</li>
-        </ul>
-      {{/each}}
+  <h1>Settings</h1>
+    <div class="info_container">
+      <div class="detail">
+        <div id="user_info">
+          <div class="info-row">
+            <p class="first-name">First Name: {{firstName}}</p>
+            <p class="last-name">Last Name: {{lastName}}</p>
+            <p class="email">Email: {{email}}</p>
+          </div>
+          <div class="info-row">
+            <p class="gender">Gender: {{gender}}</p>
+            <p class="age">Age: {{age}}</p>
+            <p class="city">City: {{city}}</p>
+            <p class="state">State: {{state}}</p>
+          </div>
+          <div class="info-row">
+            <p class="balance">Balance: ${{balance}}</p>
+          </div>
+          <button id="editInfoButton">Edit Information</button>
+        </div>
+
       </div>
-      <div id="category_form_div">
-        <p>Categories: </p>
-        <ul>
-        {{#each categories}}
-        <li>{{this}}</li>
-        {{/each}}
-        </ul>
+      
+
+      <div id="editForm" class="editForm">
+        <form id="edit_info_form" action="/settings/updateUser" method="POST" style="display: none;">
+          <h3>Edit Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name:</label>
+              <input type="text" id="firstName" name="firstName" placeholder="First Name" value="{{firstName}}">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name:</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Last Name" value="{{lastName}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" value="{{email}}">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender:</label>
+              <select id="gender" name="gender">
+                  <option value="male" {{#if (eq gender 'male')}}selected{{/if}}>Male</option>
+                  <option value="female" {{#if (eq gender 'female')}}selected{{/if}}>Female</option>
+                  <option value="non_binary" {{#if (eq gender 'non_binary')}}selected{{/if}}>Non-Binary</option>
+                  <option value="genderfluid" {{#if (eq gender 'genderfluid')}}selected{{/if}}>Genderfluid</option>
+                  <option value="agender" {{#if (eq gender 'agender')}}selected{{/if}}>Agender</option>
+                  <option value="prefer_not_to_say" {{#if (eq gender 'prefer_not_to_say')}}selected{{/if}}>Prefer not to say</option>
+                  <option value="other" {{#if (eq gender 'other')}}selected{{/if}}>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="age">Age:</label>
+              <input type="text" id="age" name="age" placeholder="Age" value="{{age}}">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City:</label>
+              <input type="text" id="city" name="city" placeholder="City" value="{{city}}">
+            </div>
+            <div class="form-group">
+              <label for="state">State:</label>
+              <input type="text" id="state" name="state" placeholder="State" value="{{state}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="balance">Balance:</label>
+            <input type="text" id="balance" name="balance" placeholder="balance" value="{{balance}}">
+          </div>
+          
+          <div class="button-container">
+            <button id="submitButton" name="submitButton" class="submit" type="submit">Save Changes</button>
+          </div>
+          
+        </form>
       </div>
 
     </div>
-  </div>
+    
 
+
+  <div id="expense_category_container">
+    <div id="fixed_expense_form_div">
+      <h3 class="title-3">Fixed Expenses</h3>
+      <div id="fixedExpenseError"></div>
+      <div id="fixed_expense_list_container">
+        <ul id="fixed_expense_list">
+        {{#each fixedExpenses}}
+        <li data-id="{{_id}}">
+          <span class="expense-title">{{title}}</span> - 
+          <span class="expense-category">{{category}}</span> - 
+          <span class="expense-amount">${{amount}}</span>
+          <button class="edit-expense">✏️</button>
+          <button class="delete-expense">❌</button>
+        </li>
+        {{/each}}
+        </ul>
+
+      </div>
+      
+
+      <!-- Add Fixed Expense -->
+      <form id="add_fixed_expense_form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fixedTitle">Title:</label>
+            <input type="text" id="fixedTitle" placeholder="Title">
+          </div>
+
+          <div class="form-group">
+            <label for="fixedCategory">Category:</label>
+            <select id="fixedCategory">
+              {{#each categories}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fixedAmount">Amount:</label>
+            <input type="text" id="fixedAmount" placeholder="Amount">
+          </div>
+        </div>
+        <button type="submit">Add Fixed Expense</button>
+      </form>
+
+    </div>
+
+    <div id="category_form_div">
+      <h3 class="title-3" >Categories</h3>
+      <div id="category_list_container">
+        <ul id="category_list">
+          {{#each categories}}
+          <li data-category="{{this}}">
+            {{this}} 
+            <button class="delete-category" data-category="{{this}}">❌</button>
+          </li>
+          {{/each}}
+        </ul>
+
+      </div>
+      
+
+      <form id="add_category_form">
+        <div class="form-group">
+          <label for="newCategory">Your New Category:</label>
+          <input type="text" id="newCategory" placeholder="New Category">
+        </div>
+
+        <button type="submit">Add Category</button>
+      </form>
+    </div>
+
+
+  </div>
 </div>
 
-{{! when they want to delete a category we have to see if it already has transactions with it, 
-if it does we warn them and then delete those incomes and that category and recalc }}
-
-{{! we check for duplicate categories upon submission (they are/aren't case sensitive, they should be case insensitive i think) }}
-
-{{!  }}

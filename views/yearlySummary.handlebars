@@ -1,66 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-</head>
-<body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <h1>{{year}} Balance</h1>
-    <p>For: {{userId}}</p>
+<form method="GET" action="/yearly" class="year-form" id="yearFormId">
+  <label>View Year:
+    <input type="number" id="yearInput" name="year" value="{{year}}" placeholder="{{year}}" min="2000" max="{{currentYear}}" onkeydown="if(event.key==='Enter'){document.getElementById('yearFormId').submit();}">
+  </label>
+</form> 
 
-  <div class="details">
-    <div id="charts">
-      <canvas id="pieChart" style="width:100%;max-width:600px"></canvas>
-      <canvas id="lineChart" style="width:100%;max-width:600px"></canvas>
-    </div>
-    <div id="info">
-      <p>Total Income: {{totalIncome}}</p>
-      <p>Total Fixed Expenses: {{totalFixedExpenses}}</p>
-      <p>Total Variable Expenses: {{totalVariableExpenses}}</p>
-      <h3>Cost Breakdown by Category</h3>
-      <ul>
-        {{#each breakdown }}
-          <li>{{@key}}: {{this}}</li>
-        {{/each}}
-      </ul>
+{{!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<h1>Yearly Summary - {{year}}</h1>
+
+{{#if noStats}}
+  <div class="no-summary-message" style="margin-top: 2rem; text-align: center;">
+  <h2>Start tracking your finances</h2>
+  <p>Looks like you haven't added any income or expenses for {{year}} yet.</p>
+  <p>Once you do, we'll generate insights and a spending chart to help you manage your money smarter.</p>
+  <p>Go ahead and add your income and expenses to get started!</p>
+</div>
+{{else}}
+  <div class="summary-bottom-section">
+    <!--  details  -->
+    <div class="chart-row-flex">
+      <div class="category-breakdown">
+        <h2>Spending by Category</h2>
+          {{#if breakdown}}
+            <ul class="category-scroll-list">
+              {{#each breakdown}}
+                <li>{{@key}}: ${{this}}</li>
+              {{/each}}
+            </ul>
+          {{else}}
+            <p>No spending records for this year.</p>
+          {{/if}}
+      </div>
+
+      <!-- pie chart -->
+      <div class="chart-section">
+        <h2>Spending Distribution by Category</h2>
+        {{#if breakdown}}
+          <canvas id="pieChart" style="max-width:100%"></canvas>
+        {{else}}
+          <p>No spending data available to visualize.</p>
+        {{/if}}
+      </div>
+
+      <div class="overview-section">
+        <h2>Overview</h2>
+        <ul class="overview-list">
+          <li>Total Income: ${{totalIncome}}</li>
+          <li>Fixed Expenses: ${{totalFixedExpenses}}</li>
+          <li>Variable Expenses: ${{totalVariableExpenses}}</li>
+        </ul>
+      </div>
+
+      <!--  line chart  -->
+      <div class="monthly-chart-section">
+        <h2>Monthly Spending Trend</h2>
+        {{#if monthlyExpenses}}
+          <canvas id="lineChart" style="max-width:90%"></canvas>
+        {{else}}
+          <p>No monthly expense data available.</p>
+        {{/if}}
+      </div>
     </div>
   </div>
-  
-    {{#if error}}
-        <p>{{error}}</p>
-    {{/if}}
+{{/if}}
+
+
 
 <script>
-  const data = {{{ totalSpentPerCategory }}}
-  const barColors = [
-    "#b91d47",
-    "#00aba9",
-    "#2b5797",
-    "#e8c3b9",
-    "#1e7145"
-  ];
+
+  function getStepSize(value) {
+    let est = Math.ceil((maxSpent * 1.1) / 10);
+    if (est < 10) return 10;
+    if (est < 20) return 20;
+    if (est < 50) return 50;
+    if (est < 100) return 100;
+    if (est < 150) return 150;
+    if (est < 200) return 200;
+    return est;
+  }
+
+  const data = {{{ totalSpentPerCategory }}};
+  const monthlyExpenses = {{{monthlyExpenses}}};
+  const maxSpent = Math.max(...monthlyExpenses);
+  const stepSize = getStepSize(maxSpent);
 
   new Chart("pieChart", {
     type: "pie",
     data: {
       labels: Object.keys(data),
       datasets: [{
-        backgroundColor: barColors,
+        backgroundColor: [
+                '#e6aebe',
+                '#f4cdd2',
+                '#c996a4',
+                '#f8b7c3',
+                '#eaa0a2'
+              ],
         data: Object.values(data)
       }]
     },
     options: {
-      title: {
-        display: true,
-        text: "Breakdown"
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#333',
+            font: {
+              size: 14,
+              family: "'Trebuchet MS', sans-serif"
+            }
+          }
+        }
       }
     }
   });
 
   const monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const yValues = [7,8,8,9,9,9,10,11, ,14,14,15];
 
   new Chart("lineChart", {
     type: "line",
@@ -69,23 +126,28 @@
       datasets: [{
         fill: false,
         lineTension: 0,
-        backgroundColor: "rgba(0,0,255,1.0)",
-        borderColor: "rgba(0,0,255,0.1)",
-        data: yValues
+        backgroundColor: '#c996a4',
+        borderColor: '#c996a4',
+        data: monthlyExpenses,
+        pointRadius: 4,
+        pointHoverRadius: 10,
+        pointHitRadius: 20
       }]
     },
     options: {
-      legend: {display: false},
+      plugins: {
+        legend: {
+          display:false
+        }
+      },
       scales: {
         yAxes: [{ticks: 
-          {min: 6,
-          max:16
+          {min: 0,
+          suggestedMax: Math.ceil(maxSpent * 1.1),
+          stepSize: stepSize
           }
         }]
       }
     }
   });
-
 </script>
-</body>
-</html>
