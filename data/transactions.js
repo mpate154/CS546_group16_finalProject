@@ -27,8 +27,7 @@ const transactionFunctions = {
 
     category = exportedMethods.checkString(category);
 
-    //check if user has that category (even though it is drop down)
-    //if not valid category throw
+ 
     const userCollection = await users();
     let userInfo = await userCollection.findOne(
       { _id: new ObjectId(userId) },
@@ -57,7 +56,6 @@ const transactionFunctions = {
     );
   },
 
-  //returns them sorted by most recent
   async getAllTransactionsByUserId(userId) {
     userId = exportedMethods.checkId(userId);
     const transactionCollection = await transactions();
@@ -191,7 +189,7 @@ const transactionFunctions = {
     });
 
     if (transToUpdate === null)
-      throw "Income UUID does not have corresponding income.";
+      throw "Transaction does not have corresponding income.";
 
     //check if user has that category (even though it is drop down)
     //if not valid category throw

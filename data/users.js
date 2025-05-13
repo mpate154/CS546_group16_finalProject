@@ -132,6 +132,11 @@ let exportedMethods = {
     const usersCol = await usersCollection.findOne({ _id: new ObjectId(id) });
     if (usersCol === null) throw "No user with that id";
 
+    const existingUser = await usersCollection.findOne({ email: email });
+    if (existingUser) {
+      throw `A user with the email '${email}' already exists.`;
+    }
+
     if (parseInt(age) < 13) {
       throw `Users must be at least 13 years old to sign up.`;
     }
@@ -155,11 +160,7 @@ let exportedMethods = {
       { $set: userUpdateInfo },
       { returnOriginal: false }
     );
-    // if (updateInfo.lastErrorObject.n === 0)
-    //   throw [
-    //     404,
-    //     `Error: Update failed, could not find a user with id of ${id}`
-    //   ];
+
 
     return true;
   },
@@ -182,7 +183,6 @@ let exportedMethods = {
       { returnDocument: "after" }
     );
 
-    //if (!updatedInfo.value) throw 'Error: Could not add category';
     return true;
   },
   async deleteCategoryById(userID, categoryToDelete) {
@@ -202,8 +202,6 @@ let exportedMethods = {
       { $pull: { categories: categoryToDelete } },
       { returnDocument: "after" }
     );
-
-    //if (!updatedInfo.value) throw 'Error: Could not delete category';
     return true;
   },
   async addFixedExpensesById(userID, title, category, amount) {
@@ -287,7 +285,6 @@ let exportedMethods = {
       { returnDocument: "after" }
     );
 
-    //if (!updateResult.value) throw 'Error: Could not update the fixed expense';
     return true;
   },
 

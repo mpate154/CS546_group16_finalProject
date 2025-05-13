@@ -17,14 +17,10 @@ import {
      
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
-  // If the user posts to the server with a property called _method, rewrite the request's method
-  // To be that method; so if they post _method=PUT you can now allow browsers to POST to a route that gets
-  // rewritten in this middleware to a PUT route
   if (req.body && req.body._method) {
     req.method = req.body._method;
     delete req.body._method;
   }
-  // let the next middleware run:
   next();
 };
 
@@ -32,7 +28,6 @@ const staticDir = express.static("public");
 
 const handlebarsInstance = exphbs.create({
   defaultLayout: "main",
-  // Specify helpers which are only registered on this instance.
   helpers: {
     asJSON: (obj, spacing) => {
       if (typeof spacing === "number")
@@ -51,7 +46,7 @@ handlebarsInstance.handlebars.registerHelper("eq", function (a, b) {
 
 app.use(
   session({
-    name: "AuthenticationState", // This is critical for full credit!
+    name: "AuthenticationState",
     secret: "some secret string!",
     resave: false,
     saveUninitialized: false,
@@ -64,7 +59,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
 
 app.engine("handlebars", handlebarsInstance.engine);
-//app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 app.use(logger);
@@ -72,6 +66,7 @@ app.use(logger);
 app.use("/login", loginRedirect);
 app.use("/register", registerRedirect);
 app.use("/home", protectHomePage);
+app.use("/yearly", protectHomePage);
 app.use("/signout", protectSignoutPage);
 app.use("/income", protectIncomePage);
 app.use("/expense", protectExpensePage);

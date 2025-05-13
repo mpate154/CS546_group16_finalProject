@@ -1,5 +1,8 @@
 /* === GENERAL LAYOUT === */
 
+body{
+    margin: 0;
+}
 .container {
   display: grid;
   grid-template-columns: 15% auto;

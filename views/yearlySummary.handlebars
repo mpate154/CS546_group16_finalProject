@@ -1,6 +1,6 @@
 <form method="GET" action="/yearly" class="year-form" id="yearFormId">
   <label>View Year:
-    <input type="number" id="yearInput" name="year" value="{{year}}" placeholder="{{year}}" min="2000" max="{{currentYear}}" onkeydown="if(event.key==='Enter'){document.getElementById('yearFormId').submit();}">
+    <input type="number" id="yearInput" name="year" value="{{year}}" placeholder="{{year}}" min="2000" max="{{constantCurrentYear}}" onkeydown="if(event.key==='Enter'){document.getElementById('yearFormId').submit();}">
   </label>
 </form> 
 
@@ -21,7 +21,7 @@
     <!--  details  -->
     <div class="chart-row-flex">
       <div class="category-breakdown">
-        <h2>Spending by Category</h2>
+        <h2>Variable Spending by Category</h2>
           {{#if breakdown}}
             <ul class="category-scroll-list">
               {{#each breakdown}}
@@ -35,7 +35,7 @@
 
       <!-- pie chart -->
       <div class="chart-section">
-        <h2>Spending Distribution by Category</h2>
+        <h2>Variable Spending Distribution by Category</h2>
         {{#if breakdown}}
           <canvas id="pieChart" style="max-width:100%"></canvas>
         {{else}}
@@ -47,7 +47,7 @@
         <h2>Overview</h2>
         <ul class="overview-list">
           <li>Total Income: ${{totalIncome}}</li>
-          <li>Fixed Expenses: ${{totalFixedExpenses}}</li>
+          {{!-- <li>Fixed Expenses: ${{totalFixedExpenses}}</li> --}}
           <li>Variable Expenses: ${{totalVariableExpenses}}</li>
         </ul>
       </div>

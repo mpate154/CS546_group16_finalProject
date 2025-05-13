@@ -15,11 +15,7 @@ const monthlySummaryFunctions = {
     const incomeList = await incomeFunctions.getIncomeByUserIdByMonthAndYear(userId, month, year);
     const totalIncome = incomeList.reduce((acc, incomeEntry) => acc + (Number(incomeEntry.amount) || 0), 0);
 
-    //console.log("Updating summary with:");
-    //console.log("userId:", userId, "type:", typeof userId);
-    //console.log("month:", month, "type:", typeof month);
-    //console.log("year:", year, "type:", typeof year);
-    //console.log("totalIncome:", totalIncome);
+    
     const summaryCollection = await monthlySummaries();
     const updateResult = await summaryCollection.updateOne(
       { userId, month, year },
@@ -33,7 +29,6 @@ const monthlySummaryFunctions = {
       },
       { upsert: true }
     );
-    //console.log("updateResult:", updateResult);
 
     if (updateResult.modifiedCount === 0 && updateResult.matchedCount === 1) {
       //console.warn("Update skipped: document already up-to-date.");
@@ -52,13 +47,10 @@ const monthlySummaryFunctions = {
   
     const summaryCollection = await monthlySummaries();
     const summary = await summaryCollection.findOne({ userId, month, year });
-  
-    // if (!summary) throw "No monthly summary found. Please run recalculateMonthlySummary first.";
+
     if (!summary) {
       return null;
     }
-  
-    // Fallbacks for missing fields
     const totalIncome = summary.totalIncome || 0;
     const totalFixedExpenses = summary.totalFixedExpenses || 0;
     const totalVariableExpenses = summary.totalVariableExpenses || 0;
@@ -119,7 +111,6 @@ const monthlySummaryFunctions = {
       { upsert: true }
     );
   
-    //console.log("✅ Combined breakdown (var + fixed):", breakdownArray);
     return breakdownArray;
   },
   
@@ -131,10 +122,9 @@ const monthlySummaryFunctions = {
     const userCollection = await users();
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
   
-    //console.log("🧾 User document:", user);
+
   
     if (!user || !user.fixedExpenses) {
-      //console.warn("User not found or has no fixed expenses.");
       return 0;
     }
   
@@ -149,7 +139,6 @@ const monthlySummaryFunctions = {
       { upsert: true }
     );
   
-    //console.log("✅ Total fixed expenses calculated:", total);
   
     return total;
   }, 
@@ -184,12 +173,11 @@ const monthlySummaryFunctions = {
       { upsert: true }
     );
   
-    //console.log("✅ Total variable expenses:", total);
+    
   
     return total;
   },  
   async recalculateMonthlySummary(userId, month, year) {
-    //console.log("recalculate monthly called ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅");
     userId = exportedMethods.checkId(userId);
     month = exportedMethods.checkNumber(month);
     year = exportedMethods.checkNumber(year);
@@ -205,14 +193,12 @@ const monthlySummaryFunctions = {
     const userDoc = await userCollection.findOne({ _id: userId });
 
     const initialBalance = userDoc?.balance || 0;
-    //console.log("✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ balance:", initialBalance);
 
     const remainingBalance = 
       (initialBalance || 0) + 
       (totalIncome || 0) - 
       (totalFixedExpenses || 0) - 
       (totalVariableExpenses || 0);
-    // const remainingBalance = (totalIncome || 0) - (totalFixedExpenses || 0) - (totalVariableExpenses || 0);
   
     const summaryCollection = await monthlySummaries();
     await summaryCollection.updateOne(
@@ -259,7 +245,7 @@ const monthlySummaryFunctions = {
     const dailyTotals = {};
   
     for (const txn of txnList) {
-      const date = txn.date.split('/')[1]; // Get the 'dd' part of 'MM/dd/yyyy'
+      const date = txn.date.split('/')[1]; 
       const amount = Number(txn.amount) || 0;
       dailyTotals[date] = (dailyTotals[date] || 0) + amount;
     }

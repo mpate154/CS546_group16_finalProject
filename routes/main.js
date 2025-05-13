@@ -499,9 +499,7 @@ router
           settings_page: false,
         });
       } catch (e) {
-        //what to do when error?
-        //console.log(e); // get rid of
-        //waht statsu
+        
         return res.status(500).send("Internal Server Error");
       }
     }
@@ -582,7 +580,6 @@ router
 
       res.redirect("/income");
     } catch (e) {
-      //what to do if delete fails
       return res.status(500).redirect(`/income?dropdownError=${e}`);
     }
   })
@@ -1088,9 +1085,9 @@ router.delete("/settings/deleteCategory", async (req, res) => {
   try {
     const user = req.session.user;
     const { category } = req.body;
-    await users.deleteCategoryById(user.id, xss(category));
+    await users.deleteCategoryById(user.id.toString(), xss(category));
 
-    const updatedUser = await users.getUserById(user.id);
+    const updatedUser = await users.getUserById(user.id.toString());
     req.session.user = {
       id: updatedUser._id.toString(),
       firstName: updatedUser.firstName,
@@ -1119,17 +1116,16 @@ router.route('/yearly')
       }
       const user = req.session.user;
       let currentYear = new Date().getFullYear();
-      let year = req.query.year || currentYear;
+      let year = (req.query.year || currentYear).toString();
       //check later for form for queing different year
 
-      await yearlyFunctions.recalculateYearly(user.id, year.toString());
+      await yearlyFunctions.recalculateYearly(user.id.toString(), year.toString());
       
       let yearSummary;
-      //try {
-        yearSummary = await yearlyFunctions.getYearlySummary(user.id, year.toString());
-      // } catch (e) {
-      //   yearSummary = {totalSpentPerCategory: {}, totalIncome: 0, totalFixedExpenses: 0, totalVariableExpenses: 0};
-      // }
+      
+      yearSummary = await yearlyFunctions.getYearlySummary(user.id.toString(), xss(year.toString()));
+    
+
       const yearOptions = [];
       for (let y = currentYear; y >= 2000; y--) {
         yearOptions.push({
@@ -1138,27 +1134,17 @@ router.route('/yearly')
         });
       }
 
-      if (!yearSummary) {
-        return res.render('yearlySummary', {
-          title: "Yearly summary", 
-          year: year, 
-          noStats: true,
-          yearOptions:yearOptions,
-          home_or_summary: true, 
-          landing_signup_login: false, 
-          general_page: false, 
-          include_navbar: true, 
-          include_summary_navbar: true
-        });
-      }
-
-      const monthlyExpenses = await yearlyFunctions.getMonthlyExpenses(user.id, year.toString());
+      const monthlyExpenses = await yearlyFunctions.getMonthlyExpenses(user.id.toString(), year.toString());
       
+      let hasData = yearSummary.totalIncome > 0 || yearSummary.totalVariableExpenses > 0; 
+      let constantCurrentYear = new Date().getFullYear();
+
       return res.render('yearlySummary', {
         title: "Yearly summary", 
         year: year, 
         currentYear: year,
-        noStats: Object.keys(yearSummary.totalSpentPerCategory || {}).length === 0 || !yearSummary,
+        constantCurrentYear: constantCurrentYear,
+        noStats: !hasData,
         breakdown: yearSummary.totalSpentPerCategory,
         totalSpentPerCategory: JSON.stringify(yearSummary.totalSpentPerCategory), 
         totalIncome: yearSummary.totalIncome, 

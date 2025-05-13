@@ -7,11 +7,8 @@ let monthList = {January: "01", February: "02", March: "03", April: "04", May: "
 
 const yearlyFunctions = {
     async addYearlySummary(userId, year) {
-        userId = exportedMethods.checkId(userId);
+        userId = exportedMethods.checkId(userId.toString());
         year = exportedMethods.checkYear(year);
-        
-        // const userCollection = await users();
-        // const monthCollection = await monthlySummary();
         const yearlyCollection = await yearlySummary();
 
         let totalIncome = 0;
@@ -24,9 +21,6 @@ const yearlyFunctions = {
                 totalIncome += Number(summ.totalIncome);
                 totalFixedExpenses += Number(summ.totalFixedExpenses);
                 totalVariableExpenses += Number(summ.totalVariableExpenses);
-                // for (let [cat, amt] of Object.entries(summ.breakdownByCategory)) {
-                //     totalSpentPerCategory[cat] = (totalSpentPerCategory[cat] || 0) + Number(amt);
-                // }
                 for (let pair of summ.breakdownByCategory) {
                     totalSpentPerCategory[pair.category] = (totalSpentPerCategory[pair.category] || 0) + pair.totalSpent;
                 }
@@ -68,13 +62,11 @@ const yearlyFunctions = {
         return `${updatedInfo._id.toString()} has been updated`;
     },
 
-
     async updateTotalVariableExpenses(userId, year) {
         userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
 
         let totalVariableExpenses = 0;
-        //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
             let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
@@ -93,7 +85,6 @@ const yearlyFunctions = {
         year = exportedMethods.checkYear(year);
         
         let totalIncome = 0;
-        //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
             let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
@@ -111,21 +102,36 @@ const yearlyFunctions = {
         userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
-        //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        const yearlyCollection = await yearlySummary();
+        const userCollection = await users();
+        let user = await userCollection.findOne({_id: new ObjectId(userId)});
+        if (!user) throw `user not found`;
+
+        let fixedPerCategory = {};
+        if (user.fixedExpenses.length > 0) {
+            for (let fExp of user.fixedExpenses) {
+                fixedPerCategory[fExp.category] = (fixedPerCategory[fExp.category] || 0) + (fExp.amount * 12);
+            }
+        }
+
         let totalSpentPerCategory = {};
         for (let [m, num] of Object.entries(monthList)) {
             let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
-                // for (let [cat, amt] of Object.entries(summ.breakdownByCategory)) {
-                //     totalSpentPerCategory[cat] = (totalSpentPerCategory[cat] || 0) + Number(amt);
-                // }
+               
                 for (let pair of summ.breakdownByCategory) {
                     totalSpentPerCategory[pair.category] = (totalSpentPerCategory[pair.category] || 0) + pair.totalSpent;
                 }
             }
         }
 
-        const yearlyCollection = await yearlySummary();
+        for (let cat in fixedPerCategory) {
+            if (totalSpentPerCategory.hasOwnProperty(cat)) {
+                totalSpentPerCategory[cat] -= fixedPerCategory[cat];
+            }
+        }
+
         const updatedInfo = await yearlyCollection.findOneAndUpdate({userId: userId, year:year}, {$set: {totalSpentPerCategory: totalSpentPerCategory}}, {returnDocument: 'after'});
         if (!updatedInfo) throw 'total income could not be updated';
         return `${updatedInfo._id.toString()} has been updated`;
@@ -153,12 +159,10 @@ const yearlyFunctions = {
         year = exportedMethods.checkYear(year);
 
         let trend = {};
-        //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
             let totalSpending = 0;
             let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
-                totalSpending += Number(summ.totalFixedExpenses);
                 totalSpending += Number(summ.totalVariableExpenses);
             }
             trend[m] = totalSpending;

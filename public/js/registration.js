@@ -63,27 +63,6 @@ if (signinForm) {
     }
     signinForm.submit();
 
-    // fetch('/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({ email, password })
-    // })
-    //   .then(response => {
-    //     if (response.ok) {
-    //       window.location.href = '/home';
-    //     } else {
-    //       response.text().then(msg => {
-    //         showError(msg || 'Login failed. Please try again.');
-    //         document.getElementById('password').value = ''; // Clear password
-    //       });
-    //     }
-    //   })
-    //   .catch(() => {
-    //     showError('Network error. Please try again.');
-    //     document.getElementById('password').value = ''; // Clear password
-    //   });
   });
 }
 
@@ -198,39 +177,5 @@ if (signupForm) {
     }
 
     signupForm.submit();
-
-    // fetch('/register', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     firstName,
-    //     lastName,
-    //     email,
-    //     gender,
-    //     age,
-    //     city,
-    //     state,
-    //     balance,
-    //     password
-    //   })
-    // })
-    //   .then(response => {
-    //     if (response.ok) {
-    //       window.location.href = '/login';
-    //     } else {
-    //       response.text().then(msg => {
-    //         showError(msg || 'Registeration failed. Please try again.');
-    //         document.getElementById('password').value = '';
-    //         document.getElementById('confirmPassword').value = '';
-    //       });
-    //     }
-    //   })
-    //   .catch(() => {
-    //     showError('Network error. Please try again.');
-    //     document.getElementById('password').value = '';
-    //     document.getElementById('confirmPassword').value = '';
-    //   });
   });
 }

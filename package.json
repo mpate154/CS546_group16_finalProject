@@ -10,7 +10,7 @@
   },
   "author": "Elina Rezaeian, Maya Patel, Samantha York, Nastaran Soofi",
   "license": "MIT",
-  "description": "",
+  "description": "Stevens Instituute of Technology -  CS 546 Final Project - Budget Tracker - Spring 2025",
   "dependencies": {
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
@@ -20,6 +20,7 @@
     "express-session": "^1.18.1",
     "handlebars": "^4.7.8",
     "mongodb": "^6.15.0",
+    "registerproject": "github:erezaeia/CS546_group16_finalProject",
     "uuid": "^11.1.0",
     "xss": "^1.0.15"
   }

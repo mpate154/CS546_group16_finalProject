@@ -1,0 +1,45 @@
+<div class="landing-container">
+        <!-- Left Box -->
+        <div class="description-box">
+            <h1>Welcome to Budget Tracker!</h1>
+            <p>Budget Tracker is your all-in-one solution for managing your finances. Easily track your income, manage your expenses, and control your spending with intuitive visualizations and smart analytics. Take control of your financial future with just a few clicks!</p>
+            <p>Our platform is designed for simplicity and efficiency, offering you real-time updates, organized breakdowns of spending categories, and personalized insights to help you make better financial decisions. Join us today and start building a stronger financial future.</p>
+            <div class="btn-container">
+              {{#if isLoggedIn }}
+                <a class="btn" href="/home">To Your Account</a>
+              {{else}}
+                <a class="btn" href="/register">Sign Up</a>
+                <a class="btn" href="/login">Login</a>
+              {{/if}}
+            </div>
+        </div>
+
+        <!-- Right Box -->
+        <div class="team-box">
+            <h2>Meet the Team</h2>
+            <div class="team-members">
+                <div class="member-row">
+                    <div class="member1">
+                        <img src="/public/images/elinaImage.jpeg" alt="Elina Rezaeian" class="member-img">
+                        <p>Elina Rezaeian<br>Computer Science<br>Junior</p>
+                    </div>
+                    <div class="member2">
+                        <img src="/public/images/mayaImage.jpg" alt="Maya Patel" class="member-img">
+                        <p>Maya Patel<br>Computer Science<br>Sophomore</p>
+                    </div>
+                </div>
+
+                <div class="member-row">
+                    <div class="member1">
+                        <img src="/public/images/nastaranImage.jpeg" alt="Nastaran Jamalipour Soofi" class="member-img">
+                        <p>Nastaran Jamalipour Soofi<br>Computer Engineering</p>
+                    </div>
+                    <div class="member2">
+                        <img src="/public/images/samImage.jpeg" alt="Samantha York" class="member-img">
+                        <p>Samantha York<br>Computer Science<br>Sophomore</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</div>
