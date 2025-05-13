@@ -51,11 +51,22 @@ Brief description of the project:
     ```bash
     npm install
     ```
-3. Start the development server:
+3. (For graders) Run the seed
+   ```bash
+   npm run seed
+   ```
+   The seed will automatically populate the application with incomes and expenses from January 2022 to the current date.
+   Other dates will be left blank empty pages with no data can also be seen.
+   Use this login once you npm run seed.
+   Email: phill@stevens.edu
+   Password: Sectionb1*
+
+   Alternatively, you can also create your own user. 
+5. Start the development server:
     ```bash
     npm start
     ```
-4. Visit `http://localhost:3000` in your browser.
+6. Visit `http://localhost:3000` in your browser.
     - **Important note: the month selection feature on the income and expense pages only works on Chrome and Microsoft Edge, NOT Safari and FireFox.**
 ---
 
@@ -75,7 +86,8 @@ Brief description of the project:
 - Adjust personal preferences in settings
     - Change your name, email, gender, age, city, state, and starting balance by clicking the "edit information" button. Once your changes are made, click the "save changes" button. If you no longer wish to edit this information, click "edit information" once again.
     - Note: If you change your age to below 13, it will not save as those under 13 are not permitted to use our app.
-    - Add fixed expenses, their category, and amount. These are assumed to be monthly fixed expenses for the current month. 
+    - Add fixed expenses, their category, and amount. These are assumed to be monthly fixed expenses for the current month.
+    - Note: Fixed expenses was originally going to be asked for during sign-up, but it's something that can be editted by the user in the settings at any time instead, for more flexibility. 
     - Add or remove categories. 
 ---
 
