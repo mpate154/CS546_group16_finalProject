@@ -101,6 +101,12 @@ async function main() {
             await transactionFunctions.addTransaction(user1Id, getRandom(0, 500).toString(), categories[getRandom(0, categories.length -1)], getRandomDate("01/01/2022", "12/31/2022"));
         }
 
+        let year; 
+
+        for(year = 2000; year < 2022; year++){
+            await yearlyFunctions.addYearlySummary(user1Id, year.toString()); 
+        }
+
     }catch (e) {
         console.log(`Error: ${e}`)
     }
