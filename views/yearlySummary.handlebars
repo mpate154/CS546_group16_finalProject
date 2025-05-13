@@ -141,12 +141,14 @@
         }
       },
       scales: {
-        yAxes: [{ticks: 
-          {min: 0,
+        y: {
+          beginAtZero: true,
+          min: 0,
           suggestedMax: Math.ceil(maxSpent * 1.1),
-          stepSize: stepSize
+          ticks: {
+            stepSize: stepSize
           }
-        }]
+        }
       }
     }
   });

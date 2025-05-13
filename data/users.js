@@ -72,7 +72,7 @@ let exportedMethods = {
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {
       throw "Could not register user due to a database error.";
     }
-    return { registrationCompleted: true };
+    return { registrationCompleted: true, userId: insertInfo.insertedId.toString()};
   },
   async login(email, password) {
     email = validation.checkEmail(email);

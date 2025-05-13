@@ -10,8 +10,9 @@ const yearlyFunctions = {
         userId = exportedMethods.checkId(userId);
         year = exportedMethods.checkYear(year);
         
-        const userCollection = await users();
-        const monthCollection = await monthlySummary();
+        // const userCollection = await users();
+        // const monthCollection = await monthlySummary();
+        const yearlyCollection = await yearlySummary();
 
         let totalIncome = 0;
         let totalFixedExpenses = 0;
@@ -32,11 +33,10 @@ const yearlyFunctions = {
             }
         }
 
-        const findUserId = await userCollection.findOne({userId: userId, year:year});
+        const findUserId = await yearlyCollection.findOne({userId: userId, year:year});
         if (findUserId) throw "userId and year combo already exists";
 
         let newYearly = {userId, year, totalSpentPerCategory, totalIncome, totalFixedExpenses, totalVariableExpenses};
-        const yearlyCollection = await yearlySummary();
         const insertInfo = await yearlyCollection.insertOne(newYearly);
         if (!insertInfo.acknowledged || !insertInfo.insertedId) throw "Could not add yearly summary";
         const yearlySum = await this.getYearlySummary(userId, year);
@@ -57,7 +57,7 @@ const yearlyFunctions = {
 
         let totalFixedExpenses = 0;
         for (let [m, num] of Object.entries(monthList)) {
-            let summ = await month.getMonthlySummary(userId, num, year.toString());
+            let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
                 totalFixedExpenses += Number(summ.totalFixedExpenses);
             }
@@ -76,7 +76,7 @@ const yearlyFunctions = {
         let totalVariableExpenses = 0;
         //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
-            let summ = await month.getMonthlySummary(userId, num, year.toString());
+            let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
                 totalVariableExpenses += Number(summ.totalVariableExpenses);
             }
@@ -95,7 +95,7 @@ const yearlyFunctions = {
         let totalIncome = 0;
         //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
-            let summ = await month.getMonthlySummary(userId, num, year.toString());
+            let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
                 totalIncome += Number(summ.totalIncome);
             }
@@ -114,7 +114,7 @@ const yearlyFunctions = {
         //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let totalSpentPerCategory = {};
         for (let [m, num] of Object.entries(monthList)) {
-            let summ = await month.getMonthlySummary(userId, num, year.toString());
+            let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
                 // for (let [cat, amt] of Object.entries(summ.breakdownByCategory)) {
                 //     totalSpentPerCategory[cat] = (totalSpentPerCategory[cat] || 0) + Number(amt);
@@ -133,7 +133,7 @@ const yearlyFunctions = {
 
     async recalculateYearly(userId, year) {
         userId = exportedMethods.checkId(userId);
-        year = exportedMethods.checkYear(year);
+        year = exportedMethods.checkYear(year.toString());
         
         const yearlyCollection = await yearlySummary();
         const findYearSum = await yearlyCollection.findOne({userId: userId, year:year});
@@ -156,7 +156,7 @@ const yearlyFunctions = {
         //let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         for (let [m, num] of Object.entries(monthList)) {
             let totalSpending = 0;
-            let summ = await month.getMonthlySummary(userId, num, year.toString());
+            let summ = await month.recalculateMonthlySummary(userId, num, year.toString());
             if (summ) {
                 totalSpending += Number(summ.totalFixedExpenses);
                 totalSpending += Number(summ.totalVariableExpenses);
