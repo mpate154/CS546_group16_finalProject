@@ -71,7 +71,7 @@ Brief description of the project:
     - For delete, that income/expense will immediately disappear from the table. 
 - View your monthly and yearly summaries by navigating to the home page. Use the top navbar to toggle between the two summaries.
     - Click a category in the pie chart if you wish to view the chart without that category!
-    - Fixed expenses are included in the monthly summary but not in the yearly summary 
+    - Fixed expenses are included in the monthly summary but not in the yearly summary.
 - Adjust personal preferences in settings
     - Change your name, email, gender, age, city, state, and starting balance by clicking the "edit information" button. Once your changes are made, click the "save changes" button. If you no longer wish to edit this information, click "edit information" once again.
     - Note: If you change your age to below 13, it will not save as those under 13 are not permitted to use our app.
@@ -81,5 +81,11 @@ Brief description of the project:
 
 ## 🔨 Future Improvement
 - Overall design/UI
-- Add credit card features (multiple accounts tracked)
 - Create a seperate database to track fixed expenses for more than just the current month
+- Add credit card features (multiple accounts tracked)
+- Expense table for each credit card/debit card that is connected to the full summary expense table
+- Customizable colors for the user 
+- Spending Limit: Users have the option to create a goal that they want to keep their expenses under. 
+- Yearly summary shows credit card limits versus balance and warns if they are close to the limit. 
+- “Forget password?” feature 
+
