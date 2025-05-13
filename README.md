@@ -26,8 +26,9 @@ Brief description of the project:
 - Add, edit, delete income and expenses
     - includes an optional description field so you can keep track of specific information
 - Categorize transactions (e.g., Food, Rent, Travel)
-- Add and delete your personalized categories
-- Visual monthly and yearly summaries with charts or tables
+    - Comes with starter categories 
+    - Add and delete your personalized categories
+- Visual monthly and yearly summaries with charts and stats
 - See pie chart without certain categories by clicking it
 - Add fixed expenses for current month 
 - Edit personal information
@@ -70,9 +71,15 @@ Brief description of the project:
     - For delete, that income/expense will immediately disappear from the table. 
 - View your monthly and yearly summaries by navigating to the home page. Use the top navbar to toggle between the two summaries.
     - Click a category in the pie chart if you wish to view the chart without that category!
+    - Fixed expenses are included in the monthly summary but not in the yearly summary 
 - Adjust personal preferences in settings
     - Change your name, email, gender, age, city, state, and starting balance by clicking the "edit information" button. Once your changes are made, click the "save changes" button. If you no longer wish to edit this information, click "edit information" once again.
     - Note: If you change your age to below 13, it will not save as those under 13 are not permitted to use our app.
     - Add fixed expenses, their category, and amount. These are assumed to be monthly fixed expenses for the current month. 
     - Add or remove categories. 
 ---
+
+## 🔨 Future Improvement
+- Overall design/UI
+- Add credit card features (multiple accounts tracked)
+- Create a seperate database to track fixed expenses for more than just the current month
