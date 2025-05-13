@@ -56,16 +56,20 @@ Brief description of the project:
    npm run seed
    ```
    The seed will automatically populate the application with incomes and expenses from January 2022 to the current date.
-   Other dates will be left blank empty pages with no data can also be seen.
-   Use this login once you npm run seed.
-   Email: phill@stevens.edu
-   Password: Sectionb1*
-
-   Alternatively, you can also create your own user. 
+   Other dates will be left blank so empty pages with no data can also be seen.
+   
 5. Start the development server:
     ```bash
     npm start
     ```
+If you used the seed, use this login.
+
+   Email: phill@stevens.edu **CHANGE** 
+
+   Password: Sectionb1*
+
+   Alternatively, you can also create your own user. 
+
 6. Visit `http://localhost:3000` in your browser.
     - **Important note: the month selection feature on the income and expense pages only works on Chrome and Microsoft Edge, NOT Safari and FireFox.**
 ---
