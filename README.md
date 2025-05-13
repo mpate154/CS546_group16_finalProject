@@ -29,7 +29,7 @@ Brief description of the project:
 - Add and delete your personalized categories
 - Visual monthly and yearly summaries with charts or tables
 - See pie chart without certain categories by clicking it
-- Add fixed expenses
+- Add fixed expenses for current month 
 - Edit personal information
 
 ## 🛠 Tech Stack
@@ -73,6 +73,6 @@ Brief description of the project:
 - Adjust personal preferences in settings
     - Change your name, email, gender, age, city, state, and starting balance by clicking the "edit information" button. Once your changes are made, click the "save changes" button. If you no longer wish to edit this information, click "edit information" once again.
     - Note: If you change your age to below 13, it will not save as those under 13 are not permitted to use our app.
-    - Add fixed expenses, their category, and amount. These are assumed to be monthly fixed expenses.
+    - Add fixed expenses, their category, and amount. These are assumed to be monthly fixed expenses for the current month. 
     - Add or remove categories. 
 ---
