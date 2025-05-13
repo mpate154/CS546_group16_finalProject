@@ -1,0 +1,155 @@
+<form method="GET" action="/yearly" class="year-form" id="yearFormId">
+  <label>View Year:
+    <input type="number" id="yearInput" name="year" value="{{year}}" placeholder="{{year}}" min="2000" max="{{constantCurrentYear}}" onkeydown="if(event.key==='Enter'){document.getElementById('yearFormId').submit();}">
+  </label>
+</form> 
+
+{{!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<h1>Yearly Summary - {{year}}</h1>
+
+{{#if noStats}}
+  <div class="no-summary-message" style="margin-top: 2rem; text-align: center;">
+  <h2>Start tracking your finances</h2>
+  <p>Looks like you haven't added any income or expenses for {{year}} yet.</p>
+  <p>Once you do, we'll generate insights and a spending chart to help you manage your money smarter.</p>
+  <p>Go ahead and add your income and expenses to get started!</p>
+</div>
+{{else}}
+  <div class="summary-bottom-section">
+    <!--  details  -->
+    <div class="chart-row-flex">
+      <div class="category-breakdown">
+        <h2>Variable Spending by Category</h2>
+          {{#if breakdown}}
+            <ul class="category-scroll-list">
+              {{#each breakdown}}
+                <li>{{@key}}: ${{this}}</li>
+              {{/each}}
+            </ul>
+          {{else}}
+            <p>No spending records for this year.</p>
+          {{/if}}
+      </div>
+
+      <!-- pie chart -->
+      <div class="chart-section">
+        <h2>Variable Spending Distribution by Category</h2>
+        {{#if breakdown}}
+          <canvas id="pieChart" style="max-width:100%"></canvas>
+        {{else}}
+          <p>No spending data available to visualize.</p>
+        {{/if}}
+      </div>
+
+      <div class="overview-section">
+        <h2>Overview</h2>
+        <ul class="overview-list">
+          <li>Total Income: ${{totalIncome}}</li>
+          {{!-- <li>Fixed Expenses: ${{totalFixedExpenses}}</li> --}}
+          <li>Variable Expenses: ${{totalVariableExpenses}}</li>
+        </ul>
+      </div>
+
+      <!--  line chart  -->
+      <div class="monthly-chart-section">
+        <h2>Monthly Spending Trend</h2>
+        {{#if monthlyExpenses}}
+          <canvas id="lineChart" style="max-width:90%"></canvas>
+        {{else}}
+          <p>No monthly expense data available.</p>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+{{/if}}
+
+
+
+<script>
+
+  function getStepSize(value) {
+    let est = Math.ceil((maxSpent * 1.1) / 10);
+    if (est < 10) return 10;
+    if (est < 20) return 20;
+    if (est < 50) return 50;
+    if (est < 100) return 100;
+    if (est < 150) return 150;
+    if (est < 200) return 200;
+    return est;
+  }
+
+  const data = {{{ totalSpentPerCategory }}};
+  const monthlyExpenses = {{{monthlyExpenses}}};
+  const maxSpent = Math.max(...monthlyExpenses);
+  const stepSize = getStepSize(maxSpent);
+
+  new Chart("pieChart", {
+    type: "pie",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        backgroundColor: [
+                '#e6aebe',
+                '#f4cdd2',
+                '#c996a4',
+                '#f8b7c3',
+                '#eaa0a2'
+              ],
+        data: Object.values(data)
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#333',
+            font: {
+              size: 14,
+              family: "'Trebuchet MS', sans-serif"
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  new Chart("lineChart", {
+    type: "line",
+    data: {
+      labels: monthList,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: '#c996a4',
+        borderColor: '#c996a4',
+        data: monthlyExpenses,
+        pointRadius: 4,
+        pointHoverRadius: 10,
+        pointHitRadius: 20
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display:false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          min: 0,
+          suggestedMax: Math.ceil(maxSpent * 1.1),
+          ticks: {
+            stepSize: stepSize
+          }
+        }
+      }
+    }
+  });
+</script>

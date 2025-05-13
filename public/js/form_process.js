@@ -2,23 +2,23 @@
 
 let checkString = (strVal) => {
   //trims
-  if (!strVal) throw `Error: You must supply an input!`;
-  if (typeof strVal !== "string") throw `Error: input must be a string!`;
+  if (!strVal) throw `You must supply an input!`;
+  if (typeof strVal !== "string") throw `Input must be a string!`;
   strVal = strVal.trim();
   if (strVal.length === 0)
-    throw `Error: input cannot be an empty string or string with just spaces`;
+    throw `Input cannot be an empty string or string with just spaces`;
   if (!isNaN(strVal))
-    throw `Error: ${strVal} is not a valid value for input as it only contains digits.`;
+    throw `${strVal} is not a valid value for input as it only contains digits.`;
   return strVal;
 };
 let checkAmount = (amount) => {
   let stringamount = amount;
-  if (!amount) throw `Error: You must supply an amount`;
+  if (!amount) throw `You must supply an amount`;
   if (typeof stringamount !== "string")
-    throw `Error: Inputted amount should be a string.`;
+    throw `Inputted amount should be a string.`;
   amount = amount.trim();
   if (amount.length === 0) {
-    throw `Error: Given amount cannot be an empty string or string with just spaces.`;
+    throw `Given amount cannot be an empty string or string with just spaces.`;
   }
 
   //checking if all numerical or .
@@ -33,17 +33,17 @@ let checkAmount = (amount) => {
       );
     })
   )
-    throw "Error: Invalid characters in amount. There should only be numbers and . for a decimal place.";
+    throw "Invalid characters in amount. There should only be numbers and . for a decimal place.";
 
   if (decimalPoints > 1)
-    throw "Error: There should only be 1 or none decimal points.";
+    throw "There should only be 1 or none decimal points.";
 
   // make sure format is correct
   amount = parseFloat(amount);
-  if (isNaN(amount)) throw `Error: amount cannot be converted to a decimal.`;
+  if (isNaN(amount)) throw `Amount cannot be converted to a decimal.`;
   if (decimalPoints == 1) {
     if (stringamount.split(".")[1].length > 2)
-      throw "Error: Amount must be 2 decimals places or less.";
+      throw "Amount must be 2 decimals places or less.";
   }
 
   return amount;
@@ -51,50 +51,50 @@ let checkAmount = (amount) => {
 
 //the input for the input="date" is YYYY/MM/DD so we need to flip it
 let flipDate = (date) => {
-  if (!date) throw `Error: You must supply a date`;
+  if (!date) throw `You must supply a date`;
   if (typeof date !== "string")
-    throw `Error: Inputted date should be a string.`;
+    throw `Inputted date should be a string.`;
   date = date.trim();
   if (date.length === 0) {
-    throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    throw `Given date cannot be an empty string or string with just spaces.`;
   }
 
   let dateSplit = date.split("-");
-  if (dateSplit.length < 3) throw "Error: Incorrect date format";
+  if (dateSplit.length < 3) throw "Incorrect date format";
   if (
     dateSplit[0].length != 4 ||
     dateSplit[1].length != 2 ||
     dateSplit[2].length != 2
   )
-    throw "Error: Date format should be yyyy/mm/dd";
+    throw "Date format should be yyyy/mm/dd";
 
   return dateSplit[1] + "/" + dateSplit[2] + "/" + dateSplit[0];
 };
 
 // mm/dd/yyyy
 let checkDate = (date) => {
-  if (!date) throw `Error: You must supply a date`;
+  if (!date) throw `You must supply a date`;
   if (typeof date !== "string")
-    throw `Error: Inputted date should be a string.`;
+    throw `Inputted date should be a string.`;
   date = date.trim();
   if (date.length === 0) {
-    throw `Error: Given date cannot be an empty string or string with just spaces.`;
+    throw `Given date cannot be an empty string or string with just spaces.`;
   }
 
   let dateSplit = date.split("/");
-  if (dateSplit.length < 3) throw "Error: Incorrect date format";
+  if (dateSplit.length < 3) throw "Incorrect date format";
   if (
     dateSplit[0].length != 2 ||
     dateSplit[1].length != 2 ||
     dateSplit[2].length != 4
   )
-    throw "Error: Date format should be mm/dd/yyyy";
+    throw "Date format should be mm/dd/yyyy";
   if (parseInt(dateSplit[0]) < 1 || parseInt(dateSplit[0]) > 12)
-    throw "Error: Month should be between 1 and 12 inclusive.";
+    throw "Month should be between 1 and 12 inclusive.";
 
   //make sure date is only for today and before
   if (parseInt(dateSplit[2]) > new Date().getFullYear())
-    throw "Error: Year should be before " + new Date().getFullYear();
+    throw "Year should be before " + new Date().getFullYear();
 
   if (
     (parseInt(dateSplit[2]) == new Date().getFullYear() &&
@@ -103,7 +103,7 @@ let checkDate = (date) => {
       parseInt(dateSplit[0]) == new Date().getMonth() + 1 &&
       parseInt(dateSplit[1]) > new Date().getDate())
   )
-    throw "Error: Date must be today or a date before.";
+    throw "Date must be today or a date before.";
 
   let days = {
     "01": "31",
@@ -121,7 +121,7 @@ let checkDate = (date) => {
   };
 
   if (!(parseInt(dateSplit[1]) <= parseInt(days[dateSplit[0]])))
-    throw "Error: Invalid day for dateReleased";
+    throw "Invalid day for dateReleased";
 
   return date;
 };
@@ -294,67 +294,67 @@ if (new_income_form) {
   });
 }
 //new expense form
-// else if (new_expense_form) {
-//   new_expense_form.addEventListener("submit", (event) => {
-//     event.preventDefault();
-//     new_expense_error_div.hidden = true;
-//     new_expense_error_div.innerHTML = "";
+else if (new_expense_form) {
+  new_expense_form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    new_expense_error_div.hidden = true;
+    new_expense_error_div.innerHTML = "";
 
-//     if (new_expense_amount && new_expense_amount.value.trim()) {
-    //   try {
-    //     checkAmount(new_expense_amount.value);
-    //   } catch (e) {
-    //     new_expense_errors.push(e);
-    //   }
-    // } else {
-    //   new_expense_errors.push("Amount input is missing.");
-    // }
+    if (new_expense_amount && new_expense_amount.value.trim()) {
+      try {
+        checkAmount(new_expense_amount.value);
+      } catch (e) {
+        new_expense_errors.push(e);
+      }
+    } else {
+      new_expense_errors.push("Amount input is missing.");
+    }
 
-    // if (new_expense_date && new_expense_date.value.trim()) {
-    //   try {
-    //     let date = flipDate(new_expense_date.value);
-    //     checkDate(date);
-    //   } catch (e) {
-    //     new_expense_errors.push(e);
-    //   }
-    // } else {
-    //   new_expense_errors.push("Date input is missing.");
-    // }
+    if (new_expense_date && new_expense_date.value.trim()) {
+      try {
+        let date = flipDate(new_expense_date.value);
+        checkDate(date);
+      } catch (e) {
+        new_expense_errors.push(e);
+      }
+    } else {
+      new_expense_errors.push("Date input is missing.");
+    }
 
-    // if (new_expense_category && new_expense_category.value.trim()) {
-    //   try {
-    //     checkString(new_expense_category.value);
-    //   } catch (e) {
-    //     new_expense_errors.push(e);
-    //   }
-    // } else {
-    //   new_expense_errors.push("Category input is missing.");
-    // }
+    if (new_expense_category && new_expense_category.value.trim()) {
+      try {
+        checkString(new_expense_category.value);
+      } catch (e) {
+        new_expense_errors.push(e);
+      }
+    } else {
+      new_expense_errors.push("Category input is missing.");
+    }
 
-//     if (new_expense_description && new_expense_description.value.trim()) {
-//       try {
-//         let description = new_expense_description.value;
-//         if (description) {
-//           description = checkString(description);
-//         } else description = "";
-//       } catch (e) {
-//         new_expense_errors.push(e);
-//       }
-//     }
+    if (new_expense_description && new_expense_description.value.trim()) {
+      try {
+        let description = new_expense_description.value;
+        if (description) {
+          description = checkString(description);
+        } else description = "";
+      } catch (e) {
+        new_expense_errors.push(e);
+      }
+    }
 
-//     if (new_expense_errors.length != 0) {
-//       new_expense_error_div.hidden = false;
-//       for (let i = 0; i < new_expense_errors.length; i++) {
-//         let p_err = document.createElement("p");
-//         p_err.innerHTML = new_expense_errors[i];
-//         new_expense_error_div.appendChild(p_err);
-//       }
-//       new_expense_errors = [];
-//     } else {
-//       new_expense_form.submit();
-//     }
-//   });
-// }
+    if (new_expense_errors.length != 0) {
+      new_expense_error_div.hidden = false;
+      for (let i = 0; i < new_expense_errors.length; i++) {
+        let p_err = document.createElement("p");
+        p_err.innerHTML = new_expense_errors[i];
+        new_expense_error_div.appendChild(p_err);
+      }
+      new_expense_errors = [];
+    } else {
+      new_expense_form.submit();
+    }
+  });
+}
 
 //the actual form
 if (updated_income_form) {

@@ -9,6 +9,7 @@ import incomeFunctions from "../data/income.js";
 import { income } from "../config/mongoCollections.js";
 import transactionFunctions from "../data/transactions.js";
 import monthlySummaryFunctions from '../data/monthlySummary.js';
+import yearlyFunctions from "../data/yearlySummary.js";
 
 
 //---------------------------- Landing Routes ----------------------------//
@@ -290,80 +291,128 @@ router.route("/signout").get(async (req, res) => {
 });
 
 //---------------------------- Home Routes ----------------------------//
-router.get('/home', async (req, res) => {
-  //console.log("In home page");
+router.delete("/settings/deleteCategory", async (req, res) => {
   try {
-    //console.log("In try");
-    if (!req.session.user) return res.redirect('/login');
-    //console.log("after session user check");
-
     const user = req.session.user;
-    const now = new Date();
-    const numericMonth = now.getMonth() + 1;
-    const numericYear = now.getFullYear().toString();;
-    const paddedMonth = numericMonth.toString().padStart(2, '0');
-    const currentDate = now.toLocaleDateString('en-US');
-    const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    const { category } = req.body;
+    await users.deleteCategoryById(user.id, xss(category));
 
+    const updatedUser = await users.getUserById(user.id);
+    req.session.user = {
+      id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      gender: updatedUser.gender,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      age: updatedUser.age,
+      balance: updatedUser.balance,
+      categories: updatedUser.categories,
+      fixedExpenses: updatedUser.fixedExpenses,
+    };
+    res.status(200).json({ success: true, message: "Category Deleted" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Could not delete category" });
+  }
+});
+
+//---------------------------- Home Routes ----------------------------//
+
+router.get('/home', async (req, res) => {
+  try {
+    if (!req.session.user) return res.redirect('/login');
+    const user = req.session.user;
+
+    const now = new Date();
+    let numericMonth = now.getMonth() + 1;
+    let numericYear = now.getFullYear();
+
+    // If user selected a specific month/year from dropdown
+    if (req.query.month && req.query.year) {
+      const m = parseInt(req.query.month);
+      const y = parseInt(req.query.year);
+      if (!isNaN(m) && m >= 1 && m <= 12 && !isNaN(y) && y >= 2020 && y <= now.getFullYear()) {
+        numericMonth = m;
+        numericYear = y;
+      }
+    }
+
+    const paddedMonth = numericMonth.toString().padStart(2, '0');
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-    //console.log("recalculating monthly summary");
-    await monthlySummaryFunctions.recalculateMonthlySummary(user.id, paddedMonth, numericYear);
-    const monthlySummary = await monthlySummaryFunctions.getMonthlySummary(user.id, paddedMonth, numericYear);
-    //console.log("monthly summary: ", monthlySummary );
+    const monthMap = {
+      "01": "January", "02": "February", "03": "March", "04": "April",
+      "05": "May", "06": "June", "07": "July", "08": "August",
+      "09": "September", "10": "October", "11": "November", "12": "December"
+    };
+    const selectedMonth = req.query.month;
+
+    const currentDate = now.toLocaleDateString('en-US');
+    const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    // Dropdown month options
+    const monthOptions = monthNames.map((name, index) => ({
+      name,
+      value: (index + 1).toString().padStart(2, '0'),
+      selected: index + 1 === numericMonth
+    }));
+
+    // Dropdown year options
+    const yearOptions = [];
+    for (let y = now.getFullYear(); y >= 2020; y--) {
+      yearOptions.push({
+        value: y.toString(),
+        selected: y === numericYear
+      });
+    }
+
+    // Update and fetch monthly summary
+    await monthlySummaryFunctions.recalculateMonthlySummary(user.id, paddedMonth, numericYear.toString());
+    const monthlySummary = await monthlySummaryFunctions.getMonthlySummary(user.id, paddedMonth, numericYear.toString());
 
     if (!monthlySummary) {
       return res.render('home', {
         title: 'Monthly Summary',
         home_or_summary: true,
-        landing_signup_login: false,
-        general_page: false,
         include_navbar: true,
         include_summary_navbar: true,
         currentDate,
         currentTime,
-        month: monthNames[numericMonth - 1],
+        month: monthNames[numericMonth - 1], // readable month name
         year: numericYear,
+        monthName: monthMap[selectedMonth] || selectedMonth,
+        monthOptions,
+        yearOptions,
         noData: true
       });
     }
-    const dailyExpenses = await monthlySummaryFunctions.getDailyExpenses(user.id, paddedMonth, numericYear);
 
-    res.render('home', {
+    const dailyExpenses = await monthlySummaryFunctions.getDailyExpenses(user.id, paddedMonth, numericYear.toString());
+
+    return res.render('home', {
       title: 'Monthly Summary',
       home_or_summary: true,
-      landing_signup_login: false,
-      general_page: false,
       include_navbar: true,
       include_summary_navbar: true,
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      gender: user.gender,
-      city: user.city,
-      state: user.state,
-      age: user.age,
-      balance: user.balance,
-      categories: user.categories,
-      fixedExpenses: user.fixedExpenses,
+      ...user,
       currentDate,
       currentTime,
       month: monthNames[numericMonth - 1],
       year: numericYear,
-      totalIncome: monthlySummary.totalIncome || 0,
-      totalFixedExpenses: monthlySummary.totalFixedExpenses || 0,
-      totalVariableExpenses: monthlySummary.totalVariableExpenses || 0,
-      remainingBalance: monthlySummary.remainingBalance || 0,
-      breakdownByCategory: monthlySummary.breakdownByCategory || [],
+      monthOptions,
+      yearOptions,
+      monthName: monthMap[selectedMonth] || selectedMonth,
+      ...monthlySummary,
       dailyExpenses,
       json: JSON.stringify
     });
-  } catch (error) {
-    //console.error("Error in /home route:", error);
-    return res.status(500).render('error', { error: error.toString() });
+  } catch (e) {
+    console.error("Error in /home route:", e);
+    return res.status(500).render("error", { error: e.toString() });
   }
 });
 //----------------------------Income Routes----------------------------------//
@@ -450,9 +499,7 @@ router
           settings_page: false,
         });
       } catch (e) {
-        //what to do when error?
-        //console.log(e); // get rid of
-        //waht statsu
+        
         return res.status(500).send("Internal Server Error");
       }
     }
@@ -533,7 +580,6 @@ router
 
       res.redirect("/income");
     } catch (e) {
-      //what to do if delete fails
       return res.status(500).redirect(`/income?dropdownError=${e}`);
     }
   })
@@ -1039,9 +1085,9 @@ router.delete("/settings/deleteCategory", async (req, res) => {
   try {
     const user = req.session.user;
     const { category } = req.body;
-    await users.deleteCategoryById(user.id, xss(category));
+    await users.deleteCategoryById(user.id.toString(), xss(category));
 
-    const updatedUser = await users.getUserById(user.id);
+    const updatedUser = await users.getUserById(user.id.toString());
     req.session.user = {
       id: updatedUser._id.toString(),
       firstName: updatedUser.firstName,
@@ -1061,4 +1107,61 @@ router.delete("/settings/deleteCategory", async (req, res) => {
     res.status(500).json({ error: "Could not delete category" });
   }
 });
+//----------------------- Yearly Summary -----------------------//
+router.route('/yearly')
+  .get(async (req, res) => {
+    try {
+      if (!req.session.user) {
+        return res.redirect('/login');
+      }
+      const user = req.session.user;
+      let currentYear = new Date().getFullYear();
+      let year = (req.query.year || currentYear).toString();
+      //check later for form for queing different year
+
+      await yearlyFunctions.recalculateYearly(user.id.toString(), year.toString());
+      
+      let yearSummary;
+      
+      yearSummary = await yearlyFunctions.getYearlySummary(user.id.toString(), xss(year.toString()));
+    
+
+      const yearOptions = [];
+      for (let y = currentYear; y >= 2000; y--) {
+        yearOptions.push({
+          value: y.toString(),
+          selected: y.toString() === year.toString()
+        });
+      }
+
+      const monthlyExpenses = await yearlyFunctions.getMonthlyExpenses(user.id.toString(), year.toString());
+      
+      let hasData = yearSummary.totalIncome > 0 || yearSummary.totalVariableExpenses > 0; 
+      let constantCurrentYear = new Date().getFullYear();
+
+      return res.render('yearlySummary', {
+        title: "Yearly summary", 
+        year: year, 
+        currentYear: year,
+        constantCurrentYear: constantCurrentYear,
+        noStats: !hasData,
+        breakdown: yearSummary.totalSpentPerCategory,
+        totalSpentPerCategory: JSON.stringify(yearSummary.totalSpentPerCategory), 
+        totalIncome: yearSummary.totalIncome, 
+        totalFixedExpenses: yearSummary.totalFixedExpenses, 
+        totalVariableExpenses: yearSummary.totalVariableExpenses, 
+        monthlyExpenses: JSON.stringify(monthlyExpenses),
+        yearOptions:yearOptions,
+        home_or_summary: true, 
+        landing_signup_login: false, 
+        general_page: false, 
+        include_navbar: true, 
+        include_summary_navbar: true
+      });
+    } catch (e) {
+      console.log("route error: ", e);
+    }
+});
+
+
 export default router;

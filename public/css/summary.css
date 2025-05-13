@@ -1,5 +1,8 @@
 /* === GENERAL LAYOUT === */
 
+body{
+    margin: 0;
+}
 .container {
   display: grid;
   grid-template-columns: 15% auto;
@@ -149,7 +152,7 @@ a {
   height: 100%;
 }
 
-.daily-chart-section {
+.daily-chart-section, .monthly-chart-section {
   width: 100%;
   max-width: 976px; /* precise: 3 blocks + 2 gaps + buffer */
   background-color: #e6f2ff;
